@@ -3,6 +3,7 @@ import 'package:go_event_customer/Screens/Home/components/slider_list.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/size_config.dart';
 
+import '../../../routes.dart';
 import '../../../size_config.dart';
 
 class Body extends StatelessWidget {
@@ -20,7 +21,7 @@ class Body extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 50),
+                padding: EdgeInsets.only(left: 12),
                 child: Text(
                   "What are you looking for?",
                   style: TextStyle(
@@ -34,23 +35,32 @@ class Body extends StatelessWidget {
                   CategoriesCard(
                     icon: Icons.home,
                     text: 'Venue',
-                    press: () {},
+                    press: () {
+                      Navigator.pushNamed(context, Routes.service,
+                          arguments: {'type': 'Venue'});
+                    },
                   ),
                   CategoriesCard(
                     icon: Icons.music_note,
                     text: 'Talents',
-                    press: () {},
+                    press: () {
+                      Navigator.pushNamed(context, Routes.service,
+                          arguments: {'type': 'Talent'});
+                    },
                   ),
                   CategoriesCard(
                     icon: Icons.fastfood,
                     text: 'Catering',
-                    press: () {},
+                    press: () {
+                      Navigator.pushNamed(context, Routes.service,
+                          arguments: {'type': 'Catering'});
+                    },
                   ),
                 ],
               ),
-              //SliderList(title: "Your Services", type: "service"),
-              //SizedBox(height: 25),
-              //SliderList(title: "Your Orders", type: "order")
+              SliderList(title: "Your Services", type: "service"),
+              SizedBox(height: 25),
+              SliderList(title: "Your Orders", type: "order")
             ],
           ),
         ),

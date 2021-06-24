@@ -23,13 +23,6 @@ class ServiceScreen extends StatelessWidget {
             )),
       ),
       body: Body(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.create_service);
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: kPrimaryColor,
-      ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: selectedIndex,
       ),

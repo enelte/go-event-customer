@@ -22,17 +22,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 routes: Routes.home,
                 isCurrent: currentIndex == 0),
             IconWithText(
-                text: "My Service",
+                text: "My Bookings",
                 icon: Icons.room_service,
                 routes: Routes.service,
                 isCurrent: currentIndex == 1),
             IconWithText(
-                text: "My Orders",
-                icon: Icons.event,
-                routes: Routes.home,
+                text: "My Events",
+                icon: Icons.calendar_today,
+                routes: Routes.profile,
                 isCurrent: currentIndex == 2),
             IconWithText(
-                text: "Profile",
+                text: "My Profile",
                 icon: Icons.person,
                 routes: Routes.profile,
                 isCurrent: currentIndex == 3),

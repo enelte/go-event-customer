@@ -12,6 +12,11 @@ class ServiceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Map typeMap = ModalRoute.of(context).settings.arguments;
+    String type;
+    if (typeMap != null) {
+      type = typeMap['type'];
+    }
     final database = Provider.of<FirestoreService>(context);
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -20,7 +25,7 @@ class ServiceList extends StatelessWidget {
           right: getProportionateScreenWidth(5),
         ),
         child: StreamBuilder(
-          stream: database.servicesStream(),
+          stream: database.servicesStream(type),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               List<Service> serviceList = snapshot.data;

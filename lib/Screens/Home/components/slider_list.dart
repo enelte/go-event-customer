@@ -41,7 +41,7 @@ class SliderList extends StatelessWidget {
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: StreamBuilder(
-              stream: database.servicesStream(),
+              stream: database.servicesStream(null),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Service> serviceList = snapshot.data;

@@ -41,11 +41,11 @@ class FirestoreService {
   }
 
   //Method to retrieve all services item from the same user based on uid
-  Stream<List<Service>> servicesStream() {
+  Stream<List<Service>> servicesStream(String type) {
     final path = FirestorePath.services();
     final reference = FirebaseFirestore.instance
         .collection(path)
-        .where("vendorId", isEqualTo: uid);
+        .where("serviceType", isEqualTo: type);
     final snapshots = reference.snapshots();
     return snapshots.map((snapshot) {
       final result = snapshot.docs

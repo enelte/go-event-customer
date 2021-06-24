@@ -23,8 +23,12 @@ class ServiceDetailsScreen extends StatelessWidget {
               service: service,
             )
           : service.serviceType == "Talent"
-              ? VenueDetails()
-              : VenueDetails(),
+              ? VenueDetails(
+                  service: service,
+                )
+              : VenueDetails(
+                  service: service,
+                ),
       bottomNavigationBar: CustomBottomNavigationBar(),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
