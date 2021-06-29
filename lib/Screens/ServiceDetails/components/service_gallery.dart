@@ -34,8 +34,7 @@ class _ServiceGalleryState extends State<ServiceGallery> {
           if (snapshot.hasData) {
             Service service = snapshot.data;
             return Scaffold(
-              appBar:
-                  CustomAppBar(title: Text("Image Gallery"), backButton: true),
+              appBar: CustomAppBar(title: "Image Gallery", backButton: true),
               body: MainBackground(
                 child: SingleChildScrollView(
                   child: Column(

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_event_customer/models/Service.dart';
-import 'package:go_event_customer/models/UserData.dart';
+import 'package:go_event_customer/models/User.dart';
 
 import 'firestore_path.dart';
 
@@ -11,19 +11,18 @@ class FirestoreService {
   final String uid;
 
   // Create / Update UserData
-  Future<void> setUserData(UserDataModel userData) async {
+  Future<void> setUserData(UserModel userData) async {
     final path = FirestorePath.userData(uid);
     final reference = FirebaseFirestore.instance.doc(path);
     await reference.set(userData.toMap(), SetOptions(merge: true));
   }
 
   // Reads the current userData
-  Stream<UserDataModel> userDataStream() {
+  Stream<UserModel> userDataStream() {
     final path = FirestorePath.userData(uid);
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.snapshots();
-    return snapshots
-        .map((snapshot) => UserDataModel.fromMap(snapshot.data(), uid));
+    return snapshots.map((snapshot) => UserModel.fromMap(snapshot.data(), uid));
   }
 
   // Create / Update Service
@@ -41,16 +40,28 @@ class FirestoreService {
   }
 
   //Method to retrieve all services item from the same user based on uid
-  Stream<List<Service>> servicesStream(String type) {
+  Stream<List<Service>> servicesStream({
+    Query queryBuilder(Query query),
+    int sort(Service lhs, Service rhs),
+  }) {
     final path = FirestorePath.services();
-    final reference = FirebaseFirestore.instance
+    Query query = FirebaseFirestore.instance
         .collection(path)
-        .where("serviceType", isEqualTo: type);
-    final snapshots = reference.snapshots();
+        .where("vendorId", isEqualTo: uid);
+
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+
+    final Stream<QuerySnapshot> snapshots = query.snapshots();
     return snapshots.map((snapshot) {
       final result = snapshot.docs
           .map((snapshot) => Service.fromMap(snapshot.data(), snapshot.id))
+          .where((value) => value != null)
           .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
       return result;
     });
   }

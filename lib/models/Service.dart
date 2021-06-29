@@ -1,8 +1,15 @@
 class Service {
-  final String serviceId, vendorId, serviceType, serviceName, description;
+  final String serviceId,
+      vendorId,
+      serviceType,
+      serviceName,
+      description,
+      unit,
+      address,
+      category;
   final List images;
-  final int price, area, capacity, minOrder, maxOrder;
-  final double rating;
+  final int area, capacity, minOrder, maxOrder;
+  final double price, rating;
   final bool status;
 
   Service(
@@ -18,18 +25,24 @@ class Service {
       this.area,
       this.capacity,
       this.status,
-      this.rating});
+      this.rating,
+      this.category,
+      this.unit,
+      this.address});
 
-  factory Service.fromMap(Map<String, dynamic> data, String documentId) {
+  factory Service.fromMap(Map<String, dynamic> data, String serviceId) {
     if (data == null) {
       return null;
     }
-    String serviceId = documentId;
+
     String vendorId = data['vendorId'];
     String serviceType = data['serviceType'];
     String serviceName = data['serviceName'];
+    String category = data['category'];
+    String unit = data['unit'];
     String description = data['description'];
-    int price = data['price'];
+    String address = data['address'];
+    double price = data['price'];
     int minOrder = data['minOrder'];
     int maxOrder = data['maxOrder'];
     int area = data['area'];
@@ -44,7 +57,10 @@ class Service {
         serviceType: serviceType,
         serviceName: serviceName,
         description: description,
+        category: category,
+        unit: unit,
         price: price,
+        address: address,
         minOrder: minOrder,
         maxOrder: maxOrder,
         area: area,
@@ -56,98 +72,34 @@ class Service {
 
   Map<String, dynamic> toMap() {
     return {
-      'serviceId': serviceId,
       'vendorId': vendorId,
       'serviceType': serviceType,
       'serviceName': serviceName,
       'description': description,
+      'category': category,
+      'unit': unit,
       'price': price,
+      'address': address,
       'minOrder': minOrder,
       'maxOrder': maxOrder,
       'area': area,
       'capacity': capacity,
       'status': status,
       'rating': rating,
-      'images': images
+      'images': images,
     }..removeWhere(
         (dynamic key, dynamic value) => key == null || value == null);
   }
 }
 
-List<Service> services = [
-  Service(
-    serviceId: "1",
-    serviceName: "Kassandra Ballroom - Max. 100 Pax",
-    price: 880000,
-    area: 12,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/service_1.jpg"],
-  ),
-  Service(
-    serviceId: "2",
-    serviceName: "Ballroom Biasa",
-    price: 1790000,
-    area: 8,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/service_2.jpg"],
-  ),
-  Service(
-    serviceId: "3",
-    serviceName: "Rameses Ballroom - Max. 1000 Pax",
-    price: 2690000,
-    area: 10,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/image_banner.png"],
-  ),
-  Service(
-    serviceId: "4",
-    serviceName: "Rameses Ballroom - Max. 1000 Pax",
-    price: 2690000,
-    area: 11,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/service_1.jpg"],
-  ),
-  Service(
-    serviceId: "5",
-    serviceName: "Rameses Ballroom - Max. 1000 Pax",
-    price: 2690000,
-    area: 12,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/service_2.jpg"],
-  ),
-  Service(
-    serviceId: "6",
-    serviceName: "Rameses Ballroom - Max. 1000 Pax",
-    price: 2690000,
-    area: 12,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/image_banner.png"],
-  ),
-  Service(
-    serviceId: "7",
-    serviceName: "Rameses Ballroom - Max. 1000 Pax",
-    price: 2690000,
-    area: 12,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/image_banner.png"],
-  ),
-  Service(
-    serviceId: "8",
-    serviceName: "Rameses Ballroom - Max. 1000 Pax",
-    price: 2690000,
-    area: 12,
-    rating: 4.5,
-    description: dummyText,
-    images: ["assets/images/image_banner.png"],
-  ),
-];
+class ServiceFilter {
+  String serviceType, serviceName, category;
+  bool status;
 
-String dummyText =
-    "Lorem Ipsum is simply dummy text of the printing and serviceTypesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since. When an unknown printer took a galley.";
+  ServiceFilter({
+    this.serviceType,
+    this.serviceName,
+    this.category,
+    this.status,
+  });
+}

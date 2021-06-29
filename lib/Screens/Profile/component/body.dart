@@ -6,7 +6,7 @@ import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/profile_pic.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
-import 'package:go_event_customer/models/UserData.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/services/auth_service.dart';
 import 'package:go_event_customer/services/firebase_storage_service.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
-  final UserDataModel userData;
+  final UserModel userData;
   const Body({Key key, this.userData}) : super(key: key);
 
   @override
@@ -140,7 +140,7 @@ class _BodyState extends State<Body> {
       final description = _descriptionController.text.trim();
 
       //save user data to firestore
-      final userData = UserDataModel(
+      final userData = UserModel(
           displayName: displayName,
           phoneNumber: phoneNumber,
           address: address,

@@ -8,15 +8,15 @@ import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:provider/provider.dart';
 
-class VenueDetails extends StatefulWidget {
+class Body extends StatefulWidget {
   final Service service;
-  const VenueDetails({Key key, this.service}) : super(key: key);
+  const Body({Key key, this.service}) : super(key: key);
 
   @override
-  _VenueDetailsState createState() => _VenueDetailsState();
+  _BodyState createState() => _BodyState();
 }
 
-class _VenueDetailsState extends State<VenueDetails> {
+class _BodyState extends State<Body> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
@@ -223,7 +223,7 @@ class _VenueDetailsState extends State<VenueDetails> {
       String serviceId = widget.service.serviceId;
       String serviceName = _nameController.text.trim();
       String description = _descriptionController.text.trim();
-      int price = int.parse(_priceController.text.trim());
+      double price = double.parse(_priceController.text.trim());
       int minOrder = int.parse(_minOrderController.text.trim());
       int maxOrder = int.parse(_maxOrderController.text.trim());
       int capacity = int.parse(_capacityController.text.trim());

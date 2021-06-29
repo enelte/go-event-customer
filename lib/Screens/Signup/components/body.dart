@@ -7,7 +7,7 @@ import 'package:go_event_customer/components/profile_pic.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/components/rounded_password_field.dart';
-import 'package:go_event_customer/models/UserData.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/auth_service.dart';
 import 'package:go_event_customer/services/firebase_storage_service.dart';
@@ -146,7 +146,7 @@ class _BodyState extends State<Body> {
         downloadUrl = await storage.uploadProfilePicture(file: imageFile);
       }
       //save user data to firestore
-      final userData = UserDataModel(
+      final userData = UserModel(
           uid: registeredUser.uid,
           displayName: displayName,
           phoneNumber: phoneNumber,

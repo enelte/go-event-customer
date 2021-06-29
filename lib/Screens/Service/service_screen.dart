@@ -13,7 +13,7 @@ class ServiceScreen extends StatelessWidget {
     final int selectedIndex = 1;
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text("Service Offered"),
+        title: "Service Offered",
         backButton: true,
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(0),

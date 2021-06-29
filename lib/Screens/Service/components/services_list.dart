@@ -25,7 +25,10 @@ class ServiceList extends StatelessWidget {
           right: getProportionateScreenWidth(5),
         ),
         child: StreamBuilder(
-          stream: database.servicesStream(type),
+          stream: database.servicesStream(
+            queryBuilder: (query) =>
+                query.where("serviceType", isEqualTo: type),
+          ),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               List<Service> serviceList = snapshot.data;

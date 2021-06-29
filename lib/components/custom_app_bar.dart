@@ -6,15 +6,10 @@ import '../constant.dart';
 import '../size_config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Widget title;
-  final bool searchBar;
+  final String title;
   final bool backButton;
   final Widget bottom;
-  const CustomAppBar(
-      {this.title,
-      this.searchBar = false,
-      this.backButton = false,
-      this.bottom});
+  const CustomAppBar({this.title, this.backButton = false, this.bottom});
 
   @override
   Size get preferredSize => Size.fromHeight(bottom != null
@@ -28,7 +23,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       elevation: 0,
       centerTitle: true,
-      title: title,
+      title: Column(
+        children: [Text("Go-Event"), Text(title)],
+      ),
       leading: backButton
           ? IconButton(
               icon: Icon(Icons.arrow_back),
