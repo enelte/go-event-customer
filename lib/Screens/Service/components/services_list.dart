@@ -39,7 +39,7 @@ class ServiceList extends StatelessWidget {
                   itemCount: serviceList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 0.75,
+                    childAspectRatio: 0.69,
                   ),
                   itemBuilder: (context, index) {
                     return Padding(

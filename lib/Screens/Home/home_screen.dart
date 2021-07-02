@@ -15,7 +15,8 @@ class HomeScreen extends StatelessWidget {
     final userData = Provider.of<UserModel>(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Welcome, " + (userData != null ? userData.displayName : null),
+        title: "Welcome, " +
+            (userData != null ? userData.displayName.split(" ")[0] : ""),
       ),
       body: Body(),
       bottomNavigationBar: CustomBottomNavigationBar(

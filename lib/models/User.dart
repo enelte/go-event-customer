@@ -1,6 +1,7 @@
 class UserModel {
   String uid;
   String email;
+  String password;
   String displayName;
   String phoneNumber;
   String photoURL;
@@ -9,11 +10,11 @@ class UserModel {
   String description;
   String role;
   String dateOfBirth;
-  String accountNumber, accountName, bankName;
 
   UserModel({
     this.uid,
     this.email,
+    this.password,
     this.displayName,
     this.phoneNumber,
     this.photoURL,
@@ -22,9 +23,6 @@ class UserModel {
     this.description,
     this.role,
     this.dateOfBirth,
-    this.accountNumber,
-    this.accountName,
-    this.bankName,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> data, String uid) {
@@ -40,24 +38,19 @@ class UserModel {
     String description = data['description'];
     String role = data['role'];
     String dateOfBirth = data['dateOfBirth'];
-    String accountNumber = data['accountNumber'];
-    String accountName = data['accountName'];
-    String bankName = data['bankName'];
 
     return UserModel(
-        uid: uid,
-        email: email,
-        displayName: displayName,
-        phoneNumber: phoneNumber,
-        photoURL: photoURL,
-        address: address,
-        city: city,
-        description: description,
-        role: role,
-        dateOfBirth: dateOfBirth,
-        accountNumber: accountNumber,
-        accountName: accountName,
-        bankName: bankName);
+      uid: uid,
+      email: email,
+      displayName: displayName,
+      phoneNumber: phoneNumber,
+      photoURL: photoURL,
+      address: address,
+      city: city,
+      description: description,
+      role: role,
+      dateOfBirth: dateOfBirth,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -71,11 +64,7 @@ class UserModel {
       'description': description,
       'role': role,
       'dateOfBirth': dateOfBirth,
-      "accountNumber": accountNumber,
-      "accountName": accountName,
-      "bankName": bankName
     }..removeWhere(
         (dynamic key, dynamic value) => key == null || value == null);
-    ;
   }
 }

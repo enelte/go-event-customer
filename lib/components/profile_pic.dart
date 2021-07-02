@@ -28,7 +28,7 @@ class ProfilePic extends StatelessWidget {
             CircleAvatar(
               backgroundImage: imageFile == null
                   ? (imageURL == "" || imageURL == null
-                      ? null
+                      ? avatarImage
                       : NetworkImage(imageURL))
                   : FileImage(imageFile),
             ),

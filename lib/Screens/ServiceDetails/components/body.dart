@@ -4,13 +4,16 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
+import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
   final Service service;
-  const Body({Key key, this.service}) : super(key: key);
+  final UserModel vendor;
+  const Body({Key key, this.service, this.vendor}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -54,6 +57,7 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     Service service = widget.service;
+    UserModel vendor = widget.vendor;
     return MainBackground(
       child: SingleChildScrollView(
         child: Column(
@@ -61,7 +65,7 @@ class _BodyState extends State<Body> {
             Container(
               width: getProportionateScreenWidth(SizeConfig.screenWidth),
               height:
-                  getProportionateScreenHeight(0.25 * SizeConfig.screenHeight),
+                  getProportionateScreenHeight(0.35 * SizeConfig.screenHeight),
               child: service.images.isEmpty
                   ? Container()
                   : Image.network(service.images[0], fit: BoxFit.fill),
@@ -139,42 +143,47 @@ class _BodyState extends State<Body> {
               title: "Price (IDR)",
               hintText: "Price",
               icon: Icons.money,
-              suffixText: "IDR/hour",
+              suffixText: "IDR/" + service.unit,
               controller: _priceController,
               digitInput: true,
             ),
             RoundedInputField(
-              title: "Min Order Hour(s)",
-              hintText: "Min Order Hour(s)",
+              title: "Min Order",
+              hintText: "Min Order",
               icon: Icons.timer_off,
-              suffixText: "hour(s)",
+              suffixText: service.unit,
               controller: _minOrderController,
               digitInput: true,
             ),
             RoundedInputField(
-              title: "Max Order Hour(s)",
-              hintText: "Max Order Hour(s)",
+              title: "Max Order",
+              hintText: "Max Order",
               icon: Icons.timer,
-              suffixText: "hour(s)",
+              suffixText: service.unit,
               controller: _maxOrderController,
               digitInput: true,
             ),
-            RoundedInputField(
-              title: "Area(M\u00B2)",
-              hintText: "Area",
-              icon: Icons.home,
-              suffixText: "M\u00B2",
-              controller: _areaController,
-              digitInput: true,
-            ),
-            RoundedInputField(
-              title: "Capacity (pax)",
-              hintText: "Capacity",
-              icon: Icons.person,
-              suffixText: "Pax",
-              controller: _capacityController,
-              digitInput: true,
-            ),
+            if (service.serviceType == "Venue")
+              Column(
+                children: [
+                  RoundedInputField(
+                    title: "Area(M\u00B2)",
+                    hintText: "Area",
+                    icon: Icons.home,
+                    suffixText: "M\u00B2",
+                    controller: _areaController,
+                    digitInput: true,
+                  ),
+                  RoundedInputField(
+                    title: "Capacity (pax)",
+                    hintText: "Capacity",
+                    icon: Icons.person,
+                    suffixText: "Pax",
+                    controller: _capacityController,
+                    digitInput: true,
+                  ),
+                ],
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -205,10 +214,10 @@ class _BodyState extends State<Body> {
             ),
             SizedBox(height: 25),
             RoundedButton(
-              text: "Update Service",
+              text: "Order Service",
               press: () async {
-                editService();
-                Navigator.pop(context);
+                Navigator.pushNamed(context, Routes.create_transaction,
+                    arguments: {'service': service, 'vendor': vendor});
               },
             ),
             SizedBox(height: 25),
@@ -216,36 +225,5 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
-  }
-
-  editService() async {
-    try {
-      String serviceId = widget.service.serviceId;
-      String serviceName = _nameController.text.trim();
-      String description = _descriptionController.text.trim();
-      double price = double.parse(_priceController.text.trim());
-      int minOrder = int.parse(_minOrderController.text.trim());
-      int maxOrder = int.parse(_maxOrderController.text.trim());
-      int capacity = int.parse(_capacityController.text.trim());
-      int area = int.parse(_areaController.text.trim());
-      bool status = _status;
-
-      //save service data to firestore
-      final service = Service(
-        serviceId: serviceId,
-        serviceName: serviceName,
-        description: description,
-        price: price,
-        minOrder: minOrder,
-        maxOrder: maxOrder,
-        area: area,
-        capacity: capacity,
-        status: status,
-      );
-      final database = Provider.of<FirestoreService>(context, listen: false);
-      await database.setService(service);
-    } catch (e) {
-      print(e);
-    }
   }
 }

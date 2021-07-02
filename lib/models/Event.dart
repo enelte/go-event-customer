@@ -1,13 +1,13 @@
 class Event {
   final String eventId, customerId, eventName, eventDate;
-  final double location;
+  final num eventBudget;
 
   Event({
     this.eventId,
     this.customerId,
     this.eventName,
     this.eventDate,
-    this.location,
+    this.eventBudget,
   });
 
   factory Event.fromMap(Map<String, dynamic> data, String eventId) {
@@ -17,14 +17,15 @@ class Event {
     String customerId = data['customerId'];
     String eventName = data['eventName'];
     String eventDate = data['eventDate'];
-    double location = data['location'];
+    num eventBudget = data['eventBudget'];
 
     return Event(
-        eventId: eventId,
-        customerId: customerId,
-        eventName: eventName,
-        eventDate: eventDate,
-        location: location);
+      eventId: eventId,
+      customerId: customerId,
+      eventName: eventName,
+      eventDate: eventDate,
+      eventBudget: eventBudget,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -32,7 +33,7 @@ class Event {
       "customerId": customerId,
       "eventName": eventName,
       "eventDate": eventDate,
-      "location": location
+      "eventBudget": eventBudget,
     }..removeWhere(
         (dynamic key, dynamic value) => key == null || value == null);
   }

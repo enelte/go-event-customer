@@ -8,8 +8,8 @@ class Service {
       address,
       category;
   final List images;
-  final int area, capacity, minOrder, maxOrder;
-  final double price, rating;
+  final num area, capacity, minOrder, maxOrder;
+  final num price, rating;
   final bool status;
 
   Service(
@@ -42,13 +42,13 @@ class Service {
     String unit = data['unit'];
     String description = data['description'];
     String address = data['address'];
-    double price = data['price'];
-    int minOrder = data['minOrder'];
-    int maxOrder = data['maxOrder'];
-    int area = data['area'];
-    int capacity = data['capacity'];
+    num price = data['price'];
+    num minOrder = data['minOrder'];
+    num maxOrder = data['maxOrder'];
+    num area = data['area'];
+    num capacity = data['capacity'];
     bool status = data['status'];
-    double rating = data['rating'];
+    num rating = data['rating'];
     List images = data['images'];
 
     return Service(

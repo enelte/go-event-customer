@@ -29,7 +29,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             IconWithText(
                 text: "My Events",
                 icon: Icons.calendar_today,
-                routes: Routes.profile,
+                routes: Routes.event,
                 isCurrent: currentIndex == 2),
             IconWithText(
                 text: "My Profile",

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/models/Transaction.dart';
-import '../constant.dart';
 import '../size_config.dart';
 
 class OrderCard extends StatelessWidget {

@@ -5,10 +5,9 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_event_customer/controllers/user_controller.dart';
 import 'package:go_event_customer/routes.dart';
-import 'package:go_event_customer/services/auth_service.dart';
 import 'package:go_event_customer/size_config.dart';
-import 'package:provider/provider.dart';
 
 class Body extends StatelessWidget {
   final _emailController = TextEditingController();
@@ -57,14 +56,5 @@ class Body extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-Future<void> signIn(BuildContext context, String email, String password) async {
-  try {
-    final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-    await auth.signInWithEmailAndPassword(email, password);
-  } catch (e) {
-    print(e);
   }
 }

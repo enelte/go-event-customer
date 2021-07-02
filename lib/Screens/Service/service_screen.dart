@@ -3,9 +3,6 @@ import 'package:go_event_customer/Screens/Service/components/body.dart';
 import 'package:go_event_customer/components/custom_app_bar.dart';
 import 'package:go_event_customer/components/custom_bottom_navbar.dart';
 import 'package:go_event_customer/components/search_sort_filter.dart';
-import 'package:go_event_customer/constant.dart';
-
-import '../../routes.dart';
 
 class ServiceScreen extends StatelessWidget {
   @override
