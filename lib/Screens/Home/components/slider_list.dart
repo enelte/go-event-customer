@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/components/section_title.dart';
 import 'package:go_event_customer/Screens/Service/service_screen.dart';
+import 'package:go_event_customer/components/order_card.dart';
 import 'package:go_event_customer/components/service_card.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
@@ -54,11 +55,11 @@ class SliderList extends StatelessWidget {
                             : 5,
                         (index) {
                           return Padding(
-                              padding: EdgeInsets.all(3),
-                              child: type == "service"
-                                  ? ServiceCard(service: serviceList[index])
-                                  : Container() //OrderCard(order: orders[index]),
-                              );
+                            padding: EdgeInsets.all(3),
+                            child: type == "service"
+                                ? ServiceCard(service: serviceList[index])
+                                : OrderCard(),
+                          );
                         },
                       ),
                     ],

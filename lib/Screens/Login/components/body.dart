@@ -8,8 +8,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_event_customer/controllers/user_controller.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/size_config.dart';
+import 'package:go_event_customer/validator.dart';
 
 class Body extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   @override
@@ -17,42 +19,52 @@ class Body extends StatelessWidget {
     SizeConfig().init(context);
     return Background(
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "LOGIN",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: getProportionateScreenHeight(60),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "LOGIN",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              child: SvgPicture.asset(
-                "assets/icons/login.svg",
-                height: getProportionateScreenHeight(300),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: getProportionateScreenHeight(60),
+                ),
+                child: SvgPicture.asset(
+                  "assets/icons/login.svg",
+                  height: getProportionateScreenHeight(300),
+                ),
               ),
-            ),
-            RoundedInputField(
-                hintText: "Your Email", controller: _emailController),
-            RoundedPasswordField(controller: _passwordController),
-            RoundedButton(
-              text: "LOGIN",
-              press: () {
-                signIn(context, _emailController.text.trim(),
-                    _passwordController.text.trim());
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: getProportionateScreenHeight(20)),
-              child: AlreadyHaveAnAccountCheck(
+              RoundedInputField(
+                hintText: "Your Email",
+                controller: _emailController,
+                validator: Validator.emailValidator,
+              ),
+              RoundedPasswordField(
+                controller: _passwordController,
+              ),
+              RoundedButton(
+                text: "LOGIN",
                 press: () {
-                  Navigator.of(context).pushNamed(Routes.signup);
+                  if (_formKey.currentState.validate()) {
+                    signIn(context, _emailController.text.trim(),
+                        _passwordController.text.trim());
+                  }
                 },
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: getProportionateScreenHeight(20)),
+                child: AlreadyHaveAnAccountCheck(
+                  press: () {
+                    Navigator.of(context).pushNamed(Routes.signup);
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

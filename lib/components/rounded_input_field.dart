@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_event_customer/components/text_field_container.dart';
 import 'package:go_event_customer/constant.dart';
+import 'package:go_event_customer/validator.dart';
 
 class RoundedInputField extends StatelessWidget {
   final String title;
@@ -15,6 +16,7 @@ class RoundedInputField extends StatelessWidget {
   final bool digitInput;
   final bool readOnly;
   final TextEditingController controller;
+  final Function validator;
 
   const RoundedInputField({
     Key key,
@@ -29,6 +31,7 @@ class RoundedInputField extends StatelessWidget {
     this.width = 270,
     this.suffix,
     this.readOnly = false,
+    this.validator = Validator.defaultValidator,
   }) : super(key: key);
 
   @override
@@ -46,12 +49,7 @@ class RoundedInputField extends StatelessWidget {
             keyboardType: digitInput ? TextInputType.number : null,
             inputFormatters:
                 digitInput ? [FilteringTextInputFormatter.digitsOnly] : null,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+            validator: validator,
             decoration: InputDecoration(
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 20, vertical: 20),

@@ -14,6 +14,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
@@ -60,7 +61,6 @@ class _BodyState extends State<Body> {
     final UserModel customer = Provider.of<UserModel>(context);
     final Service service = widget.service;
     final UserModel vendor = widget.vendor;
-    final database = Provider.of<FirestoreService>(context, listen: false);
     return MainBackground(
       child: SingleChildScrollView(
         child: Column(
@@ -78,6 +78,7 @@ class _BodyState extends State<Body> {
                     icon: Icons.date_range,
                     readOnly: true,
                     controller: _dateController,
+                    validator: Validator.noValidator,
                     suffix: DatePickerField(
                       dateController: _dateController,
                       onDatePicked: (dob, dateFormat) {
