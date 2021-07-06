@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:go_event_customer/services/auth_service.dart';
-import 'package:provider/provider.dart';
+import 'package:go_event_customer/controllers/user_controller.dart';
 
 import '../constant.dart';
 import '../size_config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Widget title;
-  final bool searchBar;
+  final String title;
   final bool backButton;
   final Widget bottom;
-  const CustomAppBar(
-      {this.title,
-      this.searchBar = false,
-      this.backButton = false,
-      this.bottom});
+  const CustomAppBar({this.title, this.backButton = false, this.bottom});
 
   @override
   Size get preferredSize => Size.fromHeight(bottom != null
@@ -28,7 +22,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       elevation: 0,
       centerTitle: true,
-      title: title,
+      title: Column(
+        children: [
+          Text("Go-Event"),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15),
+          )
+        ],
+      ),
       leading: backButton
           ? IconButton(
               icon: Icon(Icons.arrow_back),
@@ -49,14 +54,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
       bottom: bottom,
     );
-  }
-}
-
-Future<void> signOut(BuildContext context) async {
-  try {
-    final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-    await auth.signOut();
-  } catch (e) {
-    print(e);
   }
 }

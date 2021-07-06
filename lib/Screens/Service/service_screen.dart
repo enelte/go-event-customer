@@ -3,9 +3,6 @@ import 'package:go_event_customer/Screens/Service/components/body.dart';
 import 'package:go_event_customer/components/custom_app_bar.dart';
 import 'package:go_event_customer/components/custom_bottom_navbar.dart';
 import 'package:go_event_customer/components/search_sort_filter.dart';
-import 'package:go_event_customer/constant.dart';
-
-import '../../routes.dart';
 
 class ServiceScreen extends StatelessWidget {
   @override
@@ -13,7 +10,7 @@ class ServiceScreen extends StatelessWidget {
     final int selectedIndex = 1;
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text("Service Offered"),
+        title: "Service Offered",
         backButton: true,
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(0),

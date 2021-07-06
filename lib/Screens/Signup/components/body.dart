@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Signup/components/background.dart';
@@ -7,11 +8,10 @@ import 'package:go_event_customer/components/profile_pic.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/components/rounded_password_field.dart';
-import 'package:go_event_customer/models/UserData.dart';
+import 'package:go_event_customer/constant.dart';
+import 'package:go_event_customer/controllers/user_controller.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/routes.dart';
-import 'package:go_event_customer/services/auth_service.dart';
-import 'package:go_event_customer/services/firebase_storage_service.dart';
-import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/services/image_picker_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +32,7 @@ class _BodyState extends State<Body> {
   final _cityController = TextEditingController();
   final _dobController = TextEditingController();
   final _descriptionController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class _BodyState extends State<Body> {
                     },
                   ),
                   RoundedInputField(
-                    hintText: "Vendor Name",
+                    hintText: "Full Name",
                     controller: _nameController,
                   ),
                   RoundedInputField(
@@ -95,6 +96,38 @@ class _BodyState extends State<Body> {
                     hintText: "Date Of Birth",
                     icon: Icons.date_range,
                     controller: _dobController,
+                    readOnly: true,
+                    suffix: SizedBox(
+                      height: 30,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(primary: kPrimaryColor),
+                        child: Text("Select",
+                            style: TextStyle(
+                                fontSize: 11, color: kPrimaryLightColor)),
+                        onPressed: () async {
+                          DateFormat dateFormat = DateFormat("dd MMMM yyyy");
+                          final DateTime dob = await showDatePicker(
+                            context: context,
+                            initialDate: _selectedDate,
+                            firstDate: DateTime(1960),
+                            lastDate: DateTime.now(),
+                            errorFormatText: 'Enter valid date',
+                            errorInvalidText: 'Enter date in valid range',
+                            fieldLabelText: 'Date of Birth',
+                            fieldHintText: 'Month/Date/Year',
+                            initialEntryMode: DatePickerEntryMode.input,
+                          );
+
+                          if (dob != null && dob != _selectedDate) {
+                            setState(() {
+                              _selectedDate = dob;
+                              _dobController.text =
+                                  dateFormat.format(_selectedDate);
+                            });
+                          }
+                        },
+                      ),
+                    ),
                   ),
                   RoundedInputField(
                     hintText: "Description",
@@ -108,7 +141,17 @@ class _BodyState extends State<Body> {
                   RoundedButton(
                       text: "SIGNUP",
                       press: () {
-                        signUp();
+                        final userData = UserModel(
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim(),
+                          displayName: _nameController.text.trim(),
+                          phoneNumber: _phoneNumberController.text.trim(),
+                          address: _addressController.text.trim(),
+                          dateOfBirth: _dobController.text.trim(),
+                          city: _cityController.text.trim(),
+                          description: _descriptionController.text.trim(),
+                        );
+                        signUp(context, userData, imageFile);
                       }),
                 ],
               ),
@@ -123,44 +166,5 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
-  }
-
-  Future<void> signUp() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final displayName = _nameController.text.trim();
-    final address = _addressController.text.trim();
-    final dateOfBirth = _dobController.text.trim();
-    final phoneNumber = _phoneNumberController.text.trim();
-    final city = _cityController.text.trim();
-    final description = _descriptionController.text.trim();
-    try {
-      //register User, get the UID and save the user data
-      final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-      final registeredUser =
-          await auth.registerWithEmailAndPassword(email, password);
-      String downloadUrl = "";
-      if (imageFile != null) {
-        //upload image to storage
-        final storage = FirebaseStorageService(uid: registeredUser.uid);
-        downloadUrl = await storage.uploadProfilePicture(file: imageFile);
-      }
-      //save user data to firestore
-      final userData = UserDataModel(
-          uid: registeredUser.uid,
-          displayName: displayName,
-          phoneNumber: phoneNumber,
-          address: address,
-          city: city,
-          description: description,
-          dateOfBirth: dateOfBirth,
-          role: "Customer",
-          photoURL: downloadUrl);
-      final database = FirestoreService(uid: registeredUser.uid);
-      await database.setUserData(userData);
-      await imageFile.delete();
-    } catch (e) {
-      print(e);
-    }
   }
 }

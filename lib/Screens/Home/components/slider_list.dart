@@ -4,7 +4,6 @@ import 'package:go_event_customer/Screens/Service/service_screen.dart';
 import 'package:go_event_customer/components/order_card.dart';
 import 'package:go_event_customer/components/service_card.dart';
 import 'package:go_event_customer/models/Service.dart';
-import 'package:go_event_customer/models/Order.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +40,7 @@ class SliderList extends StatelessWidget {
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: StreamBuilder(
-              stream: database.servicesStream(null),
+              stream: database.servicesStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Service> serviceList = snapshot.data;
@@ -59,7 +58,7 @@ class SliderList extends StatelessWidget {
                             padding: EdgeInsets.all(3),
                             child: type == "service"
                                 ? ServiceCard(service: serviceList[index])
-                                : OrderCard(order: orders[index]),
+                                : OrderCard(),
                           );
                         },
                       ),
