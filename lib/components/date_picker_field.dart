@@ -7,11 +7,13 @@ class DatePickerField extends StatelessWidget {
     Key key,
     @required TextEditingController dateController,
     @required this.onDatePicked,
+    this.title = 'Select Date',
   })  : _dateController = dateController,
         super(key: key);
 
   final TextEditingController _dateController;
   final Function onDatePicked;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class DatePickerField extends StatelessWidget {
             lastDate: DateTime(2100),
             errorFormatText: 'Enter valid date',
             errorInvalidText: 'Enter date in valid range',
-            fieldLabelText: 'Date of Birth',
+            fieldLabelText: title,
             fieldHintText: 'Month/Date/Year',
             initialEntryMode: DatePickerEntryMode.input,
           );

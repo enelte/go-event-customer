@@ -7,7 +7,7 @@ class OrderCard extends StatelessWidget {
   const OrderCard({
     Key key,
     this.width = 140,
-    this.aspectRetio = 1.02,
+    this.aspectRetio = 1.92,
     this.order,
   }) : super(key: key);
 
@@ -35,9 +35,9 @@ class OrderCard extends StatelessWidget {
                         color: kPrimaryLightColor,
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(getProportionateScreenWidth(8)),
+                        padding: EdgeInsets.all(getProportionateScreenWidth(6)),
                         child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 "eventName",
@@ -45,7 +45,6 @@ class OrderCard extends StatelessWidget {
                                   color: kPrimaryColor,
                                   fontSize: getProportionateScreenWidth(16),
                                 ),
-                                maxLines: 2,
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
@@ -55,7 +54,26 @@ class OrderCard extends StatelessWidget {
                                     Icon(Icons.person,
                                         size: getProportionateScreenWidth(10)),
                                     Text(
-                                      "customerName",
+                                      "vendorName",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(10),
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: getProportionateScreenHeight(5)),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.stay_current_portrait_rounded,
+                                        size: getProportionateScreenWidth(10)),
+                                    Text(
+                                      "transactionID",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize:
@@ -75,6 +93,44 @@ class OrderCard extends StatelessWidget {
                                         size: getProportionateScreenWidth(10)),
                                     Text(
                                       "date",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(10),
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: getProportionateScreenHeight(5)),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.location_on_sharp,
+                                        size: getProportionateScreenWidth(10)),
+                                    Text(
+                                      "location",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(10),
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: getProportionateScreenHeight(5)),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.attach_money,
+                                        size: getProportionateScreenWidth(10)),
+                                    Text(
+                                      "price",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize:

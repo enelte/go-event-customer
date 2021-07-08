@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:go_event_customer/validator.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final _addressController = TextEditingController();
@@ -62,114 +64,123 @@ class _BodyState extends State<Body> {
     final user = Provider.of<FirebaseAuthService>(context).getCurrentUser();
     return MainBackground(
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ProfilePic(
-              imageFile: imageFile,
-              imageURL: _imageURL,
-              resetImage: () async {
-                imageFile = null;
-                setState(() {});
-              },
-              pickImage: () async {
-                final imagePicker =
-                    Provider.of<ImagePickerService>(context, listen: false);
-                File imagePicked =
-                    await imagePicker.pickImage(source: ImageSource.gallery);
-                if (imagePicked != null) imageFile = imagePicked;
-                setState(() {});
-              },
-            ),
-            displayName(widget.userData.displayName, user.email,
-                widget.userData.phoneNumber),
-            SizedBox(height: 25),
-            RoundedInputField(
-              title: "Display Name",
-              hintText: "Display Name",
-              icon: Icons.person,
-              controller: _nameController,
-            ),
-            RoundedInputField(
-              title: "Phone Number",
-              hintText: "Phone Number",
-              icon: Icons.phone_android,
-              controller: _phoneNumberController,
-            ),
-            RoundedInputField(
-              title: "Address",
-              hintText: "Address",
-              icon: Icons.home,
-              controller: _addressController,
-            ),
-            RoundedInputField(
-              title: "City",
-              hintText: "City",
-              icon: Icons.location_city,
-              controller: _cityController,
-            ),
-            RoundedInputField(
-              hintText: "Date Of Birth",
-              icon: Icons.date_range,
-              controller: _dobController,
-              readOnly: true,
-              suffix: SizedBox(
-                height: 30,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: kPrimaryColor),
-                  child: Text("Select",
-                      style:
-                          TextStyle(fontSize: 11, color: kPrimaryLightColor)),
-                  onPressed: () async {
-                    DateFormat dateFormat = DateFormat("dd MMMM yyyy");
-                    DateTime selectedDate = _dobController.text.trim() != ""
-                        ? dateFormat.parse(_dobController.text.trim())
-                        : DateTime.now();
-                    final DateTime dob = await showDatePicker(
-                      context: context,
-                      initialDate: selectedDate,
-                      firstDate: DateTime(1960),
-                      lastDate: DateTime.now(),
-                      errorFormatText: 'Enter valid date',
-                      errorInvalidText: 'Enter date in valid range',
-                      fieldLabelText: 'Date of Birth',
-                      fieldHintText: 'Month/Date/Year',
-                      initialEntryMode: DatePickerEntryMode.input,
-                    );
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ProfilePic(
+                imageFile: imageFile,
+                imageURL: _imageURL,
+                resetImage: () async {
+                  imageFile = null;
+                  setState(() {});
+                },
+                pickImage: () async {
+                  final imagePicker =
+                      Provider.of<ImagePickerService>(context, listen: false);
+                  File imagePicked =
+                      await imagePicker.pickImage(source: ImageSource.gallery);
+                  if (imagePicked != null) imageFile = imagePicked;
+                  setState(() {});
+                },
+              ),
+              displayName(widget.userData.displayName, user.email,
+                  widget.userData.phoneNumber),
+              SizedBox(height: 25),
+              RoundedInputField(
+                title: "Display Name",
+                hintText: "Display Name",
+                icon: Icons.person,
+                controller: _nameController,
+                validator: Validator.displayNameValidator,
+              ),
+              RoundedInputField(
+                title: "Phone Number",
+                hintText: "Phone Number",
+                icon: Icons.phone_android,
+                controller: _phoneNumberController,
+                validator: Validator.phoneNumberValidator,
+              ),
+              RoundedInputField(
+                title: "Address",
+                hintText: "Address",
+                icon: Icons.home,
+                controller: _addressController,
+                validator: Validator.addressValidator,
+              ),
+              RoundedInputField(
+                validator: Validator.cityValidator,
+                title: "City",
+                hintText: "City",
+                icon: Icons.location_city,
+                controller: _cityController,
+              ),
+              RoundedInputField(
+                validator: Validator.dateValidator,
+                hintText: "Date Of Birth",
+                icon: Icons.date_range,
+                controller: _dobController,
+                readOnly: true,
+                suffix: SizedBox(
+                  height: 30,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: kPrimaryColor),
+                    child: Text("Select",
+                        style:
+                            TextStyle(fontSize: 11, color: kPrimaryLightColor)),
+                    onPressed: () async {
+                      DateFormat dateFormat = DateFormat("dd MMMM yyyy");
+                      DateTime selectedDate = _dobController.text.trim() != ""
+                          ? dateFormat.parse(_dobController.text.trim())
+                          : DateTime.now();
+                      final DateTime dob = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime(1960),
+                        lastDate: DateTime.now(),
+                        errorFormatText: 'Enter valid date',
+                        errorInvalidText: 'Enter date in valid range',
+                        fieldLabelText: 'Date of Birth',
+                        fieldHintText: 'Month/Date/Year',
+                        initialEntryMode: DatePickerEntryMode.input,
+                      );
 
-                    if (dob != null && dob != selectedDate) {
-                      setState(() {
-                        _dobController.text = dateFormat.format(dob);
-                      });
-                    }
-                  },
+                      if (dob != null && dob != selectedDate) {
+                        setState(() {
+                          _dobController.text = dateFormat.format(dob);
+                        });
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            RoundedInputField(
-              title: "Description",
-              hintText: "Description",
-              maxLines: 4,
-              icon: Icons.description,
-              controller: _descriptionController,
-            ),
-            SizedBox(height: 25),
-            RoundedButton(
-              text: "Save Changes",
-              press: () {
-                final userData = UserModel(
-                    displayName: _nameController.text.trim(),
-                    phoneNumber: _phoneNumberController.text.trim(),
-                    address: _addressController.text.trim(),
-                    dateOfBirth: _dobController.text.trim(),
-                    city: _cityController.text.trim(),
-                    description: _descriptionController.text.trim(),
-                    photoURL: _imageURL);
-                editUserData(context, userData, imageFile);
-              },
-            ),
-            SizedBox(height: 25),
-          ],
+              RoundedInputField(
+                title: "Description",
+                hintText: "Description",
+                maxLines: 4,
+                icon: Icons.description,
+                controller: _descriptionController,
+              ),
+              SizedBox(height: 25),
+              RoundedButton(
+                  text: "Save Changes",
+                  press: () {
+                    if (_formKey.currentState.validate()) {
+                      final userData = UserModel(
+                          displayName: _nameController.text.trim(),
+                          phoneNumber: _phoneNumberController.text.trim(),
+                          address: _addressController.text.trim(),
+                          dateOfBirth: _dobController.text.trim(),
+                          city: _cityController.text.trim(),
+                          description: _descriptionController.text.trim(),
+                          photoURL: _imageURL);
+                      editUserData(context, userData, imageFile);
+                    }
+                  }),
+              SizedBox(height: 25),
+            ],
+          ),
         ),
       ),
     );

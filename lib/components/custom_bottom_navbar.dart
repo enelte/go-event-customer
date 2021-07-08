@@ -10,7 +10,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: getProportionateScreenHeight(80),
+        height: getProportionateScreenHeight(85),
         padding: EdgeInsets.only(top: 5, bottom: 10),
         color: kPrimaryLightColor,
         child: Row(

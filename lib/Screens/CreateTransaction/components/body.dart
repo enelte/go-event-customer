@@ -104,6 +104,7 @@ class _BodyState extends State<Body> {
                     maxLines: 2,
                     icon: Icons.location_city,
                     controller: _locationController,
+                    validator: Validator.addressValidator,
                   ),
                   RoundedInputField(
                     title: "Notes",
@@ -111,6 +112,7 @@ class _BodyState extends State<Body> {
                     maxLines: 4,
                     icon: Icons.notes,
                     controller: _notesController,
+                    validator: Validator.noValidator,
                   ),
                   SizedBox(height: 25),
                   Column(

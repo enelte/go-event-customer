@@ -8,6 +8,7 @@ import 'package:go_event_customer/controllers/event_controller.dart';
 import 'package:go_event_customer/models/Event.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
+import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -21,6 +22,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _dateController = TextEditingController();
   final _budgetController = TextEditingController();
@@ -89,77 +91,93 @@ class _BodyState extends State<Body> {
                             fontSize: 20, fontWeight: FontWeight.w700),
                       ),
                     ),
-                    RoundedInputField(
-                      hintText: "Event Name",
-                      controller: _nameController,
-                      icon: Icons.event,
-                    ),
-                    RoundedInputField(
-                      hintText: "Event Date",
-                      icon: Icons.date_range,
-                      controller: _dateController,
-                      readOnly: true,
-                      suffix: SizedBox(
-                        height: 30,
-                        child: ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(primary: kPrimaryColor),
-                          child: Text("Select",
-                              style: TextStyle(
-                                  fontSize: 11, color: kPrimaryLightColor)),
-                          onPressed: () async {
-                            DateFormat dateFormat = DateFormat("dd MMMM yyyy");
-                            DateTime selectedDate =
-                                _dateController.text.trim() != ""
-                                    ? dateFormat
-                                        .parse(_dateController.text.trim())
-                                    : DateTime.now();
-                            final DateTime dob = await showDatePicker(
-                              context: context,
-                              initialDate: selectedDate,
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2100),
-                              errorFormatText: 'Enter valid date',
-                              errorInvalidText: 'Enter date in valid range',
-                              fieldLabelText: 'Date of Birth',
-                              fieldHintText: 'Month/Date/Year',
-                              initialEntryMode: DatePickerEntryMode.input,
-                            );
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          RoundedInputField(
+                            hintText: "Event Name",
+                            controller: _nameController,
+                            icon: Icons.event,
+                            validator: Validator.eventNameValidator,
+                          ),
+                          RoundedInputField(
+                            validator: Validator.dateValidator,
+                            hintText: "Event Date",
+                            icon: Icons.date_range,
+                            controller: _dateController,
+                            readOnly: true,
+                            suffix: SizedBox(
+                              height: 30,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: kPrimaryColor),
+                                child: Text("Select",
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: kPrimaryLightColor)),
+                                onPressed: () async {
+                                  DateFormat dateFormat =
+                                      DateFormat("dd MMMM yyyy");
+                                  DateTime selectedDate =
+                                      _dateController.text.trim() != ""
+                                          ? dateFormat.parse(
+                                              _dateController.text.trim())
+                                          : DateTime.now();
+                                  final DateTime dob = await showDatePicker(
+                                    context: context,
+                                    initialDate: selectedDate,
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(2100),
+                                    errorFormatText: 'Enter valid date',
+                                    errorInvalidText:
+                                        'Enter date in valid range',
+                                    fieldLabelText: 'Date of Birth',
+                                    fieldHintText: 'Month/Date/Year',
+                                    initialEntryMode: DatePickerEntryMode.input,
+                                  );
 
-                            if (dob != null && dob != selectedDate) {
-                              setState(() {
-                                _dateController.text = dateFormat.format(dob);
-                              });
-                            }
-                          },
-                        ),
+                                  if (dob != null && dob != selectedDate) {
+                                    setState(() {
+                                      _dateController.text =
+                                          dateFormat.format(dob);
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          RoundedInputField(
+                            validator: Validator.budgetValidator,
+                            hintText: "Event Budget",
+                            icon: Icons.money,
+                            controller: _budgetController,
+                            digitInput: true,
+                          ),
+                        ],
                       ),
-                    ),
-                    RoundedInputField(
-                      hintText: "Event Budget",
-                      icon: Icons.money,
-                      controller: _budgetController,
-                      digitInput: true,
                     ),
                     RoundedButton(
                         text: "Create Event",
                         press: () {
-                          final event = Event(
-                            eventId: FirebaseFirestore.instance
-                                .collection('events')
-                                .doc()
-                                .id,
-                            eventName: _nameController.text.trim(),
-                            eventDate: _dateController.text.trim(),
-                            eventBudget:
-                                double.parse(_budgetController.text.trim()),
-                          );
-                          createEditEvent(context, event);
-                          setState(() {
-                            _nameController.text = "";
-                            _dateController.text = "";
-                            _budgetController.text = "";
-                          });
+                          if (_formKey.currentState.validate()) {
+                            final event = Event(
+                              eventId: FirebaseFirestore.instance
+                                  .collection('events')
+                                  .doc()
+                                  .id,
+                              eventName: _nameController.text.trim(),
+                              eventDate: _dateController.text.trim(),
+                              eventBudget:
+                                  double.parse(_budgetController.text.trim()),
+                            );
+                            createEditEvent(context, event);
+                            setState(() {
+                              _nameController.text = "";
+                              _dateController.text = "";
+                              _budgetController.text = "";
+                            });
+                          }
                         }),
                   ],
                 ),

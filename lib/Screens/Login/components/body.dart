@@ -44,6 +44,7 @@ class Body extends StatelessWidget {
               ),
               RoundedPasswordField(
                 controller: _passwordController,
+                validator: Validator.passwordValidator,
               ),
               RoundedButton(
                 text: "LOGIN",
