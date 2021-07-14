@@ -30,7 +30,6 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
-    _notesController.text = widget.transaction.notes;
   }
 
   @override
@@ -49,6 +48,7 @@ class _BodyState extends State<Body> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final Transaction transaction = snapshot.data;
+            _notesController.text = transaction.notes;
             return MainBackground(
               child: SingleChildScrollView(
                 child: Column(
@@ -73,6 +73,7 @@ class _BodyState extends State<Body> {
                             width: 300,
                             decoration: BoxDecoration(
                               color: Colors.white,
+                              //border: Border.all(color: kPrimaryColor),
                               borderRadius: BorderRadius.circular(0),
                               boxShadow: [
                                 BoxShadow(
