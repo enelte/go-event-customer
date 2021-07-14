@@ -101,6 +101,7 @@ class _BodyState extends State<Body> {
                 icon: Icons.phone_android,
                 controller: _phoneNumberController,
                 validator: Validator.phoneNumberValidator,
+                digitInput: true,
               ),
               RoundedInputField(
                 title: "Address",

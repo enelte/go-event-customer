@@ -1,5 +1,5 @@
 class Service {
-  final String serviceId,
+  String serviceId,
       vendorId,
       serviceType,
       serviceName,
@@ -7,10 +7,10 @@ class Service {
       unit,
       address,
       category;
-  final List images;
-  final num area, capacity, minOrder, maxOrder;
-  final num price, rating;
-  final bool status;
+  List images;
+  num area, capacity, minOrder, maxOrder;
+  num price, rating, ordered, review;
+  bool status;
 
   Service(
       {this.serviceId,
@@ -26,6 +26,8 @@ class Service {
       this.capacity,
       this.status,
       this.rating,
+      this.ordered,
+      this.review,
       this.category,
       this.unit,
       this.address});
@@ -49,6 +51,8 @@ class Service {
     num capacity = data['capacity'];
     bool status = data['status'];
     num rating = data['rating'];
+    num ordered = data['ordered'];
+    num review = data['review'];
     List images = data['images'];
 
     return Service(
@@ -67,6 +71,8 @@ class Service {
         capacity: capacity,
         status: status,
         rating: rating,
+        ordered: ordered,
+        review: review,
         images: images);
   }
 
@@ -86,6 +92,8 @@ class Service {
       'capacity': capacity,
       'status': status,
       'rating': rating,
+      'ordered': ordered,
+      'review': review,
       'images': images,
     }..removeWhere(
         (dynamic key, dynamic value) => key == null || value == null);

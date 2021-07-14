@@ -13,9 +13,6 @@ void loadingSnackBar(BuildContext context, String text) {
         Container(
           width: 18,
           height: 18,
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(kPrimaryLightColor),
-          ),
         )
       ],
     ),

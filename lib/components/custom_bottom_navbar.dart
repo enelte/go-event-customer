@@ -11,8 +11,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: getProportionateScreenHeight(85),
-        padding: EdgeInsets.only(top: 5, bottom: 10),
-        color: kPrimaryLightColor,
+        decoration: BoxDecoration(gradient: kPrimaryGradient),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -23,9 +22,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 isCurrent: currentIndex == 0),
             IconWithText(
                 text: "My Bookings",
-                icon: Icons.room_service,
-                routes: Routes.service,
+                icon: Icons.shopping_bag,
+                routes: Routes.transaction,
                 isCurrent: currentIndex == 1),
+            IconWithText(
+                text: "Find Service",
+                icon: Icons.family_restroom,
+                routes: Routes.service,
+                isCurrent: currentIndex == 4),
             IconWithText(
                 text: "My Events",
                 icon: Icons.calendar_today,
@@ -65,22 +69,37 @@ class IconWithText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color color;
-    isCurrent ? color = kPrimaryColor : color = Colors.black;
-    return Column(children: [
-      IconButton(
-          icon: Icon(icon, size: 30),
-          color: color,
-          constraints: BoxConstraints(),
-          onPressed: isCurrent
-              ? () {}
-              : () {
-                  Navigator.pushNamed(context, routes);
-                }),
-      Text(
-        text,
-        style:
-            TextStyle(color: color, fontSize: getProportionateScreenWidth(12)),
-      )
-    ]);
+    isCurrent ? color = Colors.white : color = Colors.white38;
+    return Container(
+      width: 75,
+      decoration: isCurrent
+          ? BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Colors.white,
+                  width: 4,
+                ),
+              ),
+            )
+          : BoxDecoration(),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        IconButton(
+            icon: Icon(icon, size: 30),
+            color: color,
+            constraints: BoxConstraints(),
+            onPressed: isCurrent
+                ? () {}
+                : () {
+                    Navigator.pushNamed(context, routes);
+                  }),
+        Text(
+          text,
+          style: TextStyle(
+              color: color,
+              fontSize: getProportionateScreenWidth(11),
+              fontWeight: FontWeight.w400),
+        )
+      ]),
+    );
   }
 }

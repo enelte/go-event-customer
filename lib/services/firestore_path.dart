@@ -9,6 +9,10 @@ class FirestorePath {
   static String transaction(String transactionId) =>
       'transactions/$transactionId';
   static String transactions() => 'transactions';
+  static String proofOfPayment(String tid, String proofOfPaymentId) =>
+      'transactions/$tid/proofOfPayments/$proofOfPaymentId';
+  static String proofOfPayments(String tid) =>
+      'transactions/$tid/proofOfPayments';
   static String event(String uid, String eventId) =>
       'users/$uid/events/$eventId';
   static String events(String uid) => 'users/$uid/events';

@@ -1,11 +1,12 @@
 class Review {
-  final String reviewId, customerId, serviceId, comment;
-  final double rating;
+  String reviewId, customerId, serviceId, transactionId, comment;
+  num rating;
 
   Review({
     this.reviewId,
     this.customerId,
     this.serviceId,
+    this.transactionId,
     this.comment,
     this.rating,
   });
@@ -16,13 +17,15 @@ class Review {
     }
     String customerId = data['customerId'];
     String serviceId = data['serviceId'];
+    String transactionId = data['transactionId'];
     String comment = data['comment'];
-    double rating = data['rating'];
+    num rating = data['rating'];
 
     return Review(
         reviewId: reviewId,
         customerId: customerId,
         serviceId: serviceId,
+        transactionId: transactionId,
         comment: comment,
         rating: rating);
   }
@@ -31,6 +34,7 @@ class Review {
     return {
       "customerId": customerId,
       "serviceId": serviceId,
+      "transactionId": transactionId,
       "comment": comment,
       "rating": rating
     }..removeWhere(

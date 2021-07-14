@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_event_customer/components/text_field_container.dart';
 import 'package:go_event_customer/constant.dart';
+import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
 
 class RoundedInputField extends StatelessWidget {
@@ -14,6 +15,7 @@ class RoundedInputField extends StatelessWidget {
   final int maxLines;
   final double width;
   final bool digitInput;
+  final bool isMoney;
   final bool readOnly;
   final TextEditingController controller;
   final Function validator;
@@ -28,6 +30,7 @@ class RoundedInputField extends StatelessWidget {
     this.maxLines = 1,
     this.controller,
     this.digitInput = false,
+    this.isMoney = false,
     this.width = 270,
     this.suffix,
     this.readOnly = false,
@@ -47,8 +50,14 @@ class RoundedInputField extends StatelessWidget {
             cursorColor: kPrimaryColor,
             readOnly: readOnly,
             keyboardType: digitInput ? TextInputType.number : null,
-            inputFormatters:
-                digitInput ? [FilteringTextInputFormatter.digitsOnly] : null,
+            inputFormatters: isMoney
+                ? [
+                    FilteringTextInputFormatter.digitsOnly,
+                    CurrencyTextFormatter()
+                  ]
+                : digitInput
+                    ? [FilteringTextInputFormatter.digitsOnly]
+                    : null,
             validator: validator,
             decoration: InputDecoration(
               contentPadding:

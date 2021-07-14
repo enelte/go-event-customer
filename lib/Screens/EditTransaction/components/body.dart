@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_event_customer/components/choose_booking_time_range.dart';
 import 'package:go_event_customer/components/date_picker_field.dart';
 import 'package:go_event_customer/components/service_card.dart';
-import 'package:go_event_customer/constant.dart';
+import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/models/Transaction.dart' as tran;
+import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/screens/CreateTransaction/components/create_choose_event.dart';
 import 'package:go_event_customer/screens/CreateTransaction/components/order_details.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +15,14 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
+  final tran.Transaction transaction;
   final Service service;
-  final UserModel vendor;
-  const Body({Key key, this.service, this.vendor}) : super(key: key);
+  const Body({Key key, this.service, this.transaction}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -42,7 +45,13 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
-    _totalPrice = 0;
+    _notesController.text = widget.transaction.notes;
+    _dateController.text = widget.transaction.bookingDate;
+    _startTime = widget.transaction.startTime;
+    _endTime = widget.transaction.endTime;
+    _eventId = widget.transaction.eventId;
+    _locationController.text = widget.transaction.location;
+    _totalPrice = widget.transaction.totalPrice;
   }
 
   @override
@@ -57,9 +66,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel customer = Provider.of<UserModel>(context);
     final Service service = widget.service;
-    final UserModel vendor = widget.vendor;
     return MainBackground(
       child: SingleChildScrollView(
         child: Column(
@@ -71,37 +78,6 @@ class _BodyState extends State<Body> {
                 children: <Widget>[
                   SizedBox(height: 25),
                   ServiceCard(service: service),
-                  Container(
-                    width: 270,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Vendor Name :",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(vendor.displayName)
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Vendor Contact :",
-                              style: TextStyle(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(vendor.phoneNumber)
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                   RoundedInputField(
                     title: "Booking Date",
                     hintText: "Booking Date",
@@ -120,6 +96,9 @@ class _BodyState extends State<Body> {
                   ),
                   ChooseBookingTimeRange(
                       service: service,
+                      initialRange: TimeRangeResult(
+                          TextFormatter.stringToTimeOfDay(_startTime),
+                          TextFormatter.stringToTimeOfDay(_endTime)),
                       onRangeCompleted: (range) {
                         setState(() {
                           _startTime = range.start.format(context);
@@ -176,28 +155,55 @@ class _BodyState extends State<Body> {
                     totalPrice: _totalPrice,
                     eventId: _eventId,
                   ),
+                  if (needReConfirmation(
+                          widget.transaction,
+                          _notesController.text.trim(),
+                          _dateController.text.trim(),
+                          _locationController.text.trim(),
+                          _startTime,
+                          _endTime) &&
+                      widget.transaction.status == "Waiting for Payment")
+                    Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      width: 280,
+                      child: Text(
+                        "If you proceed, The order will need to be confirmed again by the vendor",
+                        style: TextStyle(color: Colors.redAccent),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   RoundedButton(
-                    text: "Make Order",
+                    text: "Edit Order",
                     press: () {
                       if (_formKey.currentState.validate()) {
                         if (!_uploading) {
-                          loadingSnackBar(context, "Order Created");
-                          tran.Transaction newTrans = tran.Transaction(
-                              customerId: customer.uid,
-                              serviceId: service.serviceId,
-                              vendorId: service.vendorId,
+                          loadingSnackBar(context, "Order Updated");
+                          String transactionId =
+                              widget.transaction.transactionId;
+                          tran.Transaction editTrans = tran.Transaction(
+                              transactionId: transactionId,
                               eventId: _eventId,
                               notes: _notesController.text.trim(),
-                              transactionDate: DateTime.now().toString(),
+                              transactionDate:
+                                  widget.transaction.transactionDate,
                               bookingDate: _dateController.text.trim(),
                               totalPrice: _totalPrice,
                               quantity: _quantity,
                               location: _locationController.text.trim(),
                               startTime: _startTime,
                               endTime: _endTime,
-                              status: "Waiting for Confirmation");
-                          setTransaction(context, newTrans)
-                              .whenComplete(() => Navigator.of(context).pop());
+                              status: needReConfirmation(
+                                      widget.transaction,
+                                      _notesController.text.trim(),
+                                      _dateController.text.trim(),
+                                      _locationController.text.trim(),
+                                      _startTime,
+                                      _endTime)
+                                  ? "Waiting for Confirmation"
+                                  : widget.transaction.status);
+                          setTransaction(context, editTrans)
+                              .whenComplete(() => Navigator.pop(context));
                           setState(() {
                             print(_uploading);
                             _uploading = true;

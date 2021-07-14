@@ -42,7 +42,7 @@ class SearchSortFilter extends StatelessWidget {
         Column(
           children: [
             IconButton(
-                icon: Icon(Icons.filter),
+                icon: Icon(Icons.filter_alt),
                 color: kPrimaryLightColor,
                 padding: EdgeInsets.only(top: 10, bottom: 1),
                 constraints: BoxConstraints(),

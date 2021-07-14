@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/components/slider_list.dart';
 import 'package:go_event_customer/components/main_background.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/size_config.dart';
+import 'package:provider/provider.dart';
 
 import '../../../routes.dart';
 import '../../../size_config.dart';
@@ -13,6 +15,7 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<UserModel>(context);
     return MainBackground(
       child: SingleChildScrollView(
         child: Padding(
@@ -23,10 +26,12 @@ class Body extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 12),
                 child: Text(
-                  "What are you looking for?",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                  "Hi " +
+                      (userData != null
+                          ? userData.displayName.split(" ")[0]
+                          : "") +
+                      ", what are you looking for?",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
               Row(
@@ -58,7 +63,7 @@ class Body extends StatelessWidget {
                   ),
                 ],
               ),
-              SliderList(title: "Your Services", type: "service"),
+              SliderList(title: "Find Services", type: "service"),
               SizedBox(height: 25),
               SliderList(title: "Your Orders", type: "order")
             ],

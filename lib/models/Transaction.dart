@@ -1,5 +1,5 @@
 class Transaction {
-  final String transactionId,
+  String transactionId,
       customerId,
       serviceId,
       vendorId,
@@ -10,9 +10,9 @@ class Transaction {
       bookingDate,
       location,
       startTime,
-      endTime;
-  final num totalPrice, quantity;
-  final List proofOfPayment;
+      endTime,
+      transactionType;
+  num totalPrice, quantity;
 
   Transaction({
     this.transactionId,
@@ -21,7 +21,6 @@ class Transaction {
     this.vendorId,
     this.eventId,
     this.notes,
-    this.proofOfPayment,
     this.transactionDate,
     this.bookingDate,
     this.totalPrice,
@@ -30,6 +29,7 @@ class Transaction {
     this.location,
     this.startTime,
     this.endTime,
+    this.transactionType,
   });
 
   factory Transaction.fromMap(Map<String, dynamic> data, String transactionId) {
@@ -46,9 +46,9 @@ class Transaction {
     String startTime = data['startTime'];
     String endTime = data['endTime'];
     String notes = data['notes'];
-    List proofOfPayment = data['proofOfPayment'];
     String transactionDate = data['transactionDate'];
     String status = data['status'];
+    String transactionType = data['transactionType'];
     num totalPrice = data['totalPrice'];
     num quantity = data['quantity'];
 
@@ -58,7 +58,6 @@ class Transaction {
         serviceId: serviceId,
         vendorId: vendorId,
         bookingDate: bookingDate,
-        proofOfPayment: proofOfPayment,
         eventId: eventId,
         notes: notes,
         totalPrice: totalPrice,
@@ -67,7 +66,8 @@ class Transaction {
         status: status,
         location: location,
         startTime: startTime,
-        endTime: endTime);
+        endTime: endTime,
+        transactionType: transactionType);
   }
 
   Map<String, dynamic> toMap() {
@@ -76,7 +76,6 @@ class Transaction {
       'serviceId': serviceId,
       'vendorId': vendorId,
       'bookingDate': bookingDate,
-      'proofOfPayment': proofOfPayment,
       'eventId': eventId,
       'notes': notes,
       'totalPrice': totalPrice,
@@ -86,6 +85,7 @@ class Transaction {
       'location': location,
       'startTime': startTime,
       'endTime': endTime,
+      'transactionType': transactionType,
     }..removeWhere(
         (dynamic key, dynamic value) => key == null || value == null);
   }

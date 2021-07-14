@@ -4,6 +4,8 @@ import 'package:go_event_customer/Screens/Service/service_screen.dart';
 import 'package:go_event_customer/components/order_card.dart';
 import 'package:go_event_customer/components/service_card.dart';
 import 'package:go_event_customer/models/Service.dart';
+import 'package:go_event_customer/models/Transaction.dart';
+import 'package:go_event_customer/screens/Transaction/transaction_screen.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:provider/provider.dart';
 
@@ -31,47 +33,74 @@ class SliderList extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) {
                       if (type == "service") return ServiceScreen();
-                      return ServiceScreen();
+                      return TransactionScreen();
                     },
                   ),
                 );
               }),
         ),
         SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: StreamBuilder(
-              stream: database.servicesStream(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Service> serviceList = snapshot.data;
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...List.generate(
-                        type == "service"
-                            ? serviceList.length > 5
+          scrollDirection: Axis.horizontal,
+          child: type == "service"
+              ? StreamBuilder(
+                  stream: database.servicesStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<Service> serviceList = snapshot.data;
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...List.generate(
+                            serviceList.length > 5 ? 5 : serviceList.length,
+                            (index) {
+                              return Padding(
+                                  padding: EdgeInsets.all(3),
+                                  child: ServiceCard(
+                                    service: serviceList[index],
+                                  ));
+                            },
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Text("No data available");
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                )
+              : StreamBuilder(
+                  stream: database.transactionsStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<Transaction> transactionList = snapshot.data;
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...List.generate(
+                            transactionList.length > 5
                                 ? 5
-                                : serviceList.length
-                            : 5,
-                        (index) {
-                          return Padding(
-                            padding: EdgeInsets.all(3),
-                            child: type == "service"
-                                ? ServiceCard(service: serviceList[index])
-                                : OrderCard(),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                } else if (snapshot.hasError) {
-                  print(snapshot.error);
-                  return Text("No data available");
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ))
+                                : transactionList.length,
+                            (index) {
+                              return Padding(
+                                  padding: EdgeInsets.all(3),
+                                  child: OrderCard(
+                                    order: transactionList[index],
+                                  ));
+                            },
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Text("No data available");
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                ),
+        ),
       ],
     );
   }

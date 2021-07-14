@@ -24,13 +24,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       title: Column(
         children: [
-          Text("Go-Event"),
-          SizedBox(
-            height: 10,
-          ),
           Text(
             title,
-            style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15),
+            style: TextStyle(fontWeight: FontWeight.w400),
+            maxLines: 2,
           )
         ],
       ),

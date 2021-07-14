@@ -5,19 +5,33 @@ import 'package:go_event_customer/models/Service.dart';
 
 class ChooseBookingTimeRange extends StatelessWidget {
   const ChooseBookingTimeRange(
-      {Key key, @required this.service, @required this.onRangeCompleted})
+      {Key key,
+      @required this.service,
+      @required this.onRangeCompleted,
+      this.initialRange})
       : super(key: key);
 
   final Service service;
   final Function onRangeCompleted;
+  final TimeRangeResult initialRange;
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Booking Time",
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 10),
+          child: Row(
+            children: [
+              Icon(Icons.timer),
+              SizedBox(width: 10),
+              Text(
+                "Booking Time",
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10),
@@ -40,6 +54,7 @@ class ChooseBookingTimeRange extends StatelessWidget {
               activeBackgroundColor: kPrimaryColor,
               firstTime: TimeOfDay(hour: 8, minute: 00),
               lastTime: TimeOfDay(hour: 22, minute: 01),
+              initialRange: initialRange,
               timeStep: 60,
               timeBlock: 60,
               minRange: service.minOrder,

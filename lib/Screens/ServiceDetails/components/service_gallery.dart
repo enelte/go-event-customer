@@ -9,8 +9,6 @@ import 'package:go_event_customer/components/profile_pic.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
-import 'package:go_event_customer/services/firebase_storage_service.dart';
-import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/services/image_picker_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

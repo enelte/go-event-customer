@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:go_event_customer/validator.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -80,6 +81,8 @@ class _BodyState extends State<Body> {
                     hintText: "Phone Number",
                     icon: Icons.phone,
                     controller: _phoneNumberController,
+                    validator: Validator.phoneNumberValidator,
+                    digitInput: true,
                   ),
                   RoundedInputField(
                     hintText: "Address",

@@ -27,6 +27,16 @@ class FirebaseStorageService {
           path: FirestorePath.service(uid) +
               '/$serviceId/${basename(file.path)}');
 
+  Future<String> uploadProofOfPayment({
+    @required File file,
+    @required String transactionId,
+    @required String proofOfPaymentId,
+  }) async =>
+      await upload(
+          file: file,
+          path: FirestorePath.proofOfPayment(transactionId, proofOfPaymentId) +
+              '${basename(file.path)}');
+
   Future<List<String>> uploadServiceImages({
     @required List<File> fileList,
     @required String serviceId,
