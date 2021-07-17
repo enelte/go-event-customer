@@ -136,8 +136,10 @@ class _ProofOfPaymentListScreenState extends State<ProofOfPaymentListScreen> {
                                                                   Colors.red),
                                                     ),
                                                     onPressed: () {
-                                                      loadingSnackBar(context,
-                                                          "Deleting Image...");
+                                                      loadingSnackBar(
+                                                          context: context,
+                                                          text:
+                                                              "Proof of Payment deleted");
                                                       deleteProofOfPayment(
                                                           context,
                                                           proofOfPaymentList[

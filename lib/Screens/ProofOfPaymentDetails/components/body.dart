@@ -106,7 +106,8 @@ class _BodyState extends State<Body> {
                     press: () async {
                       if (imageFile != null || imageURL != null) {
                         loadingSnackBar(
-                            context, "Uploading Proof of Payment...");
+                            context: context,
+                            text: "Proof of Payment Uploaded");
                         ProofOfPayment newPayment = ProofOfPayment(
                             proofOfPaymentId: proofOfPayment != null
                                 ? proofOfPayment.proofOfPaymentId

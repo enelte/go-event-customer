@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:intl/intl.dart';
 
@@ -177,6 +178,9 @@ class _BodyState extends State<Body> {
                           description: _descriptionController.text.trim(),
                           photoURL: _imageURL);
                       editUserData(context, userData, imageFile);
+                      setState(() {});
+                      loadingSnackBar(
+                          context: context, text: "Profile Updated");
                     }
                   }),
               SizedBox(height: 25),

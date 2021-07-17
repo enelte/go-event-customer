@@ -112,7 +112,7 @@ class FirestoreService {
   // Create / Update Event
   Future<void> setEvent(Event event) async {
     if (event.eventId == null)
-      FirebaseFirestore.instance.collection('events').doc().id;
+      event.eventId = FirebaseFirestore.instance.collection('events').doc().id;
     final path = FirestorePath.event(uid, event.eventId);
     final reference = FirebaseFirestore.instance.doc(path);
     await reference.set(event.toMap(), SetOptions(merge: true));

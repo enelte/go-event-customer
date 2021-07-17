@@ -85,7 +85,7 @@ class _BodyState extends State<Body> {
                     icon: Icons.date_range,
                     readOnly: true,
                     controller: _dateController,
-                    validator: Validator.noValidator,
+                    validator: Validator.dateValidator,
                     suffix: DatePickerField(
                       dateController: _dateController,
                       onDatePicked: (dob, dateFormat) {
@@ -108,6 +108,19 @@ class _BodyState extends State<Body> {
                           _totalPrice = _quantity * service.price;
                         });
                       }),
+                  if (_startTime == null && _endTime == null)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 65),
+                          child: Text(
+                            "Please enter time range",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
                   if (service.serviceType != "Venue")
                     RoundedInputField(
                       title: "Location Address",
@@ -178,9 +191,12 @@ class _BodyState extends State<Body> {
                   RoundedButton(
                     text: "Edit Order",
                     press: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState.validate() &&
+                          _startTime != null &&
+                          _endTime != null) {
                         if (!_uploading) {
-                          loadingSnackBar(context, "Order Updated");
+                          loadingSnackBar(
+                              context: context, text: "Order Updated");
                           String transactionId =
                               widget.transaction.transactionId;
                           tran.Transaction editTrans = tran.Transaction(
@@ -211,6 +227,11 @@ class _BodyState extends State<Body> {
                             _uploading = true;
                           });
                         }
+                      } else {
+                        loadingSnackBar(
+                            context: context,
+                            text: "Incomplete data, please recheck the order",
+                            color: Colors.red);
                       }
                     },
                   ),

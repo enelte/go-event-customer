@@ -112,7 +112,7 @@ class _BodyState extends State<Body> {
                     icon: Icons.date_range,
                     readOnly: true,
                     controller: _dateController,
-                    validator: Validator.noValidator,
+                    validator: Validator.dateValidator,
                     suffix: DatePickerField(
                       dateController: _dateController,
                       onDatePicked: (dob, dateFormat) {
@@ -134,6 +134,19 @@ class _BodyState extends State<Body> {
                           }
                         });
                       }),
+                  if (_startTime == null && _endTime == null)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 65),
+                          child: Text(
+                            "Please enter time range",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
                   if (service.serviceType == "Catering")
                     RoundedInputField(
                       title: "Number of Pax",
@@ -144,6 +157,7 @@ class _BodyState extends State<Body> {
                       icon: Icons.fastfood,
                       controller: _quantityController,
                       digitInput: true,
+                      validator: Validator.defaultValidator,
                       onFieldSubmitted: (value) {
                         setState(() {
                           _quantity = Validator.quantityValidator(
@@ -206,9 +220,12 @@ class _BodyState extends State<Body> {
                   RoundedButton(
                     text: "Make Order",
                     press: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState.validate() &&
+                          _startTime != null &&
+                          _endTime != null) {
                         if (!_uploading) {
-                          loadingSnackBar(context, "Order Created");
+                          loadingSnackBar(
+                              context: context, text: "Order Created");
                           tran.Transaction newTrans = tran.Transaction(
                             customerId: customer.uid,
                             serviceId: service.serviceId,
@@ -236,6 +253,11 @@ class _BodyState extends State<Body> {
                             _uploading = true;
                           });
                         }
+                      } else {
+                        loadingSnackBar(
+                            context: context,
+                            text: "Incomplete data, please recheck the order",
+                            color: Colors.red);
                       }
                     },
                   ),

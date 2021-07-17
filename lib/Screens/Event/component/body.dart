@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/create_event_form.dart';
 import 'package:go_event_customer/components/event_card.dart';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/constant.dart';

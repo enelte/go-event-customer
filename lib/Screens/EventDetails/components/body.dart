@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/order_card.dart';
 import 'package:go_event_customer/controllers/event_controller.dart';
 import 'package:go_event_customer/models/Transaction.dart';
@@ -9,6 +10,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Event.dart';
+import 'package:go_event_customer/validator.dart';
 
 class Body extends StatefulWidget {
   @required
@@ -72,6 +74,7 @@ class _BodyState extends State<Body> {
               hintText: "Event Name",
               icon: Icons.event,
               controller: _nameController,
+              validator: Validator.eventNameValidator,
             ),
             RoundedInputField(
               title: "Event Budget",
@@ -80,6 +83,7 @@ class _BodyState extends State<Body> {
               controller: _budgetController,
               digitInput: true,
               isMoney: true,
+              validator: Validator.budgetValidator,
             ),
             RoundedButton(
               text: "Update Event",
@@ -92,6 +96,7 @@ class _BodyState extends State<Body> {
                       eventBudget:
                           num.parse(_budgetController.text.replaceAll(".", "")),
                     ));
+                loadingSnackBar(context: context, text: "Event Updated");
                 Navigator.pop(context);
               },
             ),
@@ -105,6 +110,7 @@ class _BodyState extends State<Body> {
                 press: () async {
                   deleteEvent(context, event);
                   Navigator.pop(context);
+                  loadingSnackBar(context: context, text: "Event Deleted");
                 },
               ),
             Divider(

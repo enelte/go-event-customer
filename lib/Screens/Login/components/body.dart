@@ -10,10 +10,19 @@ import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/validator.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
   final _formKey = GlobalKey<FormState>();
+
   final _emailController = TextEditingController();
+
   final _passwordController = TextEditingController();
+  String errorMessage;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -48,20 +57,35 @@ class Body extends StatelessWidget {
               ),
               RoundedButton(
                 text: "LOGIN",
-                press: () {
+                press: () async {
                   if (_formKey.currentState.validate()) {
-                    signIn(context, _emailController.text.trim(),
+                    errorMessage = await signIn(
+                        context,
+                        _emailController.text.trim(),
                         _passwordController.text.trim());
+                    setState(() {});
                   }
                 },
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: getProportionateScreenHeight(20)),
-                child: AlreadyHaveAnAccountCheck(
-                  press: () {
-                    Navigator.of(context).pushNamed(Routes.signup);
-                  },
+                child: Column(
+                  children: [
+                    if (errorMessage != "success" && errorMessage != null)
+                      Text(
+                        errorMessage.replaceAll("-", " "),
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    AlreadyHaveAnAccountCheck(
+                      press: () {
+                        Navigator.of(context).pushNamed(Routes.signup);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],

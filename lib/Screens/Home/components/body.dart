@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/components/slider_list.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/models/Service.dart';
-import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +42,7 @@ class Body extends StatelessWidget {
                     icon: Icons.home,
                     text: 'Venue',
                     press: () {
-                      Service filter = new Service(serviceType: "Venue");
+                      Service filter = new Service(serviceName: "Venue");
                       Navigator.pushNamed(context, Routes.service,
                           arguments: {'filter': filter});
                     },
@@ -52,7 +51,7 @@ class Body extends StatelessWidget {
                     icon: Icons.music_note,
                     text: 'Talents',
                     press: () {
-                      Service filter = new Service(serviceType: "Talent");
+                      Service filter = new Service(serviceName: "Talent");
                       Navigator.pushNamed(context, Routes.service,
                           arguments: {'filter': filter});
                     },
@@ -61,7 +60,7 @@ class Body extends StatelessWidget {
                     icon: Icons.fastfood,
                     text: 'Catering',
                     press: () {
-                      Service filter = new Service(serviceType: "Catering");
+                      Service filter = new Service(serviceName: "Catering");
                       Navigator.pushNamed(context, Routes.service,
                           arguments: {'filter': filter});
                     },

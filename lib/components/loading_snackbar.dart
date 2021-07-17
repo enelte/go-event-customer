@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/constant.dart';
 
-void loadingSnackBar(BuildContext context, String text) {
+void loadingSnackBar(
+    {@required BuildContext context, @required String text, Color color}) {
   final snackBar = SnackBar(
     content: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -16,7 +17,7 @@ void loadingSnackBar(BuildContext context, String text) {
         )
       ],
     ),
-    backgroundColor: kPrimaryColor,
+    backgroundColor: color == null ? kPrimaryColor : color,
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

@@ -27,7 +27,7 @@ class FirebaseAuthService {
     }
   }
 
-  Future<UserModel> registerWithEmailAndPassword(
+  Future<dynamic> registerWithEmailAndPassword(
       String email, String password) async {
     try {
       final authResult = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -35,20 +35,18 @@ class FirebaseAuthService {
 
       return _userFromFirebase(authResult.user);
     } catch (e) {
-      print("Error on the registration = " + e.toString());
-      return null;
+      return "Error on the registration: " + e.code.toString();
     }
   }
 
-  Future<UserModel> signInWithEmailAndPassword(
+  Future<dynamic> signInWithEmailAndPassword(
       String email, String password) async {
     try {
       final authResult = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return _userFromFirebase(authResult.user);
     } catch (e) {
-      print("Error on the sign in = " + e.toString());
-      return null;
+      return "Error on the sign in: " + e.code.toString();
     }
   }
 

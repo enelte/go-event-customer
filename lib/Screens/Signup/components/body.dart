@@ -34,6 +34,7 @@ class _BodyState extends State<Body> {
   final _dobController = TextEditingController();
   final _descriptionController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+  String errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +44,16 @@ class _BodyState extends State<Body> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "SIGNUP",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
             Padding(
               padding: EdgeInsets.symmetric(
                 vertical: getProportionateScreenHeight(60),
               ),
               child: Column(
                 children: [
+                  Text(
+                    "SIGNUP",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   ProfilePic(
                     imageFile: imageFile,
                     resetImage: () async {
@@ -72,10 +73,12 @@ class _BodyState extends State<Body> {
                   RoundedInputField(
                     hintText: "Full Name",
                     controller: _nameController,
+                    validator: Validator.displayNameValidator,
                   ),
                   RoundedInputField(
                     hintText: "Email",
                     controller: _emailController,
+                    validator: Validator.emailValidator,
                   ),
                   RoundedInputField(
                     hintText: "Phone Number",
@@ -89,17 +92,20 @@ class _BodyState extends State<Body> {
                     maxLines: 2,
                     icon: Icons.home,
                     controller: _addressController,
+                    validator: Validator.addressValidator,
                   ),
                   RoundedInputField(
                     hintText: "City",
                     icon: Icons.location_city,
                     controller: _cityController,
+                    validator: Validator.cityValidator,
                   ),
                   RoundedInputField(
                     hintText: "Date Of Birth",
                     icon: Icons.date_range,
                     controller: _dobController,
                     readOnly: true,
+                    validator: Validator.dateValidator,
                     suffix: SizedBox(
                       height: 30,
                       child: ElevatedButton(
@@ -137,13 +143,15 @@ class _BodyState extends State<Body> {
                     maxLines: 4,
                     icon: Icons.description,
                     controller: _descriptionController,
+                    validator: Validator.noValidator,
                   ),
                   RoundedPasswordField(
                     controller: _passwordController,
+                    validator: Validator.passwordValidator,
                   ),
                   RoundedButton(
                       text: "SIGNUP",
-                      press: () {
+                      press: () async {
                         final userData = UserModel(
                           email: _emailController.text.trim(),
                           password: _passwordController.text.trim(),
@@ -154,16 +162,26 @@ class _BodyState extends State<Body> {
                           city: _cityController.text.trim(),
                           description: _descriptionController.text.trim(),
                         );
-                        signUp(context, userData, imageFile);
+                        errorMessage =
+                            await signUp(context, userData, imageFile);
+                        setState(() {});
                       }),
+                  if (errorMessage != "success" && errorMessage != null)
+                    Text(
+                      errorMessage.replaceAll("-", " "),
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  AlreadyHaveAnAccountCheck(
+                    login: false,
+                    press: () {
+                      Navigator.of(context).pushNamed(Routes.login);
+                    },
+                  ),
                 ],
               ),
-            ),
-            AlreadyHaveAnAccountCheck(
-              login: false,
-              press: () {
-                Navigator.of(context).pushNamed(Routes.login);
-              },
             ),
           ],
         ),

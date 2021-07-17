@@ -1,6 +1,6 @@
 class Event {
-  final String eventId, customerId, eventName;
-  final num eventBudget;
+  String eventId, customerId, eventName;
+  num eventBudget;
 
   Event({
     this.eventId,

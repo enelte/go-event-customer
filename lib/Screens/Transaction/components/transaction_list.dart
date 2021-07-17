@@ -35,7 +35,7 @@ class TransactionList extends StatelessWidget {
               children: [
                 if (sortType != null)
                   MaterialButton(
-                    padding: EdgeInsets.symmetric(horizontal: 7),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     minWidth: 50,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -54,7 +54,7 @@ class TransactionList extends StatelessWidget {
                 if (filter != null)
                   if (filter.transactionType != null)
                     MaterialButton(
-                      padding: EdgeInsets.symmetric(horizontal: 7),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       minWidth: 50,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
@@ -73,7 +73,7 @@ class TransactionList extends StatelessWidget {
                 if (filter != null)
                   if (filter.status != null)
                     MaterialButton(
-                      padding: EdgeInsets.symmetric(horizontal: 7),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       minWidth: 50,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
@@ -89,7 +89,7 @@ class TransactionList extends StatelessWidget {
                 if (filter != null)
                   if (filter.reviewed != null)
                     MaterialButton(
-                      padding: EdgeInsets.symmetric(horizontal: 7),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       minWidth: 50,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),

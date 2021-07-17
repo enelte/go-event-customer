@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/controllers/event_controller.dart';
@@ -60,6 +61,7 @@ class CreateEventForm extends StatelessWidget {
                   );
                   setEvent(context, event);
                   onCreate();
+                  loadingSnackBar(context: context, text: "Event Created");
                 }
               }),
         ],

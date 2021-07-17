@@ -26,14 +26,16 @@ Future<void> editUserData(
   }
 }
 
-Future<void> signUp(
+Future<String> signUp(
     BuildContext context, UserModel userData, File imageFile) async {
   try {
     //register User, get the UID and save the user data
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
     final registeredUser = await auth.registerWithEmailAndPassword(
         userData.email, userData.password);
-
+    if (registeredUser is String) {
+      return registeredUser;
+    }
     if (imageFile != null) {
       //upload image to storage
       final storage =
@@ -46,17 +48,25 @@ Future<void> signUp(
     final database = FirestoreService(uid: registeredUser.uid);
     await database.setUserData(userData);
     await imageFile.delete();
+    return "success";
   } catch (e) {
     print(e);
+    return e;
   }
 }
 
-Future<void> signIn(BuildContext context, String email, String password) async {
+Future<String> signIn(
+    BuildContext context, String email, String password) async {
   try {
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-    await auth.signInWithEmailAndPassword(email, password);
+    final loggedUser = await auth.signInWithEmailAndPassword(email, password);
+    if (loggedUser is String) {
+      return loggedUser;
+    }
+    return "success";
   } catch (e) {
     print(e);
+    return e;
   }
 }
 
