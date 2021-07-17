@@ -257,8 +257,7 @@ class _BodyState extends State<Body> {
                                         Navigator.pushNamed(
                                             context, Routes.proof_of_payments,
                                             arguments: {
-                                              'transactionId':
-                                                  transaction.transactionId,
+                                              'transaction': transaction,
                                             });
                                       },
                                     ),

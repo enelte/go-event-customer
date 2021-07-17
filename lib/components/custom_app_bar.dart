@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_event_customer/controllers/user_controller.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 
 import '../constant.dart';
 import '../size_config.dart';
@@ -45,7 +45,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: Icon(Icons.logout),
           color: kPrimaryLightColor,
           onPressed: () {
-            signOut(context);
+            PopUpDialog.logOutDialog(context);
           },
         ),
       ],

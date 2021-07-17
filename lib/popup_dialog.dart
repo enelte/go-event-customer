@@ -4,6 +4,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/components/switch_input.dart';
 import 'package:go_event_customer/constant.dart';
+import 'package:go_event_customer/controllers/user_controller.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/Transaction.dart';
@@ -558,6 +559,63 @@ class PopUpDialog {
                     ),
                   ],
                 ),
+              ),
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  static logOutDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            insetPadding: EdgeInsets.zero,
+            title: const Text('Are you sure want to log out?'),
+            content: Container(
+              width: 300,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 220,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MaterialButton(
+                            minWidth: 100,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                side: BorderSide(color: Colors.green)),
+                            color: Colors.white,
+                            textColor: Colors.green,
+                            onPressed: () {
+                              signOut(context);
+                            },
+                            child: Text(
+                              "Yes, Log Out",
+                            )),
+                        MaterialButton(
+                            minWidth: 100,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                side: BorderSide(color: Colors.red)),
+                            color: Colors.white,
+                            textColor: Colors.red,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "No",
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           );

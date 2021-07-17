@@ -6,6 +6,7 @@ import 'package:go_event_customer/components/custom_bottom_navbar.dart';
 import 'package:go_event_customer/components/display_name.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/profile_pic.dart';
+import 'package:go_event_customer/components/switch_input.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
@@ -21,6 +22,13 @@ class ServiceGallery extends StatefulWidget {
 }
 
 class _ServiceGalleryState extends State<ServiceGallery> {
+  bool _imageView;
+  @override
+  void initState() {
+    _imageView = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map serviceMap = ModalRoute.of(context).settings.arguments;
@@ -44,19 +52,24 @@ class _ServiceGalleryState extends State<ServiceGallery> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 12, bottom: 5),
-                      child: Text(
-                        "Image Gallery",
-                        style: TextStyle(color: kPrimaryColor, fontSize: 16),
-                      ),
+                    Container(
+                      width: 400,
+                      child: SwitchInput(
+                          title: "Image Gallery",
+                          status: _imageView,
+                          onChanged: (value) {
+                            _imageView = value;
+                            setState(() {});
+                          },
+                          trueValue: "Grid",
+                          falseValue: "List"),
                     ),
                     GridView.builder(
                         physics: ScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: service.images.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
+                            crossAxisCount: _imageView ? 3 : 1),
                         itemBuilder: (context, index) {
                           return Stack(
                               fit: StackFit.expand,

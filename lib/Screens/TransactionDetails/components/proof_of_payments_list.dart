@@ -8,6 +8,7 @@ import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/models/ProofOfPayment.dart';
+import 'package:go_event_customer/models/Transaction.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +26,10 @@ class _ProofOfPaymentListScreenState extends State<ProofOfPaymentListScreen> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<FirestoreService>(context, listen: false);
-    final Map transactionIdMap = ModalRoute.of(context).settings.arguments;
-    String transactionId = transactionIdMap['transactionId'];
+    final Map transactionMap = ModalRoute.of(context).settings.arguments;
+    Transaction transaction = transactionMap['transaction'];
     return StreamBuilder(
-        stream: database.proofOfPaymentsStream(tid: transactionId),
+        stream: database.proofOfPaymentsStream(tid: transaction.transactionId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<ProofOfPayment> proofOfPaymentList = snapshot.data;
@@ -67,15 +68,19 @@ class _ProofOfPaymentListScreenState extends State<ProofOfPaymentListScreen> {
                                             icon: Icon(Icons.add_a_photo),
                                             color: Colors.white,
                                             onPressed: () {
-                                              Navigator.pushNamed(
-                                                  context,
-                                                  Routes
-                                                      .proof_of_payments_details,
-                                                  arguments: {
-                                                    "transactionId":
-                                                        transactionId,
-                                                    "proofOfPayment": null
-                                                  });
+                                              if (transaction.transactionType ==
+                                                  "On Going") {
+                                                Navigator.pushNamed(
+                                                    context,
+                                                    Routes
+                                                        .proof_of_payments_details,
+                                                    arguments: {
+                                                      "transactionId":
+                                                          transaction
+                                                              .transactionId,
+                                                      "proofOfPayment": null
+                                                    });
+                                              }
                                             },
                                           ),
                                           decoration: BoxDecoration(
@@ -100,60 +105,68 @@ class _ProofOfPaymentListScreenState extends State<ProofOfPaymentListScreen> {
                                                   ),
                                                 ),
                                                 onTap: () {
-                                                  Navigator.pushNamed(
-                                                      context,
-                                                      Routes
-                                                          .proof_of_payments_details,
-                                                      arguments: {
-                                                        "transactionId":
-                                                            transactionId,
-                                                        "proofOfPayment":
-                                                            proofOfPaymentList[
-                                                                index - 1]
-                                                      });
+                                                  if (transaction
+                                                          .transactionType ==
+                                                      "On Going") {
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        Routes
+                                                            .proof_of_payments_details,
+                                                        arguments: {
+                                                          "transactionId":
+                                                              transaction
+                                                                  .transactionId,
+                                                          "proofOfPayment":
+                                                              proofOfPaymentList[
+                                                                  index - 1]
+                                                        });
+                                                  }
                                                 },
                                               ),
-                                              Positioned(
-                                                right: 0,
-                                                bottom: 0,
-                                                child: SizedBox(
-                                                  height: 35,
-                                                  width: 35,
-                                                  child: TextButton(
-                                                    style: ButtonStyle(
-                                                      shape: MaterialStateProperty
-                                                          .all<
-                                                              RoundedRectangleBorder>(
-                                                        RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
+                                              if (transaction.transactionType ==
+                                                  "On Going")
+                                                Positioned(
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  child: SizedBox(
+                                                    height: 35,
+                                                    width: 35,
+                                                    child: TextButton(
+                                                      style: ButtonStyle(
+                                                        shape: MaterialStateProperty
+                                                            .all<
+                                                                RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
                                                         ),
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(
+                                                                    Colors.red),
                                                       ),
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<Color>(
-                                                                  Colors.red),
-                                                    ),
-                                                    onPressed: () {
-                                                      loadingSnackBar(
-                                                          context: context,
-                                                          text:
-                                                              "Proof of Payment deleted");
-                                                      deleteProofOfPayment(
-                                                          context,
-                                                          proofOfPaymentList[
-                                                              index - 1]);
-                                                      setState(() {});
-                                                    },
-                                                    child: Icon(
-                                                      Icons.delete,
-                                                      size: 20,
-                                                      color: Colors.white,
+                                                      onPressed: () {
+                                                        loadingSnackBar(
+                                                            context: context,
+                                                            text:
+                                                                "Proof of Payment deleted");
+                                                        deleteProofOfPayment(
+                                                            context,
+                                                            proofOfPaymentList[
+                                                                index - 1]);
+                                                        setState(() {});
+                                                      },
+                                                      child: Icon(
+                                                        Icons.delete,
+                                                        size: 20,
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
                                             ]);
                                 }),
                           ],
