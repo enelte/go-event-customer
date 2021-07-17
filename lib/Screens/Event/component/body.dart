@@ -1,18 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/create_event_form.dart';
 import 'package:go_event_customer/components/event_card.dart';
-import 'package:go_event_customer/components/loading_snackbar.dart';
-import 'package:go_event_customer/components/rounded_button.dart';
-import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/constant.dart';
-import 'package:go_event_customer/controllers/event_controller.dart';
 import 'package:go_event_customer/models/Event.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
-import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class Body extends StatefulWidget {
   const Body({

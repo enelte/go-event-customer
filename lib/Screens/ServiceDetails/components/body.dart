@@ -6,10 +6,8 @@ import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/routes.dart';
-import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/text_formatter.dart';
-import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
   final Service service;

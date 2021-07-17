@@ -7,7 +7,6 @@ import 'package:go_event_customer/components/display_name.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/profile_pic.dart';
 import 'package:go_event_customer/components/switch_input.dart';
-import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/services/image_picker_service.dart';

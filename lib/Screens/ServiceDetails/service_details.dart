@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/custom_app_bar.dart';
 import 'package:go_event_customer/components/custom_bottom_navbar.dart';
-import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
-import 'package:go_event_customer/routes.dart';
 
 import 'components/body.dart';
 

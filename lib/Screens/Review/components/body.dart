@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/rounded_button.dart';

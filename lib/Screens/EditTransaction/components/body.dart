@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_event_customer/components/choose_booking_time_range.dart';
 import 'package:go_event_customer/components/date_picker_field.dart';
 import 'package:go_event_customer/components/service_card.dart';
 import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/models/Transaction.dart' as tran;
-import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/screens/CreateTransaction/components/create_choose_event.dart';
 import 'package:go_event_customer/screens/CreateTransaction/components/order_details.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +12,8 @@ import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
-import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
-import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
   final tran.Transaction transaction;

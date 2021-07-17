@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+// ignore: implementation_imports
 import 'package:time_range/src/time_list.dart';
+// ignore: implementation_imports
 import 'package:time_range/src/util/time_of_day_extension.dart';
 
 class TimeRange extends StatefulWidget {

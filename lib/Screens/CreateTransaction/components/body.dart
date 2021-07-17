@@ -13,7 +13,6 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
-import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
 
