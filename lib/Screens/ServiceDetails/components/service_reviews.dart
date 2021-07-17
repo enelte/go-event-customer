@@ -61,7 +61,6 @@ class _ServiceReviewState extends State<ServiceReview> {
                                       TextEditingController(
                                           text: reviewList[index].comment);
                                   return Container(
-                                    height: 20,
                                     margin: EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -77,22 +76,47 @@ class _ServiceReviewState extends State<ServiceReview> {
                                     ),
                                     child: Column(
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text("Anonymous"),
-                                            Row(
-                                              children: [
-                                                StarRating(
-                                                  value:
-                                                      reviewList[index].rating,
-                                                  onChanged: null,
-                                                  size: 20,
-                                                ),
-                                              ],
-                                            )
-                                          ],
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.person,
+                                                    color: kPrimaryColor,
+                                                  ),
+                                                  Text(
+                                                    reviewList[index]
+                                                                .customerName !=
+                                                            null
+                                                        ? reviewList[index]
+                                                            .customerName
+                                                        : "",
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  StarRating(
+                                                    value: reviewList[index]
+                                                        .rating,
+                                                    onChanged: null,
+                                                    size: 18,
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
                                         ),
                                         Divider(
                                           color: kPrimaryColor,
@@ -105,6 +129,7 @@ class _ServiceReviewState extends State<ServiceReview> {
                                           controller: _commentController,
                                           readOnly: true,
                                           maxLines: 4,
+                                          icon: Icons.description,
                                         )
                                       ],
                                     ),

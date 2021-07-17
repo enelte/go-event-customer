@@ -5,6 +5,8 @@ class FirestorePath {
   static String review(String serviceId, String reviewId) =>
       'services/$serviceId/reviews/$reviewId';
   static String reviews(String serviceId) => 'services/$serviceId/reviews';
+  static String serviceType(String serviceTypeId) =>
+      'serviceType/$serviceTypeId';
   static String serviceTypes() => 'serviceType';
   static String transaction(String transactionId) =>
       'transactions/$transactionId';

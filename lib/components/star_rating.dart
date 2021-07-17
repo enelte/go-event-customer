@@ -38,6 +38,7 @@ class StarRating extends StatelessWidget {
               index < value
                   ? filledStar ?? Icons.star
                   : unfilledStar ?? Icons.star_border,
+              color: kPrimaryColor,
             ),
             padding: EdgeInsets.zero,
             tooltip: "${index + 1} of 5",

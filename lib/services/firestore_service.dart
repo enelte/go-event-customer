@@ -5,6 +5,7 @@ import 'package:go_event_customer/models/Event.dart';
 import 'package:go_event_customer/models/ProofOfPayment.dart';
 import 'package:go_event_customer/models/Review.dart';
 import 'package:go_event_customer/models/Service.dart';
+import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/Transaction.dart' as tran;
 import 'package:go_event_customer/models/User.dart';
 
@@ -78,6 +79,34 @@ class FirestoreService {
     final snapshots = reference.snapshots();
     return snapshots
         .map((snapshot) => Service.fromMap(snapshot.data(), serviceId));
+  }
+
+  Stream<List<ServiceType>> serviceTypesStream({
+    Query queryBuilder(Query query),
+  }) {
+    final path = FirestorePath.serviceTypes();
+    Query query = FirebaseFirestore.instance.collection(path);
+
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+
+    final Stream<QuerySnapshot> snapshots = query.snapshots();
+    return snapshots.map((snapshot) {
+      final result = snapshot.docs
+          .map((snapshot) => ServiceType.fromMap(snapshot.data(), snapshot.id))
+          .where((value) => value != null)
+          .toList();
+      return result;
+    });
+  }
+
+  Stream<ServiceType> serviceTypeStream({@required String typeId}) {
+    final path = FirestorePath.serviceType(typeId);
+    final reference = FirebaseFirestore.instance.doc(path);
+    final snapshots = reference.snapshots();
+    return snapshots
+        .map((snapshot) => ServiceType.fromMap(snapshot.data(), typeId));
   }
 
   // Create / Update Event

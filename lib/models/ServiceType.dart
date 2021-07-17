@@ -1,14 +1,15 @@
 class ServiceType {
-  final String name, unit;
+  final String typeId, name, unit;
   final List category;
 
   ServiceType({
+    this.typeId,
     this.name,
     this.unit,
     this.category,
   });
 
-  factory ServiceType.fromMap(Map<String, dynamic> data) {
+  factory ServiceType.fromMap(Map<String, dynamic> data, String typeId) {
     if (data == null) {
       return null;
     }
@@ -17,6 +18,7 @@ class ServiceType {
     List category = data['category'];
 
     return ServiceType(
+      typeId: typeId,
       name: name,
       unit: unit,
       category: category,

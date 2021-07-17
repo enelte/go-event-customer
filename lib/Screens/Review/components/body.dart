@@ -5,10 +5,13 @@ import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/components/star_rating.dart';
+import 'package:go_event_customer/components/switch_input.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/models/Review.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/Transaction.dart';
+import 'package:go_event_customer/models/User.dart';
+import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
   Body({Key key, @required this.transaction, @required this.service})
@@ -24,6 +27,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   final _commentController = TextEditingController();
   num _rating = 5;
+  bool _status = true;
 
   @override
   void initState() {
@@ -38,6 +42,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel customer = Provider.of<UserModel>(context, listen: false);
     Transaction transaction = widget.transaction;
     Service service = widget.service;
     return MainBackground(
@@ -61,11 +66,22 @@ class _BodyState extends State<Body> {
               icon: Icons.description,
               controller: _commentController,
             ),
+            SwitchInput(
+                title: "Review as Anonymous",
+                status: _status,
+                onChanged: (value) {
+                  setState(() {
+                    _status = value;
+                  });
+                },
+                trueValue: "Yes",
+                falseValue: "No"),
             RoundedButton(
               text: "Upload Review",
               press: () async {
                 Review _newReview = new Review(
                     transactionId: transaction.transactionId,
+                    customerName: _status ? "Anonymous" : customer.displayName,
                     serviceId: service.serviceId,
                     rating: _rating,
                     comment: _commentController.text.trim());

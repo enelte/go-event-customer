@@ -52,6 +52,7 @@ class _BodyState extends State<Body> {
     _eventId = widget.transaction.eventId;
     _locationController.text = widget.transaction.location;
     _totalPrice = widget.transaction.totalPrice;
+    _quantity = widget.transaction.quantity;
   }
 
   @override
@@ -154,6 +155,7 @@ class _BodyState extends State<Body> {
                     endTime: _endTime,
                     totalPrice: _totalPrice,
                     eventId: _eventId,
+                    quantity: _quantity.toString() + " " + service.unit + "(s)",
                   ),
                   if (needReConfirmation(
                           widget.transaction,

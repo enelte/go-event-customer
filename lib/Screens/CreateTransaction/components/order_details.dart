@@ -3,6 +3,7 @@ import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Event.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
+import 'package:go_event_customer/text_formatter.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetails extends StatelessWidget {
@@ -13,17 +14,20 @@ class OrderDetails extends StatelessWidget {
     @required String eventId,
     @required String endTime,
     @required num totalPrice,
+    @required String quantity,
   })  : _dateController = dateController,
         _startTime = startTime,
         _endTime = endTime,
         _totalPrice = totalPrice,
         _eventId = eventId,
+        _quantity = quantity,
         super(key: key);
 
   final TextEditingController _dateController;
   final String _startTime;
   final String _endTime;
   final String _eventId;
+  final String _quantity;
   final num _totalPrice;
 
   @override
@@ -80,12 +84,19 @@ class OrderDetails extends StatelessWidget {
                             fontSize: 15, fontWeight: FontWeight.w400),
                       )
                     : Container(),
+                (_quantity != null)
+                    ? Text(
+                        _quantity,
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w400),
+                      )
+                    : Container(),
                 SizedBox(height: 6),
                 Text(
                   "Total Price",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
-                Text("Rp. " + _totalPrice.toString(),
+                Text(TextFormatter.moneyFormatter(_totalPrice),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,

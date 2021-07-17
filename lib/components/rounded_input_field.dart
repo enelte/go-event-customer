@@ -19,6 +19,8 @@ class RoundedInputField extends StatelessWidget {
   final bool readOnly;
   final TextEditingController controller;
   final Function validator;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onFieldSubmitted;
 
   const RoundedInputField({
     Key key,
@@ -35,6 +37,8 @@ class RoundedInputField extends StatelessWidget {
     this.suffix,
     this.readOnly = false,
     this.validator = Validator.defaultValidator,
+    this.onChanged,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   @override
@@ -59,6 +63,8 @@ class RoundedInputField extends StatelessWidget {
                     ? [FilteringTextInputFormatter.digitsOnly]
                     : null,
             validator: validator,
+            onChanged: onChanged,
+            onFieldSubmitted: onFieldSubmitted,
             decoration: InputDecoration(
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 20, vertical: 20),

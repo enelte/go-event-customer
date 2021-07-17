@@ -139,7 +139,8 @@ class _TimeRangeState extends State<TimeRange> {
 
   void _endHourChanged(TimeOfDay hour) {
     setState(() => _endHour = hour);
-    widget.onRangeCompleted(TimeRangeResult(_startHour, _endHour));
+    if (_startHour != null)
+      widget.onRangeCompleted(TimeRangeResult(_startHour, _endHour));
   }
 
   double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;

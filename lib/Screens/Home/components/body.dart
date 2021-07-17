@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/components/slider_list.dart';
 import 'package:go_event_customer/components/main_background.dart';
+import 'package:go_event_customer/models/Service.dart';
+import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:provider/provider.dart';
@@ -41,24 +43,27 @@ class Body extends StatelessWidget {
                     icon: Icons.home,
                     text: 'Venue',
                     press: () {
+                      Service filter = new Service(serviceType: "Venue");
                       Navigator.pushNamed(context, Routes.service,
-                          arguments: {'type': 'Venue'});
+                          arguments: {'filter': filter});
                     },
                   ),
                   CategoriesCard(
                     icon: Icons.music_note,
                     text: 'Talents',
                     press: () {
+                      Service filter = new Service(serviceType: "Talent");
                       Navigator.pushNamed(context, Routes.service,
-                          arguments: {'type': 'Talent'});
+                          arguments: {'filter': filter});
                     },
                   ),
                   CategoriesCard(
                     icon: Icons.fastfood,
                     text: 'Catering',
                     press: () {
+                      Service filter = new Service(serviceType: "Catering");
                       Navigator.pushNamed(context, Routes.service,
-                          arguments: {'type': 'Catering'});
+                          arguments: {'filter': filter});
                     },
                   ),
                 ],

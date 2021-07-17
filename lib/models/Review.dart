@@ -1,10 +1,10 @@
 class Review {
-  String reviewId, customerId, serviceId, transactionId, comment;
+  String reviewId, customerName, serviceId, transactionId, comment;
   num rating;
 
   Review({
     this.reviewId,
-    this.customerId,
+    this.customerName,
     this.serviceId,
     this.transactionId,
     this.comment,
@@ -15,7 +15,7 @@ class Review {
     if (data == null) {
       return null;
     }
-    String customerId = data['customerId'];
+    String customerName = data['customerName'];
     String serviceId = data['serviceId'];
     String transactionId = data['transactionId'];
     String comment = data['comment'];
@@ -23,7 +23,7 @@ class Review {
 
     return Review(
         reviewId: reviewId,
-        customerId: customerId,
+        customerName: customerName,
         serviceId: serviceId,
         transactionId: transactionId,
         comment: comment,
@@ -32,7 +32,7 @@ class Review {
 
   Map<String, dynamic> toMap() {
     return {
-      "customerId": customerId,
+      "customerName": customerName,
       "serviceId": serviceId,
       "transactionId": transactionId,
       "comment": comment,

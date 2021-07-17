@@ -89,7 +89,9 @@ class _BodyState extends State<Body> {
                           Icons.payment,
                         ),
                         Text(
-                          service.ordered.toString(),
+                          service.ordered == null
+                              ? "0"
+                              : service.ordered.toString(),
                           style: TextStyle(fontSize: 25, color: kPrimaryColor),
                         ),
                         Text(
@@ -117,7 +119,9 @@ class _BodyState extends State<Body> {
                       children: [
                         Icon(Icons.rate_review),
                         Text(
-                          service.review.toString(),
+                          service.review == null
+                              ? "0"
+                              : service.review.toString(),
                           style: TextStyle(fontSize: 25, color: kPrimaryColor),
                         ),
                         Text(

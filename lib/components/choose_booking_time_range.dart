@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
+import 'package:go_event_customer/text_formatter.dart';
 
 class ChooseBookingTimeRange extends StatelessWidget {
   const ChooseBookingTimeRange(
@@ -52,13 +53,17 @@ class ChooseBookingTimeRange extends StatelessWidget {
               borderColor: Colors.black,
               backgroundColor: Colors.transparent,
               activeBackgroundColor: kPrimaryColor,
-              firstTime: TimeOfDay(hour: 8, minute: 00),
-              lastTime: TimeOfDay(hour: 22, minute: 01),
+              firstTime:
+                  TextFormatter.stringToTimeOfDay(service.startServiceTime),
+              lastTime: TextFormatter.stringToTimeOfDay(service.endServiceTime)
+                  .replacing(minute: 1),
               initialRange: initialRange,
               timeStep: 60,
               timeBlock: 60,
-              minRange: service.minOrder,
-              maxRange: service.maxOrder + 1,
+              minRange:
+                  service.serviceType != "Catering" ? service.minOrder : 1,
+              maxRange:
+                  service.serviceType != "Catering" ? service.maxOrder + 1 : 0,
               onRangeCompleted: onRangeCompleted),
         ),
       ],

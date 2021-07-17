@@ -45,6 +45,7 @@ Future<void> finishTransaction(
     BuildContext context, Transaction transaction, Service service) async {
   transaction.status = "Finished";
   transaction.transactionType = "Finished";
+  if (service.ordered == null) service.ordered = 0;
   service.ordered += 1;
   try {
     final database = Provider.of<FirestoreService>(context, listen: false);
@@ -85,7 +86,9 @@ Future deleteProofOfPayment(
 
 Future<void> reviewAddedToTransaction(BuildContext context,
     Transaction transaction, Service service, Review review) async {
-  transaction.status = "Finished and Reviewed";
+  transaction.reviewed = true;
+  if (service.rating == null) service.rating = 0;
+  if (service.review == null) service.review = 0;
   service.rating = ((service.rating * service.review) + review.rating) /
       (service.review + 1);
   service.review += 1;

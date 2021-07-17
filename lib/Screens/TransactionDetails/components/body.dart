@@ -12,6 +12,7 @@ import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Body extends StatefulWidget {
   final Service service;
@@ -30,6 +31,13 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void launchWhatsapp(
+      {@required String number, @required String message}) async {
+    String url = "whatsapp://send?phone=$number&text=$message";
+    await canLaunch(url) ? launch(url) : print("Can't open Whatsapp");
+    print(number);
   }
 
   @override
@@ -107,7 +115,7 @@ class _BodyState extends State<Body> {
                                         Padding(
                                             padding:
                                                 const EdgeInsets.only(right: 5),
-                                            child: Text("Purchased On : ")),
+                                            child: Text("Booked On : ")),
                                         Text(TextFormatter.dateTimeFormatter(
                                             DateTime.parse(
                                                 transaction.transactionDate)))
@@ -209,14 +217,30 @@ class _BodyState extends State<Body> {
                                         Padding(
                                             padding:
                                                 const EdgeInsets.only(right: 5),
+                                            child: Text("Quantity : ")),
+                                        Text(transaction.quantity.toString() +
+                                            " " +
+                                            service.unit +
+                                            "(s)"),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 6),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
                                             child: Text("Booking Address : ")),
                                         Container(
-                                          width: 120,
+                                          width: 130,
                                           child: Text(
-                                            service.serviceType == "Venue"
-                                                ? service.address
-                                                : transaction.location,
-                                            maxLines: 2,
+                                            transaction.location,
+                                            maxLines: 3,
                                             textAlign: TextAlign.right,
                                           ),
                                         )
@@ -288,7 +312,8 @@ class _BodyState extends State<Body> {
                                   });
                             },
                           ),
-                        if (transaction.status == "Finished")
+                        if (transaction.status == "Finished" &&
+                            transaction.reviewed != true)
                           RoundedButton(
                             color: Colors.blueAccent,
                             text: "Give Rating and Review",
@@ -303,7 +328,12 @@ class _BodyState extends State<Body> {
                         RoundedButton(
                           color: Colors.green,
                           text: "Chat Vendor",
-                          press: () {},
+                          press: () {
+                            launchWhatsapp(
+                                number: vendor.phoneNumber
+                                    .replaceRange(0, 1, "+62"),
+                                message: "Hello");
+                          },
                         ),
                         SizedBox(height: 25),
                       ],

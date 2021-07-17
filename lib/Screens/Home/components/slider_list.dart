@@ -7,6 +7,7 @@ import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/Transaction.dart';
 import 'package:go_event_customer/screens/Transaction/transaction_screen.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
+import 'package:go_event_customer/sort_and_filter.dart';
 import 'package:provider/provider.dart';
 
 class SliderList extends StatelessWidget {
@@ -71,7 +72,9 @@ class SliderList extends StatelessWidget {
                   },
                 )
               : StreamBuilder(
-                  stream: database.transactionsStream(),
+                  stream: database.transactionsStream(sort: (lhs, rhs) {
+                    return sortTransaction(lhs, rhs, "Latest Booking");
+                  }),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Transaction> transactionList = snapshot.data;

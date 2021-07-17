@@ -130,7 +130,7 @@ class ServiceCard extends StatelessWidget {
                                   children: [
                                     Icon(Icons.location_on),
                                     Text(
-                                      vendor.city,
+                                      service.city,
                                       style: TextStyle(
                                         fontSize:
                                             getProportionateScreenWidth(10),
@@ -139,21 +139,20 @@ class ServiceCard extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.star),
-                                    Text(
-                                      service.rating == null
-                                          ? "null"
-                                          : service.rating.toStringAsFixed(2),
-                                      style: TextStyle(
-                                        fontSize:
-                                            getProportionateScreenWidth(10),
-                                        color: Colors.black,
+                                if (service.rating != null)
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star),
+                                      Text(
+                                        service.rating.toStringAsFixed(2),
+                                        style: TextStyle(
+                                          fontSize:
+                                              getProportionateScreenWidth(10),
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
                               ],
                             ),
                           ],

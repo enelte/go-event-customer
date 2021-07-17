@@ -95,7 +95,11 @@ class _BodyState extends State<Body> {
                 Navigator.pop(context);
               },
             ),
-            if (widget.transactionList.length == 0)
+            if (widget.transactionList
+                    .where((transaction) =>
+                        transaction.transactionType == "On Going")
+                    .length ==
+                0)
               RoundedButton(
                 text: "Delete Event",
                 press: () async {

@@ -55,9 +55,22 @@ class OrderCard extends StatelessWidget {
                                 aspectRatio: 1,
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: kPrimaryColor),
+                                      border: Border.all(
+                                        color:
+                                            order.transactionType == "On Going"
+                                                ? kPrimaryColor
+                                                : order.transactionType ==
+                                                        "Cancelled"
+                                                    ? Colors.pink
+                                                    : Colors.green,
+                                      ),
                                       borderRadius: BorderRadius.circular(29),
-                                      gradient: kPrimaryGradient,
+                                      gradient: order.transactionType ==
+                                              "On Going"
+                                          ? kPrimaryGradient
+                                          : order.transactionType == "Cancelled"
+                                              ? kRedGradient
+                                              : kGreenGradient,
                                     ),
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
@@ -70,9 +83,9 @@ class OrderCard extends StatelessWidget {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              service.serviceName,
+                                              order.serviceName,
                                               style: TextStyle(
-                                                color: kPrimaryLightColor,
+                                                color: Colors.white,
                                                 fontSize:
                                                     getProportionateScreenWidth(
                                                         16),
@@ -84,10 +97,7 @@ class OrderCard extends StatelessWidget {
                                               icon: Icons.calendar_today,
                                             ),
                                             OrderCardData(
-                                              text:
-                                                  service.serviceType != "Venue"
-                                                      ? order.location
-                                                      : service.address,
+                                              text: order.location,
                                               icon: Icons.location_on_sharp,
                                             ),
                                             OrderCardData(
@@ -107,7 +117,15 @@ class OrderCard extends StatelessWidget {
                                 child: SizedBox(
                                     child: Text(
                                       order.status,
-                                      style: TextStyle(color: kPrimaryColor),
+                                      style: TextStyle(
+                                        color:
+                                            order.transactionType == "On Going"
+                                                ? kPrimaryColor
+                                                : order.transactionType ==
+                                                        "Cancelled"
+                                                    ? Colors.pink
+                                                    : Colors.green,
+                                      ),
                                       maxLines: 2,
                                     ),
                                     height: getProportionateScreenHeight(40)),
@@ -164,7 +182,7 @@ class OrderCardData extends StatelessWidget {
               style: TextStyle(
                   fontSize: getProportionateScreenWidth(fontSize),
                   color: Colors.white,
-                  fontWeight: FontWeight.w300),
+                  fontWeight: FontWeight.w400),
               maxLines: 3,
             ),
           ),

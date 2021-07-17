@@ -13,6 +13,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,7 @@ class _BodyState extends State<Body> {
   final _nameController = TextEditingController();
   final _budgetController = TextEditingController();
   final _locationController = TextEditingController();
+  final _quantityController = TextEditingController();
   String _eventId;
   String _startTime;
   String _endTime;
@@ -42,6 +44,7 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
+    _quantity = 0;
     _totalPrice = 0;
   }
 
@@ -52,6 +55,7 @@ class _BodyState extends State<Body> {
     _nameController.dispose();
     _budgetController.dispose();
     _locationController.dispose();
+    _quantityController.dispose();
     super.dispose();
   }
 
@@ -124,10 +128,32 @@ class _BodyState extends State<Body> {
                         setState(() {
                           _startTime = range.start.format(context);
                           _endTime = range.end.format(context);
-                          _quantity = range.end.hour - range.start.hour;
-                          _totalPrice = _quantity * service.price;
+                          if (service.serviceType != "Catering") {
+                            _quantity = range.end.hour - range.start.hour;
+                            _totalPrice = _quantity * service.price;
+                          }
                         });
                       }),
+                  if (service.serviceType == "Catering")
+                    RoundedInputField(
+                      title: "Number of Pax",
+                      hintText: "min. " +
+                          service.minOrder.toString() +
+                          " max. " +
+                          service.maxOrder.toString(),
+                      icon: Icons.fastfood,
+                      controller: _quantityController,
+                      digitInput: true,
+                      onFieldSubmitted: (value) {
+                        setState(() {
+                          _quantity = Validator.quantityValidator(
+                              _quantityController,
+                              service.minOrder,
+                              service.maxOrder);
+                          _totalPrice = _quantity * service.price;
+                        });
+                      },
+                    ),
                   if (service.serviceType != "Venue")
                     RoundedInputField(
                       title: "Location Address",
@@ -175,6 +201,7 @@ class _BodyState extends State<Body> {
                     endTime: _endTime,
                     totalPrice: _totalPrice,
                     eventId: _eventId,
+                    quantity: _quantity.toString() + " " + service.unit + "(s)",
                   ),
                   RoundedButton(
                     text: "Make Order",
@@ -183,19 +210,25 @@ class _BodyState extends State<Body> {
                         if (!_uploading) {
                           loadingSnackBar(context, "Order Created");
                           tran.Transaction newTrans = tran.Transaction(
-                              customerId: customer.uid,
-                              serviceId: service.serviceId,
-                              vendorId: service.vendorId,
-                              eventId: _eventId,
-                              notes: _notesController.text.trim(),
-                              transactionDate: DateTime.now().toString(),
-                              bookingDate: _dateController.text.trim(),
-                              totalPrice: _totalPrice,
-                              quantity: _quantity,
-                              location: _locationController.text.trim(),
-                              startTime: _startTime,
-                              endTime: _endTime,
-                              status: "Waiting for Confirmation");
+                            customerId: customer.uid,
+                            serviceId: service.serviceId,
+                            vendorId: service.vendorId,
+                            serviceName: service.serviceName,
+                            eventId: _eventId,
+                            notes: _notesController.text.trim(),
+                            transactionDate: DateTime.now().toString(),
+                            bookingDate: _dateController.text.trim(),
+                            totalPrice: _totalPrice,
+                            quantity: _quantity,
+                            location: service.serviceType == "Venue"
+                                ? service.address
+                                : _locationController.text.trim(),
+                            startTime: _startTime,
+                            endTime: _endTime,
+                            status: "Waiting for Confirmation",
+                            transactionType: "On Going",
+                            reviewed: false,
+                          );
                           setTransaction(context, newTrans)
                               .whenComplete(() => Navigator.of(context).pop());
                           setState(() {
