@@ -19,6 +19,41 @@ Future<void> setTransaction(
   }
 }
 
+Future<void> submitPlannedTransaction(
+    BuildContext context, Transaction transaction) async {
+  transaction.transactionType = "On Going";
+  transaction.status = "Waiting for Confirmation";
+  transaction.transactionDate = DateTime.now().toString();
+  try {
+    final database = Provider.of<FirestoreService>(context, listen: false);
+    await database.setTransaction(transaction);
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future<void> confirmTransaction(
+    BuildContext context, Transaction transaction) async {
+  transaction.status = "Waiting for Payment";
+  try {
+    final database = Provider.of<FirestoreService>(context, listen: false);
+    await database.setTransaction(transaction);
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future<void> confirmPayment(
+    BuildContext context, Transaction transaction) async {
+  transaction.status = "In Progress";
+  try {
+    final database = Provider.of<FirestoreService>(context, listen: false);
+    await database.setTransaction(transaction);
+  } catch (e) {
+    print(e);
+  }
+}
+
 Future<void> cancelTransaction(
     BuildContext context, Transaction transaction) async {
   transaction.status = "Cancelled";
@@ -31,8 +66,21 @@ Future<void> cancelTransaction(
   }
 }
 
+Future<void> rejectTransaction(
+    BuildContext context, Transaction transaction) async {
+  transaction.status = "Rejected by Vendor";
+  transaction.transactionType = "Cancelled";
+  try {
+    final database = Provider.of<FirestoreService>(context, listen: false);
+    await database.setTransaction(transaction);
+  } catch (e) {
+    print(e);
+  }
+}
+
 bool needReConfirmation(Transaction oldTransaction, String notes,
     String bookingDate, String location, String startTime, String endTime) {
+  if (oldTransaction.status != "Waiting for Payment") return false;
   if (oldTransaction.notes != notes) return true;
   if (oldTransaction.bookingDate != bookingDate) return true;
   if (oldTransaction.location != location) return true;

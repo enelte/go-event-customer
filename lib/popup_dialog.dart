@@ -8,6 +8,7 @@ import 'package:go_event_customer/controllers/user_controller.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/Transaction.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:provider/provider.dart';
 
@@ -76,7 +77,7 @@ class PopUpDialog {
                         MaterialButton(
                             minWidth: 100,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(13),
                                 side: BorderSide(color: Colors.green)),
                             color: Colors.white,
                             textColor: Colors.green,
@@ -89,7 +90,7 @@ class PopUpDialog {
                         MaterialButton(
                             minWidth: 100,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(13),
                                 side: BorderSide(color: Colors.red)),
                             color: Colors.white,
                             textColor: Colors.red,
@@ -254,7 +255,7 @@ class PopUpDialog {
                           MaterialButton(
                               minWidth: 100,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(13),
                                   side: BorderSide(color: Colors.green)),
                               color: Colors.white,
                               textColor: Colors.green,
@@ -279,7 +280,7 @@ class PopUpDialog {
                           MaterialButton(
                               minWidth: 100,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(13),
                                   side: BorderSide(color: Colors.red)),
                               color: Colors.white,
                               textColor: Colors.red,
@@ -307,6 +308,7 @@ class PopUpDialog {
     return await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
+        final userData = Provider.of<UserModel>(context);
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             insetPadding: EdgeInsets.zero,
@@ -360,6 +362,21 @@ class PopUpDialog {
                     },
                     text: 'Upcoming Event Date',
                   ),
+                  RoundedButton(
+                    color: sort == "Customer Name" || sort == "Vendor Name"
+                        ? kPrimaryColor
+                        : Colors.grey,
+                    press: () {
+                      setState(() {
+                        sort = userData.role == "Vendor"
+                            ? "Customer Name"
+                            : "Vendor Name";
+                      });
+                    },
+                    text: userData.role == "Vendor"
+                        ? "Customer Name"
+                        : "Vendor Name",
+                  ),
                   Container(
                     width: 220,
                     child: Row(
@@ -368,7 +385,7 @@ class PopUpDialog {
                         MaterialButton(
                             minWidth: 100,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(13),
                                 side: BorderSide(color: Colors.green)),
                             color: Colors.white,
                             textColor: Colors.green,
@@ -381,7 +398,7 @@ class PopUpDialog {
                         MaterialButton(
                             minWidth: 100,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(13),
                                 side: BorderSide(color: Colors.red)),
                             color: Colors.white,
                             textColor: Colors.red,
@@ -416,6 +433,7 @@ class PopUpDialog {
       builder: (BuildContext context) {
         List<String> transactionTypeList = [
           "All Transaction",
+          "Planned",
           "On Going",
           "Finished",
           "Cancelled"
@@ -427,6 +445,8 @@ class PopUpDialog {
           "In Progress",
         ];
         return StatefulBuilder(builder: (context, setState) {
+          final user = Provider.of<UserModel>(context);
+          if (user.role == "Vendor") transactionTypeList.remove("Planned");
           return AlertDialog(
             title: const Text('Filter'),
             content: SingleChildScrollView(
@@ -521,7 +541,7 @@ class PopUpDialog {
                           MaterialButton(
                               minWidth: 100,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(13),
                                   side: BorderSide(color: Colors.green)),
                               color: Colors.white,
                               textColor: Colors.green,
@@ -544,7 +564,7 @@ class PopUpDialog {
                           MaterialButton(
                               minWidth: 100,
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(13),
                                   side: BorderSide(color: Colors.red)),
                               color: Colors.white,
                               textColor: Colors.red,
@@ -589,7 +609,7 @@ class PopUpDialog {
                         MaterialButton(
                             minWidth: 100,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(13),
                                 side: BorderSide(color: Colors.green)),
                             color: Colors.white,
                             textColor: Colors.green,
@@ -602,7 +622,7 @@ class PopUpDialog {
                         MaterialButton(
                             minWidth: 100,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(13),
                                 side: BorderSide(color: Colors.red)),
                             color: Colors.white,
                             textColor: Colors.red,

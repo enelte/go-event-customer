@@ -24,56 +24,83 @@ class Body extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 12),
-                child: Text(
-                  "Hi " +
-                      (userData != null
-                          ? userData.displayName.split(" ")[0]
-                          : "") +
-                      ", what are you looking for?",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CategoriesCard(
-                    icon: Icons.home,
-                    text: 'Venue',
-                    press: () {
-                      Service filter = new Service(serviceName: "Venue");
-                      Navigator.pushNamed(context, Routes.service,
-                          arguments: {'filter': filter});
-                    },
-                  ),
-                  CategoriesCard(
-                    icon: Icons.music_note,
-                    text: 'Talents',
-                    press: () {
-                      Service filter = new Service(serviceName: "Talent");
-                      Navigator.pushNamed(context, Routes.service,
-                          arguments: {'filter': filter});
-                    },
-                  ),
-                  CategoriesCard(
-                    icon: Icons.fastfood,
-                    text: 'Catering',
-                    press: () {
-                      Service filter = new Service(serviceName: "Catering");
-                      Navigator.pushNamed(context, Routes.service,
-                          arguments: {'filter': filter});
-                    },
-                  ),
-                ],
-              ),
-              SliderList(title: "Find Services", type: "service"),
+              if (userData != null && userData.role == "Customer")
+                WhatAreYouLookingFor(userData: userData),
+              if (userData != null)
+                SliderList(
+                    title: userData.role == "Customer"
+                        ? "Find Services"
+                        : "Your Services",
+                    type: "service"),
               SizedBox(height: 25),
-              SliderList(title: "Your Orders", type: "order")
+              if (userData != null)
+                SliderList(
+                    title: userData.role == "Customer"
+                        ? "Your Orders"
+                        : "Incoming Orders",
+                    type: "order")
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class WhatAreYouLookingFor extends StatelessWidget {
+  const WhatAreYouLookingFor({
+    Key key,
+    @required this.userData,
+  }) : super(key: key);
+
+  final UserModel userData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 12),
+          child: Text(
+            "Hi " +
+                (userData != null ? userData.displayName.split(" ")[0] : "") +
+                ", what are you looking for?",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CategoriesCard(
+              icon: Icons.home,
+              text: 'Venue',
+              press: () {
+                Service filter = new Service(serviceName: "Venue");
+                Navigator.pushNamed(context, Routes.service,
+                    arguments: {'filter': filter});
+              },
+            ),
+            CategoriesCard(
+              icon: Icons.music_note,
+              text: 'Talents',
+              press: () {
+                Service filter = new Service(serviceName: "Talent");
+                Navigator.pushNamed(context, Routes.service,
+                    arguments: {'filter': filter});
+              },
+            ),
+            CategoriesCard(
+              icon: Icons.fastfood,
+              text: 'Catering',
+              press: () {
+                Service filter = new Service(serviceName: "Catering");
+                Navigator.pushNamed(context, Routes.service,
+                    arguments: {'filter': filter});
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

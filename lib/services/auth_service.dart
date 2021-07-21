@@ -50,6 +50,14 @@ class FirebaseAuthService {
     }
   }
 
+  Future<dynamic> sendPasswordResetEmail(String email) async {
+    try {
+      return await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      return "Error on password reset: " + e.code.toString();
+    }
+  }
+
   Future<void> signOut() async {
     return await _firebaseAuth.signOut();
   }

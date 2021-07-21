@@ -19,15 +19,18 @@ class RoundedPasswordField extends StatefulWidget {
 }
 
 class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
+  FocusNode focusNode = FocusNode();
   bool visibility = true;
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextFormField(
         obscureText: visibility,
+        style: TextStyle(fontSize: 14),
         controller: widget.controller,
         cursorColor: kPrimaryColor,
         validator: widget.validator,
+        focusNode: focusNode,
         decoration: InputDecoration(
           hintText: "Password",
           prefixIcon: Icon(
@@ -37,33 +40,38 @@ class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
           suffixIcon: IconButton(
             icon: Icon(Icons.visibility),
             color: kPrimaryColor,
-            onPressed: () {
+            onPressed: () async {
+              focusNode.unfocus();
+              focusNode.canRequestFocus = false;
               setState(() {
                 visibility = visibility ? false : true;
+              });
+              Future.delayed(Duration(milliseconds: 100), () {
+                focusNode.canRequestFocus = true;
               });
             },
           ),
           fillColor: kPrimaryLightColor,
           filled: true,
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(18),
               borderSide: BorderSide(
                 color: kPrimaryLightColor,
               )),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(18),
             borderSide: BorderSide(
               color: kPrimaryColor,
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(18),
             borderSide: BorderSide(
               color: Colors.red,
             ),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(18),
             borderSide: BorderSide(
               color: kPrimaryColor,
             ),

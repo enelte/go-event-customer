@@ -12,7 +12,7 @@ import '../size_config.dart';
 class OrderCard extends StatelessWidget {
   const OrderCard({
     Key key,
-    this.width = 145,
+    this.width = 155,
     @required this.order,
   }) : super(key: key);
 
@@ -22,6 +22,7 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final userData = Provider.of<UserModel>(context);
     final database = Provider.of<FirestoreService>(context);
     return StreamBuilder<Service>(
         stream: database.serviceStream(serviceId: order.serviceId),
@@ -29,10 +30,12 @@ class OrderCard extends StatelessWidget {
           if (snapshot.hasData) {
             Service service = snapshot.data;
             return StreamBuilder<UserModel>(
-                stream: database.vendorDataStream(service.vendorId),
+                stream: userData.role == "Customer"
+                    ? database.specificUserDataStream(order.vendorId)
+                    : database.specificUserDataStream(order.customerId),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    UserModel vendor = snapshot.data;
+                    UserModel user = snapshot.data;
                     return Padding(
                       padding:
                           EdgeInsets.only(left: getProportionateScreenWidth(5)),
@@ -44,7 +47,7 @@ class OrderCard extends StatelessWidget {
                                 context, Routes.transaction_details,
                                 arguments: {
                                   'service': service,
-                                  'vendor': vendor,
+                                  'user': user,
                                   'transaction': order,
                                 })
                           },
@@ -52,16 +55,19 @@ class OrderCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AspectRatio(
-                                aspectRatio: 1,
+                                aspectRatio: 0.88,
                                 child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color:
-                                            order.transactionType == "On Going"
-                                                ? kPrimaryColor
+                                        color: order.transactionType ==
+                                                "On Going"
+                                            ? kPrimaryColor
+                                            : order.transactionType ==
+                                                    "Cancelled"
+                                                ? Colors.pink
                                                 : order.transactionType ==
-                                                        "Cancelled"
-                                                    ? Colors.pink
+                                                        "Planned"
+                                                    ? Colors.deepOrangeAccent
                                                     : Colors.green,
                                       ),
                                       borderRadius: BorderRadius.circular(29),
@@ -70,28 +76,54 @@ class OrderCard extends StatelessWidget {
                                           ? kPrimaryGradient
                                           : order.transactionType == "Cancelled"
                                               ? kRedGradient
-                                              : kGreenGradient,
+                                              : order.transactionType ==
+                                                      "Planned"
+                                                  ? kYellowGradient
+                                                  : kGreenGradient,
                                     ),
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
                                           vertical:
-                                              getProportionateScreenWidth(4),
+                                              getProportionateScreenWidth(10),
                                           horizontal:
                                               getProportionateScreenWidth(10)),
                                       child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              order.serviceName,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        16),
-                                              ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundImage:
+                                                      service.images.isEmpty
+                                                          ? avatarImage
+                                                          : NetworkImage(
+                                                              service.images[0],
+                                                            ),
+                                                ),
+                                                Container(
+                                                  width: 90,
+                                                  child: Text(
+                                                    order.serviceName,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize:
+                                                          getProportionateScreenWidth(
+                                                              14),
+                                                    ),
+                                                    maxLines: 3,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                             SizedBox(height: 5),
+                                            OrderCardData(
+                                              text: user.displayName,
+                                              icon: Icons.person,
+                                            ),
                                             OrderCardData(
                                               text: order.bookingDate,
                                               icon: Icons.calendar_today,
@@ -118,12 +150,15 @@ class OrderCard extends StatelessWidget {
                                     child: Text(
                                       order.status,
                                       style: TextStyle(
-                                        color:
-                                            order.transactionType == "On Going"
-                                                ? kPrimaryColor
+                                        color: order.transactionType ==
+                                                "On Going"
+                                            ? kPrimaryColor
+                                            : order.transactionType ==
+                                                    "Cancelled"
+                                                ? Colors.pink
                                                 : order.transactionType ==
-                                                        "Cancelled"
-                                                    ? Colors.pink
+                                                        "Planned"
+                                                    ? Colors.deepOrangeAccent
                                                     : Colors.green,
                                       ),
                                       maxLines: 2,
@@ -159,7 +194,7 @@ class OrderCardData extends StatelessWidget {
     Key key,
     @required this.icon,
     @required this.text,
-    this.fontSize = 11,
+    this.fontSize = 10,
   }) : super(key: key);
 
   final String text;

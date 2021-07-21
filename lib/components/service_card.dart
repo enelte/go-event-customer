@@ -24,7 +24,7 @@ class ServiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final database = Provider.of<FirestoreService>(context, listen: false);
     return StreamBuilder<UserModel>(
-        stream: database.vendorDataStream(service.vendorId),
+        stream: database.specificUserDataStream(service.vendorId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             UserModel vendor = snapshot.data;
@@ -53,10 +53,11 @@ class ServiceCard extends StatelessWidget {
                                     ? Container()
                                     : Hero(
                                         tag: service.serviceId,
-                                        child: Image.network(
-                                          service.images[0],
-                                          fit: BoxFit.fill,
-                                        ),
+                                        child: service.images.isEmpty
+                                            ? Image.network(avatarImage.url,
+                                                fit: BoxFit.fill)
+                                            : Image.network(service.images[0],
+                                                fit: BoxFit.fill),
                                       ),
                               ),
                             ),

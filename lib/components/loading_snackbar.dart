@@ -7,14 +7,14 @@ void loadingSnackBar(
     content: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          text,
-          style: TextStyle(color: kPrimaryLightColor, fontSize: 15),
-        ),
         Container(
-          width: 18,
-          height: 18,
-        )
+          width: 320,
+          child: Text(
+            text,
+            style: TextStyle(color: kPrimaryLightColor, fontSize: 15),
+            maxLines: 2,
+          ),
+        ),
       ],
     ),
     backgroundColor: color == null ? kPrimaryColor : color,

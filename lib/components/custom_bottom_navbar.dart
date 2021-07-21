@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/size_config.dart';
+import 'package:provider/provider.dart';
 import '../constant.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -9,6 +11,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<UserModel>(context);
     return Container(
         height: getProportionateScreenHeight(85),
         decoration: BoxDecoration(gradient: kPrimaryGradient),
@@ -21,25 +24,22 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 routes: Routes.home,
                 isCurrent: currentIndex == 0),
             IconWithText(
-                text: "My Bookings",
+                text: "Bookings",
                 icon: Icons.shopping_bag,
                 routes: Routes.transaction,
                 isCurrent: currentIndex == 1),
             IconWithText(
-                text: "Find Service",
+                text: "Service",
                 icon: Icons.family_restroom,
                 routes: Routes.service,
                 isCurrent: currentIndex == 4),
-            IconWithText(
-                text: "My Events",
-                icon: Icons.calendar_today,
-                routes: Routes.event,
-                isCurrent: currentIndex == 2),
-            IconWithText(
-                text: "My Profile",
-                icon: Icons.person,
-                routes: Routes.profile,
-                isCurrent: currentIndex == 3),
+            if (userData != null)
+              if (userData.role == "Customer")
+                IconWithText(
+                    text: "Events",
+                    icon: Icons.calendar_today,
+                    routes: Routes.event,
+                    isCurrent: currentIndex == 2),
           ],
         ));
     // return BottomNavigationBar(
@@ -83,21 +83,28 @@ class IconWithText extends StatelessWidget {
             )
           : BoxDecoration(),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        IconButton(
-            icon: Icon(icon, size: 30),
-            color: color,
-            constraints: BoxConstraints(),
-            onPressed: isCurrent
-                ? () {}
-                : () {
-                    Navigator.pushNamed(context, routes);
-                  }),
-        Text(
-          text,
-          style: TextStyle(
+        Container(
+          width: double.infinity,
+          child: IconButton(
+              icon: Icon(icon, size: 30),
               color: color,
-              fontSize: getProportionateScreenWidth(11),
-              fontWeight: FontWeight.w400),
+              constraints: BoxConstraints(),
+              onPressed: isCurrent
+                  ? () {}
+                  : () {
+                      Navigator.pushNamed(context, routes);
+                    }),
+        ),
+        Container(
+          width: double.infinity,
+          child: Text(
+            text,
+            style: TextStyle(
+                color: color,
+                fontSize: getProportionateScreenWidth(11),
+                fontWeight: FontWeight.w400),
+            textAlign: TextAlign.center,
+          ),
         )
       ]),
     );

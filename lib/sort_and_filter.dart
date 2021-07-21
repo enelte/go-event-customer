@@ -10,6 +10,7 @@ bool searchKeyword(String searchKeyword, String name) {
   for (var i = 0; i < splittedName.length; i++) {
     if (splittedName[i].startsWith(lowerSearchKeyword)) return true;
   }
+  if (name.toLowerCase().startsWith(lowerSearchKeyword)) return true;
   return false;
 }
 
@@ -60,6 +61,10 @@ int sortTransaction(tr.Transaction lhs, tr.Transaction rhs, String sortType) {
     return (rhs.totalPrice - lhs.totalPrice).round();
   if (sortType == "Total Price Low to High")
     return (lhs.totalPrice - rhs.totalPrice).round();
+  if (sortType == "Customer Name")
+    return (lhs.customerId.compareTo(rhs.customerId)).round();
+  if (sortType == "Vendor Name")
+    return (lhs.vendorId.compareTo(rhs.vendorId)).round();
   if (sortType == "Latest Bookings")
     return (DateTime.parse(rhs.transactionDate)
             .compareTo(DateTime.parse(lhs.transactionDate)))
@@ -71,5 +76,7 @@ int sortTransaction(tr.Transaction lhs, tr.Transaction rhs, String sortType) {
             .compareTo(dateFormat.parse(rhs.bookingDate)))
         .round();
   }
-  return 0;
+  return (DateTime.parse(rhs.transactionDate)
+          .compareTo(DateTime.parse(lhs.transactionDate)))
+      .round();
 }

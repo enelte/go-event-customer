@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/components/section_title.dart';
-import 'package:go_event_customer/Screens/Service/service_screen.dart';
+import 'package:go_event_customer/Screens/Services/Service/service_screen.dart';
 import 'package:go_event_customer/components/order_card.dart';
 import 'package:go_event_customer/components/service_card.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/Transaction.dart';
-import 'package:go_event_customer/screens/Transaction/transaction_screen.dart';
+import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/screens/Transactions/Transaction/transaction_screen.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/sort_and_filter.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class SliderList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<UserModel>(context);
     final database = Provider.of<FirestoreService>(context);
     return Column(
       children: [
@@ -44,7 +46,9 @@ class SliderList extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: type == "service"
               ? StreamBuilder(
-                  stream: database.servicesStream(),
+                  stream: userData.role == "Customer"
+                      ? database.servicesStream()
+                      : database.vendorServicesStream(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Service> serviceList = snapshot.data;
@@ -72,9 +76,11 @@ class SliderList extends StatelessWidget {
                   },
                 )
               : StreamBuilder(
-                  stream: database.transactionsStream(sort: (lhs, rhs) {
-                    return sortTransaction(lhs, rhs, "Latest Booking");
-                  }),
+                  stream: userData.role == "Customer"
+                      ? database.transactionsStream()
+                      : database.vendorTransactionsStream(sort: (lhs, rhs) {
+                          return sortTransaction(lhs, rhs, "Latest Bookings");
+                        }),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Transaction> transactionList = snapshot.data;

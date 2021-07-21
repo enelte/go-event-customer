@@ -15,7 +15,7 @@ class TextFieldContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 12),
+      margin: EdgeInsets.symmetric(vertical: 10),
       width: getProportionateScreenWidth(width),
       child: child,
     );

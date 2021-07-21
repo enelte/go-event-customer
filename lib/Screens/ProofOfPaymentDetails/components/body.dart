@@ -8,6 +8,7 @@ import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/components/upload_proof_of_payment.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/ProofOfPayment.dart';
+import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/services/image_picker_service.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -51,6 +52,7 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     ProofOfPayment proofOfPayment = widget.proofOfPayment;
     String transactionId = widget.transactionId;
+    final user = Provider.of<UserModel>(context);
     return MainBackground(
       child: SingleChildScrollView(
         child: Column(
@@ -70,28 +72,33 @@ class _BodyState extends State<Body> {
                   UploadProofOfPayment(
                     imageFile: imageFile,
                     imageURL: imageURL,
-                    resetImage: () async {
-                      imageFile = null;
-                      setState(() {});
-                    },
-                    pickImage: () async {
-                      File imagePicked = await chooseImage();
-                      if (imagePicked != null) imageFile = imagePicked;
-                      setState(() {});
-                    },
+                    resetImage: user.role == "Customer"
+                        ? () async {
+                            imageFile = null;
+                            setState(() {});
+                          }
+                        : null,
+                    pickImage: user.role == "Customer"
+                        ? () async {
+                            File imagePicked = await chooseImage();
+                            if (imagePicked != null) imageFile = imagePicked;
+                            setState(() {});
+                          }
+                        : null,
                   ),
                   RoundedInputField(
                     title: "Customer Remarks",
                     icon: Icons.description,
                     maxLines: 4,
                     controller: _customerRemarksController,
+                    readOnly: user.role == "Customer" ? false : true,
                   ),
                   if (proofOfPayment != null)
                     RoundedInputField(
                       title: "Vendor Remarks",
                       icon: Icons.description,
                       maxLines: 4,
-                      readOnly: true,
+                      readOnly: user.role == "Customer" ? true : false,
                     ),
                   if (proofOfPayment == null)
                     Container(
@@ -102,12 +109,16 @@ class _BodyState extends State<Body> {
                       ),
                     ),
                   RoundedButton(
-                    text: "Upload Payment",
+                    text: user.role == "Customer"
+                        ? "Upload Payment"
+                        : "Save Remarks",
                     press: () async {
                       if (imageFile != null || imageURL != null) {
                         loadingSnackBar(
                             context: context,
-                            text: "Proof of Payment Uploaded");
+                            text: user.role == "Customer"
+                                ? "Proof of Payment Uploaded"
+                                : "Remarks Saved");
                         ProofOfPayment newPayment = ProofOfPayment(
                             proofOfPaymentId: proofOfPayment != null
                                 ? proofOfPayment.proofOfPaymentId

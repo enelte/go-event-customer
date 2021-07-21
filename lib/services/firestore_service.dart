@@ -31,15 +31,17 @@ class FirestoreService {
   }
 
   //Reads vendor data
-  Stream<UserModel> vendorDataStream(String vendorId) {
-    final path = FirestorePath.userData(vendorId);
+  Stream<UserModel> specificUserDataStream(String uid) {
+    final path = FirestorePath.userData(uid);
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.snapshots();
-    return snapshots
-        .map((snapshot) => UserModel.fromMap(snapshot.data(), vendorId));
+    return snapshots.map((snapshot) => UserModel.fromMap(snapshot.data(), uid));
   }
 
   Future<void> setService(Service service) async {
+    if (service.serviceId == null)
+      service.serviceId =
+          FirebaseFirestore.instance.collection('services').doc().id;
     final path = FirestorePath.service(service.serviceId);
     final reference = FirebaseFirestore.instance.doc(path);
     await reference.set(service.toMap(), SetOptions(merge: true));
@@ -72,6 +74,33 @@ class FirestoreService {
     });
   }
 
+  //Method to retrieve vendor's services
+  Stream<List<Service>> vendorServicesStream({
+    Query queryBuilder(Query query),
+    int sort(Service lhs, Service rhs),
+  }) {
+    final path = FirestorePath.services();
+    Query query = FirebaseFirestore.instance
+        .collection(path)
+        .where("vendorId", isEqualTo: uid);
+
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+
+    final Stream<QuerySnapshot> snapshots = query.snapshots();
+    return snapshots.map((snapshot) {
+      final result = snapshot.docs
+          .map((snapshot) => Service.fromMap(snapshot.data(), snapshot.id))
+          .where((value) => value != null)
+          .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
+  }
+
   // Reads the current service
   Stream<Service> serviceStream({@required String serviceId}) {
     final path = FirestorePath.service(serviceId);
@@ -79,6 +108,13 @@ class FirestoreService {
     final snapshots = reference.snapshots();
     return snapshots
         .map((snapshot) => Service.fromMap(snapshot.data(), serviceId));
+  }
+
+  //Method to delete service entry
+  Future<void> deleteService(Service service) async {
+    final path = FirestorePath.service(service.serviceId);
+    final reference = FirebaseFirestore.instance.doc(path);
+    await reference.delete();
   }
 
   Stream<List<ServiceType>> serviceTypesStream({
@@ -185,6 +221,35 @@ class FirestoreService {
     Query query = FirebaseFirestore.instance
         .collection(path)
         .where("customerId", isEqualTo: uid);
+
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+
+    final Stream<QuerySnapshot> snapshots = query.snapshots();
+    return snapshots.map((snapshot) {
+      final result = snapshot.docs
+          .map((snapshot) =>
+              tran.Transaction.fromMap(snapshot.data(), snapshot.id))
+          .where((value) => value != null)
+          .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
+  }
+
+  //Get All Vendor's Transaction
+  Stream<List<tran.Transaction>> vendorTransactionsStream({
+    Query queryBuilder(Query query),
+    int sort(tran.Transaction lhs, tran.Transaction rhs),
+  }) {
+    final path = FirestorePath.transactions();
+    Query query = FirebaseFirestore.instance
+        .collection(path)
+        .where("vendorId", isEqualTo: uid)
+        .where("transactionType", isNotEqualTo: "Planned");
 
     if (queryBuilder != null) {
       query = queryBuilder(query);

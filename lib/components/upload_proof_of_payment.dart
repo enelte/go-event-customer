@@ -20,8 +20,8 @@ class UploadProofOfPayment extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10),
       child: Container(
         decoration: BoxDecoration(gradient: kPrimaryGradient),
-        height: 200,
-        width: 200,
+        height: 400,
+        width: 300,
         child: Stack(
           fit: StackFit.expand,
           clipBehavior: Clip.none,
