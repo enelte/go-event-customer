@@ -212,7 +212,7 @@ class _BodyState extends State<Body> {
                       readOnly: readOnly,
                       digitInput: true,
                       validator: Validator.defaultValidator,
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         if (value != "")
                           setState(() {
                             _minOrder = service.serviceType != "Catering"
@@ -231,7 +231,7 @@ class _BodyState extends State<Body> {
                       readOnly: readOnly,
                       digitInput: true,
                       validator: Validator.defaultValidator,
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         if (value != "")
                           setState(() {
                             _maxOrder = service.serviceType != "Catering"
@@ -295,8 +295,8 @@ class _BodyState extends State<Body> {
                         TextFormatter.stringToTimeOfDay(_startTime),
                         TextFormatter.stringToTimeOfDay(_endTime)),
                     onRangeCompleted: (range) => setState(() {
-                      _startTime = range.start.format(context);
-                      _endTime = range.end.format(context);
+                      _startTime = TextFormatter.formatTimeOfDay(range.start);
+                      _endTime = TextFormatter.formatTimeOfDay(range.end);
                       print(TextFormatter.stringToTimeOfDay(_endTime).hour -
                           TextFormatter.stringToTimeOfDay(_startTime).hour);
                     }),

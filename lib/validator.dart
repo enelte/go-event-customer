@@ -94,10 +94,14 @@ class Validator {
       if (quantity < minOrder) {
         quantity = minOrder;
         value.text = quantity.toString();
+        value.selection =
+            TextSelection.fromPosition(TextPosition(offset: value.text.length));
       }
       if (quantity > maxOrder) {
         quantity = maxOrder;
         value.text = quantity.toString();
+        value.selection =
+            TextSelection.fromPosition(TextPosition(offset: value.text.length));
       }
     }
     return quantity;
@@ -114,10 +118,14 @@ class Validator {
       if (hour < minOrder) {
         hour = minOrder;
         value.text = hour.toString();
+        value.selection =
+            TextSelection.fromPosition(TextPosition(offset: value.text.length));
       }
       if (hour > maxOrder) {
         hour = maxOrder;
         value.text = hour.toString();
+        value.selection =
+            TextSelection.fromPosition(TextPosition(offset: value.text.length));
       }
     }
     return hour;

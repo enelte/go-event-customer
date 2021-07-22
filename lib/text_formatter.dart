@@ -22,8 +22,22 @@ class TextFormatter {
   }
 
   static TimeOfDay stringToTimeOfDay(String tod) {
-    final format = DateFormat.jm(); //"6:00 AM"
+    final format = DateFormat.Hm();
     return TimeOfDay.fromDateTime(format.parse(tod));
+  }
+
+  static String formatTimeOfDay(TimeOfDay timeOfDay) {
+    String dateString;
+
+    dateString = (timeOfDay.hour < 10
+            ? "0" + timeOfDay.hour.toString()
+            : timeOfDay.hour.toString()) +
+        ":" +
+        (timeOfDay.minute < 10
+            ? "0" + timeOfDay.minute.toString()
+            : timeOfDay.minute.toString());
+
+    return dateString;
   }
 }
 

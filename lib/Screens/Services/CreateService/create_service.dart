@@ -37,6 +37,7 @@ class CreateServiceScreen extends StatelessWidget {
                   ),
                 ),
                 body: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
                     for (var type in typeList)
                       Body(

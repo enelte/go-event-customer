@@ -39,7 +39,6 @@ class _BodyState extends State<Body> {
   String _category;
   bool _status = true;
   List<File> _imageList = [];
-  bool _uploading = false;
   num _minOrder;
   num _maxOrder;
   String _startTime;
@@ -51,8 +50,8 @@ class _BodyState extends State<Body> {
     super.initState();
     _minOrder = 0;
     _maxOrder = 0;
-    _startTime = "8:00 AM";
-    _endTime = "5:00 PM";
+    _startTime = "8:00";
+    _endTime = "17:00";
   }
 
   @override
@@ -148,7 +147,7 @@ class _BodyState extends State<Body> {
                           controller: _minOrderController,
                           digitInput: true,
                           validator: Validator.defaultValidator,
-                          onFieldSubmitted: (value) {
+                          onChanged: (value) {
                             if (value != "")
                               setState(() {
                                 _minOrder = _type.name != "Catering"
@@ -168,7 +167,7 @@ class _BodyState extends State<Body> {
                           controller: _maxOrderController,
                           digitInput: true,
                           validator: Validator.defaultValidator,
-                          onFieldSubmitted: (value) {
+                          onChanged: (value) {
                             if (value != "")
                               setState(() {
                                 _maxOrder = _type.name != "Catering"
@@ -207,14 +206,12 @@ class _BodyState extends State<Body> {
                       timeStep: 60,
                       timeBlock: 60,
                       initialRange: TimeRangeResult(
-                        TimeOfDay(hour: 8, minute: 0),
-                        TimeOfDay(hour: 17, minute: 0),
-                      ),
+                          TextFormatter.stringToTimeOfDay(_startTime),
+                          TextFormatter.stringToTimeOfDay(_endTime)),
                       onRangeCompleted: (range) => setState(() {
-                        _startTime = range.start.format(context);
-                        _endTime = range.end.format(context);
-                        print(TextFormatter.stringToTimeOfDay(_endTime).hour -
-                            TextFormatter.stringToTimeOfDay(_startTime).hour);
+                        _startTime = TextFormatter.formatTimeOfDay(range.start);
+                        _endTime = TextFormatter.formatTimeOfDay(range.end);
+                        print(_startTime);
                       }),
                     ),
                   ),
@@ -284,15 +281,12 @@ class _BodyState extends State<Body> {
                                         icon: Icon(Icons.add_a_photo),
                                         color: Colors.white,
                                         onPressed: () async {
-                                          if (!_uploading) {
-                                            File imagePicked =
-                                                await chooseServiceImage(
-                                                    context);
-                                            setState(() {
-                                              if (imagePicked != null)
-                                                _imageList.add(imagePicked);
-                                            });
-                                          }
+                                          File imagePicked =
+                                              await chooseServiceImage(context);
+                                          setState(() {
+                                            if (imagePicked != null)
+                                              _imageList.add(imagePicked);
+                                          });
                                         },
                                       ),
                                       decoration: BoxDecoration(
@@ -362,7 +356,6 @@ class _BodyState extends State<Body> {
                         PopUpDialog.confirmationDialog(
                             context: context,
                             onPressed: () async {
-                              _uploading = true;
                               String errorMessage = "";
                               if (_minOrder > _maxOrder) {
                                 errorMessage =
@@ -427,9 +420,6 @@ class _BodyState extends State<Body> {
                                       context: context,
                                       text: "Service Created");
                                   Navigator.of(context).pop();
-                                  setState(() {
-                                    _uploading = false;
-                                  });
                                 }).catchError((e) {
                                   loadingSnackBar(
                                       context: context,

@@ -1,5 +1,6 @@
 import 'package:go_event_customer/components/choose_booking_time_range.dart';
 import 'package:go_event_customer/components/service_card.dart';
+import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/date_picker.dart';
@@ -15,6 +16,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +43,6 @@ class _BodyState extends State<Body> {
   String _endTime;
   num _quantity;
   num _totalPrice;
-  bool _uploading = false;
 
   @override
   void initState() {
@@ -130,8 +131,9 @@ class _BodyState extends State<Body> {
                       service: service,
                       onRangeCompleted: (range) {
                         setState(() {
-                          _startTime = range.start.format(context);
-                          _endTime = range.end.format(context);
+                          _startTime =
+                              TextFormatter.formatTimeOfDay(range.start);
+                          _endTime = TextFormatter.formatTimeOfDay(range.end);
                           if (service.serviceType != "Catering") {
                             _quantity = range.end.hour - range.start.hour;
                             _totalPrice = _quantity * service.price;
@@ -162,7 +164,7 @@ class _BodyState extends State<Body> {
                       controller: _quantityController,
                       digitInput: true,
                       validator: Validator.defaultValidator,
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         setState(() {
                           _quantity = Validator.quantityValidator(
                               _quantityController,
@@ -231,42 +233,37 @@ class _BodyState extends State<Body> {
                             if (_formKey.currentState.validate() &&
                                 _startTime != null &&
                                 _endTime != null) {
-                              if (!_uploading) {
-                                tran.Transaction newTrans = tran.Transaction(
-                                  customerId: customer.uid,
-                                  serviceId: service.serviceId,
-                                  vendorId: service.vendorId,
-                                  serviceName: service.serviceName,
-                                  eventId: _eventId,
-                                  notes: _notesController.text.trim(),
-                                  transactionDate: DateTime.now().toString(),
-                                  bookingDate: _dateController.text.trim(),
-                                  totalPrice: _totalPrice,
-                                  quantity: _quantity,
-                                  location: service.serviceType == "Venue"
-                                      ? service.address
-                                      : _locationController.text.trim(),
-                                  startTime: _startTime,
-                                  endTime: _endTime,
-                                  status: "Waiting for Confirmation",
-                                  transactionType: "On Going",
-                                  reviewed: false,
-                                );
-                                await setTransaction(context, newTrans)
-                                    .then((value) {
-                                  loadingSnackBar(
-                                      context: context, text: "Order Created");
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    _uploading = true;
-                                  });
-                                }).catchError((e) {
-                                  loadingSnackBar(
-                                      context: context,
-                                      text: "An Error Ocurred",
-                                      color: Colors.red);
-                                });
-                              }
+                              tran.Transaction newTrans = tran.Transaction(
+                                customerId: customer.uid,
+                                serviceId: service.serviceId,
+                                vendorId: service.vendorId,
+                                serviceName: service.serviceName,
+                                eventId: _eventId,
+                                notes: _notesController.text.trim(),
+                                transactionDate: DateTime.now().toString(),
+                                bookingDate: _dateController.text.trim(),
+                                totalPrice: _totalPrice,
+                                quantity: _quantity,
+                                location: service.serviceType == "Venue"
+                                    ? service.address
+                                    : _locationController.text.trim(),
+                                startTime: _startTime,
+                                endTime: _endTime,
+                                status: "Waiting for Confirmation",
+                                transactionType: "On Going",
+                                reviewed: false,
+                              );
+                              await setTransaction(context, newTrans)
+                                  .then((value) {
+                                loadingSnackBar(
+                                    context: context, text: "Order Created");
+                                Navigator.of(context).pop();
+                              }).catchError((e) {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: "An Error Ocurred",
+                                    color: Colors.red);
+                              });
                             } else {
                               loadingSnackBar(
                                   context: context,
@@ -302,41 +299,36 @@ class _BodyState extends State<Body> {
                             if (_formKey.currentState.validate() &&
                                 _startTime != null &&
                                 _endTime != null) {
-                              if (!_uploading) {
-                                tran.Transaction newTrans = tran.Transaction(
-                                  customerId: customer.uid,
-                                  serviceId: service.serviceId,
-                                  vendorId: service.vendorId,
-                                  serviceName: service.serviceName,
-                                  eventId: _eventId,
-                                  notes: _notesController.text.trim(),
-                                  transactionDate: DateTime.now().toString(),
-                                  bookingDate: _dateController.text.trim(),
-                                  totalPrice: _totalPrice,
-                                  quantity: _quantity,
-                                  location: service.serviceType == "Venue"
-                                      ? service.address
-                                      : _locationController.text.trim(),
-                                  startTime: _startTime,
-                                  endTime: _endTime,
-                                  status: "Planned",
-                                  transactionType: "Planned",
-                                  reviewed: false,
-                                );
-                                setTransaction(context, newTrans).then((value) {
-                                  loadingSnackBar(
-                                      context: context, text: "Order Planned");
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    _uploading = true;
-                                  });
-                                }).catchError((e) {
-                                  loadingSnackBar(
-                                      context: context,
-                                      text: "An Error Ocurred",
-                                      color: Colors.red);
-                                });
-                              }
+                              tran.Transaction newTrans = tran.Transaction(
+                                customerId: customer.uid,
+                                serviceId: service.serviceId,
+                                vendorId: service.vendorId,
+                                serviceName: service.serviceName,
+                                eventId: _eventId,
+                                notes: _notesController.text.trim(),
+                                transactionDate: DateTime.now().toString(),
+                                bookingDate: _dateController.text.trim(),
+                                totalPrice: _totalPrice,
+                                quantity: _quantity,
+                                location: service.serviceType == "Venue"
+                                    ? service.address
+                                    : _locationController.text.trim(),
+                                startTime: _startTime,
+                                endTime: _endTime,
+                                status: "Planned",
+                                transactionType: "Planned",
+                                reviewed: false,
+                              );
+                              setTransaction(context, newTrans).then((value) {
+                                loadingSnackBar(
+                                    context: context, text: "Order Planned");
+                                Navigator.of(context).pop();
+                              }).catchError((e) {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: "An Error Ocurred",
+                                    color: Colors.red);
+                              });
                             } else {
                               loadingSnackBar(
                                   context: context,

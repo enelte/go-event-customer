@@ -33,7 +33,6 @@ class _ServiceScreenState extends State<ServiceScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: "Service Offered",
-        backButton: true,
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(0),
             child: Padding(

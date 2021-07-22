@@ -9,7 +9,7 @@ class EventScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final int selectedIndex = 2;
     return Scaffold(
-      appBar: CustomAppBar(title: "My Events", backButton: true),
+      appBar: CustomAppBar(title: "My Events"),
       body: Body(),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: selectedIndex,

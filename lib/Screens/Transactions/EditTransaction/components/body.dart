@@ -38,7 +38,6 @@ class _BodyState extends State<Body> {
   String _endTime;
   num _quantity;
   num _totalPrice;
-  bool _uploading = false;
 
   @override
   void initState() {
@@ -104,8 +103,9 @@ class _BodyState extends State<Body> {
                           TextFormatter.stringToTimeOfDay(_endTime)),
                       onRangeCompleted: (range) {
                         setState(() {
-                          _startTime = range.start.format(context);
-                          _endTime = range.end.format(context);
+                          _startTime =
+                              TextFormatter.formatTimeOfDay(range.start);
+                          _endTime = TextFormatter.formatTimeOfDay(range.end);
                           _quantity = range.end.hour - range.start.hour;
                           _totalPrice = _quantity * service.price;
                         });
@@ -134,7 +134,7 @@ class _BodyState extends State<Body> {
                       controller: _quantityController,
                       digitInput: true,
                       validator: Validator.defaultValidator,
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         setState(() {
                           _quantity = Validator.quantityValidator(
                               _quantityController,
@@ -220,45 +220,39 @@ class _BodyState extends State<Body> {
                             if (_formKey.currentState.validate() &&
                                 _startTime != null &&
                                 _endTime != null) {
-                              if (!_uploading) {
-                                String transactionId =
-                                    widget.transaction.transactionId;
-                                tran.Transaction editTrans = tran.Transaction(
-                                    transactionId: transactionId,
-                                    eventId: _eventId,
-                                    notes: _notesController.text.trim(),
-                                    transactionDate:
-                                        widget.transaction.transactionDate,
-                                    bookingDate: _dateController.text.trim(),
-                                    totalPrice: _totalPrice,
-                                    quantity: _quantity,
-                                    location: _locationController.text.trim(),
-                                    startTime: _startTime,
-                                    endTime: _endTime,
-                                    status: needReConfirmation(
-                                            widget.transaction,
-                                            _notesController.text.trim(),
-                                            _dateController.text.trim(),
-                                            _locationController.text.trim(),
-                                            _startTime,
-                                            _endTime)
-                                        ? "Waiting for Confirmation"
-                                        : widget.transaction.status);
-                                setTransaction(context, editTrans)
-                                    .then((value) {
-                                  loadingSnackBar(
-                                      context: context, text: "Order Updated");
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    _uploading = true;
-                                  });
-                                }).catchError((e) {
-                                  loadingSnackBar(
-                                      context: context,
-                                      text: "An Error Ocurred",
-                                      color: Colors.red);
-                                });
-                              }
+                              String transactionId =
+                                  widget.transaction.transactionId;
+                              tran.Transaction editTrans = tran.Transaction(
+                                  transactionId: transactionId,
+                                  eventId: _eventId,
+                                  notes: _notesController.text.trim(),
+                                  transactionDate:
+                                      widget.transaction.transactionDate,
+                                  bookingDate: _dateController.text.trim(),
+                                  totalPrice: _totalPrice,
+                                  quantity: _quantity,
+                                  location: _locationController.text.trim(),
+                                  startTime: _startTime,
+                                  endTime: _endTime,
+                                  status: needReConfirmation(
+                                          widget.transaction,
+                                          _notesController.text.trim(),
+                                          _dateController.text.trim(),
+                                          _locationController.text.trim(),
+                                          _startTime,
+                                          _endTime)
+                                      ? "Waiting for Confirmation"
+                                      : widget.transaction.status);
+                              setTransaction(context, editTrans).then((value) {
+                                loadingSnackBar(
+                                    context: context, text: "Order Updated");
+                                Navigator.of(context).pop();
+                              }).catchError((e) {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: "An Error Ocurred",
+                                    color: Colors.red);
+                              });
                             } else {
                               loadingSnackBar(
                                   context: context,

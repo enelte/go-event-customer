@@ -26,7 +26,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: userData.role == "Customer" ? "My Order" : "Incoming Order",
-        backButton: true,
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(0),
             child: Padding(
