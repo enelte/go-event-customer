@@ -61,9 +61,11 @@ class _ServiceGalleryState extends State<ServiceGallery> {
                         press: () async {
                           File image = await chooseServiceImage(context);
                           if (image != null) {
-                            loadingSnackBar(
-                                context: context, text: "Adding Image...");
-                            addServiceImage(context, service, image);
+                            await addServiceImage(context, service, image)
+                                .then((value) {
+                              loadingSnackBar(
+                                  context: context, text: "Image Added");
+                            });
                           }
                           setState(() {});
                         },

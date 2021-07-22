@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
@@ -9,6 +10,7 @@ import 'package:go_event_customer/models/Review.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/Transaction.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
@@ -75,19 +77,35 @@ class _BodyState extends State<Body> {
                 trueValue: "Yes",
                 falseValue: "No"),
             RoundedButton(
-              text: "Upload Review",
-              press: () async {
-                Review _newReview = new Review(
-                    transactionId: transaction.transactionId,
-                    customerName: _status ? "Anonymous" : customer.displayName,
-                    serviceId: service.serviceId,
-                    rating: _rating,
-                    comment: _commentController.text.trim());
-                reviewAddedToTransaction(
-                        context, transaction, service, _newReview)
-                    .whenComplete(() => Navigator.pop(context));
-              },
-            ),
+                text: "Upload Review",
+                press: () {
+                  PopUpDialog.confirmationDialog(
+                      context: context,
+                      onPressed: () async {
+                        Review _newReview = new Review(
+                            transactionId: transaction.transactionId,
+                            customerName:
+                                _status ? "Anonymous" : customer.displayName,
+                            serviceId: service.serviceId,
+                            rating: _rating,
+                            comment: _commentController.text.trim());
+                        reviewAddedToTransaction(
+                                context, transaction, service, _newReview)
+                            .then((value) {
+                          loadingSnackBar(
+                            context: context,
+                            text: "Review successfully added",
+                          );
+                          Navigator.pop(context);
+                        }).catchError((e) {
+                          loadingSnackBar(
+                              context: context,
+                              text: "An Error Ocurred",
+                              color: Colors.red);
+                        });
+                      },
+                      title: "Upload Review?");
+                }),
             RoundedButton(
               text: "Review Later",
               press: () async {

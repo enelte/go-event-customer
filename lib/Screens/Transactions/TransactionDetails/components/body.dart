@@ -11,6 +11,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/text_formatter.dart';
@@ -253,26 +254,41 @@ class _BodyState extends State<Body> {
                           readOnly: true,
                         ),
                         SizedBox(height: 25),
-                        //CUSTOMER SUBMOT PLANNED ORDER
+                        //CUSTOMER SUBMIT PLANNED ORDER
                         if (loggedUser.role == "Customer")
                           if (transaction.transactionType == "Planned")
                             RoundedButton(
                               color: Colors.deepOrangeAccent,
                               text: "Make Order",
                               press: () {
-                                submitPlannedTransaction(context, transaction);
-                                loadingSnackBar(
-                                    context: context, text: "Order Submitted");
+                                PopUpDialog.confirmationDialog(
+                                    context: context,
+                                    onPressed: () async {
+                                      await submitPlannedTransaction(
+                                              context, transaction)
+                                          .then((value) {
+                                        loadingSnackBar(
+                                            context: context,
+                                            text: "Order Submitted");
+                                      }).catchError((e) {
+                                        loadingSnackBar(
+                                            context: context,
+                                            text: "An error occurred",
+                                            color: Colors.red);
+                                      });
+                                    },
+                                    title:
+                                        "Your order will be forwarded to vendor, proceed?");
                               },
                             ),
-                        //CUSTOMER EDIT BOOKINGS
+                        //CUSTOMER EDIT Order
                         if (loggedUser.role == "Customer")
                           if (transaction.status ==
                                   "Waiting for Confirmation" ||
                               transaction.status == "Waiting for Payment" ||
                               transaction.transactionType == "Planned")
                             RoundedButton(
-                              text: "Edit Bookings",
+                              text: "Edit Order",
                               press: () {
                                 Navigator.pushNamed(
                                     context, Routes.edit_transaction,
@@ -293,12 +309,43 @@ class _BodyState extends State<Body> {
                               color: Colors.blueAccent,
                               text: transaction.status ==
                                       "Waiting for Confirmation"
-                                  ? "Confirm Bookings"
+                                  ? "Confirm Order"
                                   : "Confirm Payment",
                               press: () {
-                                transaction.status == "Waiting for Confirmation"
-                                    ? confirmTransaction(context, transaction)
-                                    : confirmPayment(context, transaction);
+                                PopUpDialog.confirmationDialog(
+                                    context: context,
+                                    onPressed: () async {
+                                      transaction.status ==
+                                              "Waiting for Confirmation"
+                                          ? await confirmTransaction(
+                                                  context, transaction)
+                                              .then((value) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "Order Confirmed");
+                                            }).catchError((e) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "An error occurred",
+                                                  color: Colors.red);
+                                            })
+                                          : await confirmPayment(
+                                                  context, transaction)
+                                              .then((value) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "Payment Confirmed");
+                                            }).catchError((e) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "An error occurred",
+                                                  color: Colors.red);
+                                            });
+                                    },
+                                    title: transaction.status ==
+                                            "Waiting for Confirmation"
+                                        ? "Confirm Order?"
+                                        : "Confirm Payment?");
                               },
                             ),
 
@@ -311,12 +358,42 @@ class _BodyState extends State<Body> {
                           RoundedButton(
                             color: Colors.redAccent,
                             text: loggedUser.role == "Customer"
-                                ? "Cancel Bookings"
-                                : "Reject Bookings",
+                                ? "Cancel Order"
+                                : "Reject Order",
                             press: () {
-                              loggedUser.role == "Customer"
-                                  ? cancelTransaction(context, transaction)
-                                  : rejectTransaction(context, transaction);
+                              PopUpDialog.confirmationDialog(
+                                context: context,
+                                onPressed: () async {
+                                  loggedUser.role == "Customer"
+                                      ? await cancelTransaction(
+                                              context, transaction)
+                                          .then((value) {
+                                          loadingSnackBar(
+                                              context: context,
+                                              text: "Order Cancelled");
+                                        }).catchError((e) {
+                                          loadingSnackBar(
+                                              context: context,
+                                              text: "An error occurred",
+                                              color: Colors.red);
+                                        })
+                                      : await rejectTransaction(
+                                              context, transaction)
+                                          .then((value) {
+                                          loadingSnackBar(
+                                              context: context,
+                                              text: "Order Rejected");
+                                        }).catchError((e) {
+                                          loadingSnackBar(
+                                              context: context,
+                                              text: "An error occurred",
+                                              color: Colors.red);
+                                        });
+                                },
+                                title: loggedUser.role == "Customer"
+                                    ? "Cancel Order"
+                                    : "Reject Order",
+                              );
                             },
                           ),
 
@@ -324,18 +401,33 @@ class _BodyState extends State<Body> {
                         if (loggedUser.role == "Customer")
                           if (transaction.status == "In Progress")
                             RoundedButton(
-                              color: Colors.blueAccent,
-                              text: "Finish Bookings",
-                              press: () async {
-                                await finishTransaction(
-                                    context, transaction, service);
-                                Navigator.pushNamed(context, Routes.review,
-                                    arguments: {
-                                      "transaction": transaction,
-                                      "service": service
-                                    });
-                              },
-                            ),
+                                color: Colors.blueAccent,
+                                text: "Finish Order",
+                                press: () {
+                                  PopUpDialog.confirmationDialog(
+                                    context: context,
+                                    onPressed: () async {
+                                      await finishTransaction(
+                                              context, transaction, service)
+                                          .then((value) {
+                                        loadingSnackBar(
+                                            context: context,
+                                            text: "Order Finished");
+                                        Navigator.pushNamed(
+                                            context, Routes.review, arguments: {
+                                          "transaction": transaction,
+                                          "service": service
+                                        });
+                                      }).catchError((e) {
+                                        loadingSnackBar(
+                                            context: context,
+                                            text: "An error occurred",
+                                            color: Colors.red);
+                                      });
+                                    },
+                                    title: "Finish Order?",
+                                  );
+                                }),
 
                         //CUSTOMER GIVE REVIEW
                         if (loggedUser.role == "Customer")

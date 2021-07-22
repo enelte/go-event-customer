@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Auth/Login/components/background.dart';
 import 'package:go_event_customer/components/already_have_an_account_acheck.dart';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_event_customer/controllers/user_controller.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/validator.dart';
@@ -52,14 +54,28 @@ class _BodyState extends State<Body> {
               RoundedButton(
                 width: 270,
                 text: "Send Password Reset Email",
-                press: () async {
-                  if (_formKey.currentState.validate()) {
-                    errorMessage = await sendPasswordResetEmail(
-                      context,
-                      _emailController.text.trim(),
-                    );
-                    setState(() {});
-                  }
+                press: () {
+                  PopUpDialog.confirmationDialog(
+                      context: context,
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          errorMessage = await sendPasswordResetEmail(
+                            context,
+                            _emailController.text.trim(),
+                          ).then((value) {
+                            loadingSnackBar(
+                                context: context,
+                                text: "Password Reset Email Send");
+                            setState(() {});
+                          }).catchError((e) {
+                            loadingSnackBar(
+                                context: context,
+                                text: "An Error Ocurred",
+                                color: Colors.red);
+                          });
+                        }
+                      },
+                      title: 'Send Password Reset Image?');
                 },
               ),
               Padding(

@@ -48,18 +48,28 @@ class _BodyState extends State<Body> {
             RoundedButton(
               width: 270,
               text: "Change Password",
-              press: () async {
-                errorMessage = await sendPasswordResetEmail(
-                        context, loggedUser.email) +
-                    ". Please logout and login with your new password afterwards";
-                setState(() {});
+              press: () {
+                PopUpDialog.confirmationDialog(
+                    context: context,
+                    onPressed: () async {
+                      errorMessage = await sendPasswordResetEmail(
+                              context, loggedUser.email) +
+                          ". Please logout and login with your new password afterwards";
+                      setState(() {});
+                    },
+                    title: "Are you sure want to change your password?");
               },
             ),
             RoundedButton(
               width: 270,
               text: "Log Out",
               press: () {
-                PopUpDialog.logOutDialog(context);
+                PopUpDialog.confirmationDialog(
+                    context: context,
+                    onPressed: () {
+                      signOut(context);
+                    },
+                    title: 'Are you sure want to log out?');
               },
             ),
             Padding(

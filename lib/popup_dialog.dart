@@ -312,7 +312,7 @@ class PopUpDialog {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             insetPadding: EdgeInsets.zero,
-            title: const Text('Sort Bookings'),
+            title: const Text('Sort Order'),
             content: Container(
               width: 300,
               child: Column(
@@ -342,14 +342,13 @@ class PopUpDialog {
                     text: 'Total Price Low to High',
                   ),
                   RoundedButton(
-                    color:
-                        sort == "Latest Bookings" ? kPrimaryColor : Colors.grey,
+                    color: sort == "Latest Order" ? kPrimaryColor : Colors.grey,
                     press: () {
                       setState(() {
-                        sort = "Latest Bookings";
+                        sort = "Latest Order";
                       });
                     },
-                    text: 'Latest Bookings',
+                    text: 'Latest Order',
                   ),
                   RoundedButton(
                     color: sort == "Upcoming Event Date"
@@ -587,14 +586,17 @@ class PopUpDialog {
     );
   }
 
-  static logOutDialog(BuildContext context) async {
+  static confirmationDialog(
+      {@required BuildContext context,
+      @required Function onPressed,
+      @required String title}) async {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             insetPadding: EdgeInsets.zero,
-            title: const Text('Are you sure want to log out?'),
+            title: Text(title),
             content: Container(
               width: 300,
               child: Column(
@@ -614,10 +616,11 @@ class PopUpDialog {
                             color: Colors.white,
                             textColor: Colors.green,
                             onPressed: () {
-                              signOut(context);
+                              onPressed();
+                              Navigator.of(context).pop();
                             },
                             child: Text(
-                              "Yes, Log Out",
+                              "Yes",
                             )),
                         MaterialButton(
                             minWidth: 100,

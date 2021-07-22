@@ -9,6 +9,7 @@ import 'package:go_event_customer/components/upload_proof_of_payment.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/ProofOfPayment.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/services/image_picker_service.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -112,26 +113,42 @@ class _BodyState extends State<Body> {
                     text: user.role == "Customer"
                         ? "Upload Payment"
                         : "Save Remarks",
-                    press: () async {
-                      if (imageFile != null || imageURL != null) {
-                        loadingSnackBar(
-                            context: context,
-                            text: user.role == "Customer"
-                                ? "Proof of Payment Uploaded"
-                                : "Remarks Saved");
-                        ProofOfPayment newPayment = ProofOfPayment(
-                            proofOfPaymentId: proofOfPayment != null
-                                ? proofOfPayment.proofOfPaymentId
-                                : null,
-                            transactionId: transactionId,
-                            submittedDate:
-                                TextFormatter.dateTimeFormatter(DateTime.now()),
-                            customerRemarks:
-                                _customerRemarksController.text.trim());
-                        setProofOfPayment(context, newPayment, imageFile)
-                            .whenComplete(() => Navigator.pop(context));
-                      }
-                      setState(() {});
+                    press: () {
+                      PopUpDialog.confirmationDialog(
+                          context: context,
+                          onPressed: () async {
+                            if (imageFile != null || imageURL != null) {
+                              ProofOfPayment newPayment = ProofOfPayment(
+                                  proofOfPaymentId: proofOfPayment != null
+                                      ? proofOfPayment.proofOfPaymentId
+                                      : null,
+                                  transactionId: transactionId,
+                                  submittedDate:
+                                      TextFormatter.dateTimeFormatter(
+                                          DateTime.now()),
+                                  customerRemarks:
+                                      _customerRemarksController.text.trim());
+                              await setProofOfPayment(
+                                      context, newPayment, imageFile)
+                                  .then((value) {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: user.role == "Customer"
+                                        ? "Proof of Payment Uploaded"
+                                        : "Remarks Saved");
+                                Navigator.pop(context);
+                                setState(() {});
+                              }).catchError((e) {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: "An Error Ocurred",
+                                    color: Colors.red);
+                              });
+                            }
+                          },
+                          title: user.role == "Customer"
+                              ? "Upload Payment"
+                              : "Save Remarks");
                     },
                   ),
                 ],

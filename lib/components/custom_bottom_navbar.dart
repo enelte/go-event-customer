@@ -24,7 +24,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 routes: Routes.home,
                 isCurrent: currentIndex == 0),
             IconWithText(
-                text: "Bookings",
+                text: "Order",
                 icon: Icons.shopping_bag,
                 routes: Routes.transaction,
                 isCurrent: currentIndex == 1),

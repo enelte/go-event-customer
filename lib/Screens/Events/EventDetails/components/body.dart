@@ -3,6 +3,7 @@ import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/order_card.dart';
 import 'package:go_event_customer/controllers/event_controller.dart';
 import 'package:go_event_customer/models/Transaction.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/components/main_background.dart';
@@ -88,17 +89,29 @@ class _BodyState extends State<Body> {
             ),
             RoundedButton(
               text: "Update Event",
-              press: () async {
-                setEvent(
-                    context,
-                    new Event(
-                      eventId: event.eventId,
-                      eventName: _nameController.text,
-                      eventBudget:
-                          num.parse(_budgetController.text.replaceAll(".", "")),
-                    ));
-                loadingSnackBar(context: context, text: "Event Updated");
-                Navigator.pop(context);
+              press: () {
+                PopUpDialog.confirmationDialog(
+                    context: context,
+                    onPressed: () async {
+                      await setEvent(
+                          context,
+                          new Event(
+                            eventId: event.eventId,
+                            eventName: _nameController.text,
+                            eventBudget: num.parse(
+                                _budgetController.text.replaceAll(".", "")),
+                          )).then((value) {
+                        loadingSnackBar(
+                            context: context, text: "Event Updated");
+                        Navigator.pop(context);
+                      }).catchError((e) {
+                        loadingSnackBar(
+                            context: context,
+                            text: "An Error Ocurred",
+                            color: Colors.red);
+                      });
+                    },
+                    title: "Update Event Data?");
               },
             ),
             if (widget.transactionList
@@ -108,10 +121,23 @@ class _BodyState extends State<Body> {
                 0)
               RoundedButton(
                 text: "Delete Event",
-                press: () async {
-                  deleteEvent(context, event);
-                  Navigator.pop(context);
-                  loadingSnackBar(context: context, text: "Event Deleted");
+                press: () {
+                  PopUpDialog.confirmationDialog(
+                      context: context,
+                      onPressed: () async {
+                        await deleteEvent(context, event).then((value) {
+                          Navigator.pop(context);
+                          loadingSnackBar(
+                              context: context, text: "Event Deleted");
+                        }).catchError((e) {
+                          loadingSnackBar(
+                              context: context,
+                              text: "An Error Ocurred",
+                              color: Colors.red);
+                        });
+                        ;
+                      },
+                      title: "Delete the Event?");
                 },
               ),
             Divider(
@@ -124,7 +150,7 @@ class _BodyState extends State<Body> {
             Padding(
               padding: EdgeInsets.all(10),
               child: Text(
-                "All Event's Bookings",
+                "All Event's Order",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
             ),

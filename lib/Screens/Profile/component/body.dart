@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/date_picker.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/display_name.dart';
@@ -147,20 +148,33 @@ class _BodyState extends State<Body> {
               RoundedButton(
                   text: "Save Changes",
                   press: () {
-                    if (_formKey.currentState.validate()) {
-                      final userData = UserModel(
-                          displayName: _nameController.text.trim(),
-                          phoneNumber: _phoneNumberController.text.trim(),
-                          address: _addressController.text.trim(),
-                          dateOfBirth: _dobController.text.trim(),
-                          city: _cityController.text.trim(),
-                          description: _descriptionController.text.trim(),
-                          photoURL: _imageURL);
-                      editUserData(context, userData, imageFile);
-                      setState(() {});
-                      loadingSnackBar(
-                          context: context, text: "Profile Updated");
-                    }
+                    PopUpDialog.confirmationDialog(
+                        context: context,
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            final userData = UserModel(
+                                displayName: _nameController.text.trim(),
+                                phoneNumber: _phoneNumberController.text.trim(),
+                                address: _addressController.text.trim(),
+                                dateOfBirth: _dobController.text.trim(),
+                                city: _cityController.text.trim(),
+                                description: _descriptionController.text.trim(),
+                                photoURL: _imageURL);
+                            await editUserData(context, userData, imageFile)
+                                .then((value) {
+                              setState(() {});
+                              loadingSnackBar(
+                                  context: context, text: "Profile Updated");
+                            }).catchError((e) {
+                              loadingSnackBar(
+                                  context: context,
+                                  text: "An Error Ocurred",
+                                  color: Colors.red);
+                            });
+                            ;
+                          }
+                        },
+                        title: "Save Profile Data?");
                   }),
               SizedBox(height: 25),
             ],

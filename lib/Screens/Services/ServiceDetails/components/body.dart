@@ -9,6 +9,7 @@ import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/controllers/service_controller.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/text_formatter.dart';
@@ -357,57 +358,76 @@ class _BodyState extends State<Body> {
                   : RoundedButton(
                       text: "Update Service Data",
                       press: () {
-                        String errorMessage = "";
-                        if (_minOrder > _maxOrder) {
-                          errorMessage =
-                              "Min Order cannot be larger than Max Order";
-                        } else if (service.serviceType != "Catering") {
-                          num serviceHoursCount =
-                              TextFormatter.stringToTimeOfDay(_endTime).hour -
-                                  TextFormatter.stringToTimeOfDay(_startTime)
-                                      .hour;
-                          if (_maxOrder > serviceHoursCount)
-                            errorMessage =
-                                "Max Order can't be larger than number of service hours per day : " +
-                                    serviceHoursCount.toString() +
-                                    " hour(s)";
-                        }
-                        if (!_formKey.currentState.validate())
-                          errorMessage = "Please complete the service form";
-                        if (errorMessage == "") {
-                          final service = Service(
-                            serviceId: widget.service.serviceId,
-                            serviceName: _nameController.text.trim(),
-                            description: _descriptionController.text.trim(),
-                            price: num.parse(_priceController.text
-                                .trim()
-                                .replaceAll(".", "")),
-                            startServiceTime: _startTime,
-                            endServiceTime: _endTime,
-                            minOrder:
-                                num.parse(_minOrderController.text.trim()),
-                            maxOrder:
-                                num.parse(_maxOrderController.text.trim()),
-                            status: _status,
-                          );
-                          if (_addressController.text != "")
-                            service.address = _addressController.text.trim();
-                          if (_capacityController.text != "")
-                            service.capacity =
-                                num.parse(_capacityController.text.trim());
-                          if (_areaController.text != "")
-                            service.area =
-                                num.parse(_areaController.text.trim());
-                          setService(context: context, service: service);
-                          setState(() {});
-                          loadingSnackBar(
-                              context: context, text: "Service Updated");
-                        } else {
-                          loadingSnackBar(
-                              context: context,
-                              text: errorMessage,
-                              color: Colors.red);
-                        }
+                        PopUpDialog.confirmationDialog(
+                            context: context,
+                            onPressed: () async {
+                              String errorMessage = "";
+                              if (_minOrder > _maxOrder) {
+                                errorMessage =
+                                    "Min Order cannot be larger than Max Order";
+                              } else if (service.serviceType != "Catering") {
+                                num serviceHoursCount =
+                                    TextFormatter.stringToTimeOfDay(_endTime)
+                                            .hour -
+                                        TextFormatter.stringToTimeOfDay(
+                                                _startTime)
+                                            .hour;
+                                if (_maxOrder > serviceHoursCount)
+                                  errorMessage =
+                                      "Max Order can't be larger than number of service hours per day : " +
+                                          serviceHoursCount.toString() +
+                                          " hour(s)";
+                              }
+                              if (!_formKey.currentState.validate())
+                                errorMessage =
+                                    "Please complete the service form";
+                              if (errorMessage == "") {
+                                final service = Service(
+                                  serviceId: widget.service.serviceId,
+                                  serviceName: _nameController.text.trim(),
+                                  description:
+                                      _descriptionController.text.trim(),
+                                  price: num.parse(_priceController.text
+                                      .trim()
+                                      .replaceAll(".", "")),
+                                  startServiceTime: _startTime,
+                                  endServiceTime: _endTime,
+                                  minOrder: num.parse(
+                                      _minOrderController.text.trim()),
+                                  maxOrder: num.parse(
+                                      _maxOrderController.text.trim()),
+                                  status: _status,
+                                );
+                                if (_addressController.text != "")
+                                  service.address =
+                                      _addressController.text.trim();
+                                if (_capacityController.text != "")
+                                  service.capacity = num.parse(
+                                      _capacityController.text.trim());
+                                if (_areaController.text != "")
+                                  service.area =
+                                      num.parse(_areaController.text.trim());
+                                await setService(
+                                        context: context, service: service)
+                                    .then((value) {
+                                  setState(() {});
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "Service Updated");
+                                }).catchError((e) {
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "An Error Ocurred",
+                                      color: Colors.red);
+                                });
+                              } else {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: errorMessage,
+                                    color: Colors.red);
+                              }
+                            },
+                            title: "Update Service Data?");
                       },
                     ),
               SizedBox(height: 25),

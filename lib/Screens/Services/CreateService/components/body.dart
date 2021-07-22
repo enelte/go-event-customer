@@ -12,6 +12,7 @@ import 'package:go_event_customer/controllers/service_controller.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/services/auth_service.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
@@ -356,77 +357,94 @@ class _BodyState extends State<Body> {
                   ),
                   SizedBox(height: 25),
                   RoundedButton(
-                    text: "Create Service",
-                    press: () async {
-                      _uploading = true;
-                      String errorMessage = "";
-                      if (_minOrder > _maxOrder) {
-                        errorMessage =
-                            "Min Order cannot be larger than Max Order";
-                      } else if (_type.name != "Catering") {
-                        num serviceHoursCount =
-                            TextFormatter.stringToTimeOfDay(_endTime).hour -
-                                TextFormatter.stringToTimeOfDay(_startTime)
-                                    .hour;
-                        if (_maxOrder > serviceHoursCount)
-                          errorMessage =
-                              "Max Order can't be larger than number of service hours per day : " +
-                                  serviceHoursCount.toString() +
-                                  " hour(s)";
-                      }
-                      if (!_formKey.currentState.validate())
-                        errorMessage = "Please complete the service form";
-                      if (errorMessage == "") {
-                        final service = Service(
-                            vendorId: Provider.of<FirebaseAuthService>(context,
-                                    listen: false)
-                                .getCurrentUser()
-                                .uid,
-                            city: user.city,
-                            serviceName: _nameController.text.trim(),
-                            description: _descriptionController.text.trim(),
-                            price: num.parse(_priceController.text
-                                .trim()
-                                .replaceAll(".", "")),
-                            startServiceTime: _startTime,
-                            endServiceTime: _endTime,
-                            minOrder:
-                                num.parse(_minOrderController.text.trim()),
-                            maxOrder:
-                                num.parse(_maxOrderController.text.trim()),
-                            status: _status,
-                            serviceType: _type.name,
-                            category: _category,
-                            unit: _type.unit);
-                        _addressController.text != ""
-                            ? service.address = _addressController.text.trim()
-                            : service.address = user.address;
-                        if (_capacityController.text != "")
-                          service.capacity =
-                              num.parse(_capacityController.text.trim());
-                        if (_areaController.text != "")
-                          service.area = num.parse(_areaController.text.trim());
-
-                        await setService(
-                                context: context,
-                                service: service,
-                                imageList: _imageList)
-                            .whenComplete(() {
-                          loadingSnackBar(
-                              context: context, text: "Service Created");
-                          Navigator.of(context).pop();
-                          setState(() {
-                            _uploading = false;
-                          });
-                        });
-                      } else {
-                        loadingSnackBar(
+                      text: "Create Service",
+                      press: () {
+                        PopUpDialog.confirmationDialog(
                             context: context,
-                            text: errorMessage,
-                            color: Colors.red);
-                      }
-                    },
-                  ),
+                            onPressed: () async {
+                              _uploading = true;
+                              String errorMessage = "";
+                              if (_minOrder > _maxOrder) {
+                                errorMessage =
+                                    "Min Order cannot be larger than Max Order";
+                              } else if (_type.name != "Catering") {
+                                num serviceHoursCount =
+                                    TextFormatter.stringToTimeOfDay(_endTime)
+                                            .hour -
+                                        TextFormatter.stringToTimeOfDay(
+                                                _startTime)
+                                            .hour;
+                                if (_maxOrder > serviceHoursCount)
+                                  errorMessage =
+                                      "Max Order can't be larger than number of service hours per day : " +
+                                          serviceHoursCount.toString() +
+                                          " hour(s)";
+                              }
+                              if (!_formKey.currentState.validate())
+                                errorMessage =
+                                    "Please complete the service form";
+                              if (errorMessage == "") {
+                                final service = Service(
+                                    vendorId: Provider.of<FirebaseAuthService>(
+                                            context,
+                                            listen: false)
+                                        .getCurrentUser()
+                                        .uid,
+                                    city: user.city,
+                                    serviceName: _nameController.text.trim(),
+                                    description:
+                                        _descriptionController.text.trim(),
+                                    price: num.parse(_priceController.text
+                                        .trim()
+                                        .replaceAll(".", "")),
+                                    startServiceTime: _startTime,
+                                    endServiceTime: _endTime,
+                                    minOrder: num.parse(
+                                        _minOrderController.text.trim()),
+                                    maxOrder: num.parse(
+                                        _maxOrderController.text.trim()),
+                                    status: _status,
+                                    serviceType: _type.name,
+                                    category: _category,
+                                    unit: _type.unit);
+                                _addressController.text != ""
+                                    ? service.address =
+                                        _addressController.text.trim()
+                                    : service.address = user.address;
+                                if (_capacityController.text != "")
+                                  service.capacity = num.parse(
+                                      _capacityController.text.trim());
+                                if (_areaController.text != "")
+                                  service.area =
+                                      num.parse(_areaController.text.trim());
+
+                                await setService(
+                                        context: context,
+                                        service: service,
+                                        imageList: _imageList)
+                                    .then((value) {
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "Service Created");
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    _uploading = false;
+                                  });
+                                }).catchError((e) {
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "An Error Ocurred",
+                                      color: Colors.red);
+                                });
+                              } else {
+                                loadingSnackBar(
+                                    context: context,
+                                    text: errorMessage,
+                                    color: Colors.red);
+                              }
+                            },
+                            title: "Create Service?");
+                      }),
                   SizedBox(height: 25),
                 ],
               ),

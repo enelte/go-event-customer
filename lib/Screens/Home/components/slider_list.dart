@@ -79,7 +79,7 @@ class SliderList extends StatelessWidget {
                   stream: userData.role == "Customer"
                       ? database.transactionsStream()
                       : database.vendorTransactionsStream(sort: (lhs, rhs) {
-                          return sortTransaction(lhs, rhs, "Latest Bookings");
+                          return sortTransaction(lhs, rhs, "Latest Order");
                         }),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {

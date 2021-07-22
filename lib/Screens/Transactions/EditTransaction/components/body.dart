@@ -4,6 +4,7 @@ import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/date_picker.dart';
 import 'package:go_event_customer/models/Transaction.dart' as tran;
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/screens/Transactions/CreateTransaction/components/create_choose_event.dart';
 import 'package:go_event_customer/screens/Transactions/CreateTransaction/components/order_details.dart';
 import 'package:flutter/material.dart';
@@ -213,48 +214,60 @@ class _BodyState extends State<Body> {
                   RoundedButton(
                     text: "Edit Order",
                     press: () {
-                      if (_formKey.currentState.validate() &&
-                          _startTime != null &&
-                          _endTime != null) {
-                        if (!_uploading) {
-                          loadingSnackBar(
-                              context: context, text: "Order Updated");
-                          String transactionId =
-                              widget.transaction.transactionId;
-                          tran.Transaction editTrans = tran.Transaction(
-                              transactionId: transactionId,
-                              eventId: _eventId,
-                              notes: _notesController.text.trim(),
-                              transactionDate:
-                                  widget.transaction.transactionDate,
-                              bookingDate: _dateController.text.trim(),
-                              totalPrice: _totalPrice,
-                              quantity: _quantity,
-                              location: _locationController.text.trim(),
-                              startTime: _startTime,
-                              endTime: _endTime,
-                              status: needReConfirmation(
-                                      widget.transaction,
-                                      _notesController.text.trim(),
-                                      _dateController.text.trim(),
-                                      _locationController.text.trim(),
-                                      _startTime,
-                                      _endTime)
-                                  ? "Waiting for Confirmation"
-                                  : widget.transaction.status);
-                          setTransaction(context, editTrans)
-                              .whenComplete(() => Navigator.pop(context));
-                          setState(() {
-                            print(_uploading);
-                            _uploading = true;
-                          });
-                        }
-                      } else {
-                        loadingSnackBar(
-                            context: context,
-                            text: "Incomplete data, please recheck the order",
-                            color: Colors.red);
-                      }
+                      PopUpDialog.confirmationDialog(
+                          context: context,
+                          onPressed: () async {
+                            if (_formKey.currentState.validate() &&
+                                _startTime != null &&
+                                _endTime != null) {
+                              if (!_uploading) {
+                                String transactionId =
+                                    widget.transaction.transactionId;
+                                tran.Transaction editTrans = tran.Transaction(
+                                    transactionId: transactionId,
+                                    eventId: _eventId,
+                                    notes: _notesController.text.trim(),
+                                    transactionDate:
+                                        widget.transaction.transactionDate,
+                                    bookingDate: _dateController.text.trim(),
+                                    totalPrice: _totalPrice,
+                                    quantity: _quantity,
+                                    location: _locationController.text.trim(),
+                                    startTime: _startTime,
+                                    endTime: _endTime,
+                                    status: needReConfirmation(
+                                            widget.transaction,
+                                            _notesController.text.trim(),
+                                            _dateController.text.trim(),
+                                            _locationController.text.trim(),
+                                            _startTime,
+                                            _endTime)
+                                        ? "Waiting for Confirmation"
+                                        : widget.transaction.status);
+                                setTransaction(context, editTrans)
+                                    .then((value) {
+                                  loadingSnackBar(
+                                      context: context, text: "Order Updated");
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    _uploading = true;
+                                  });
+                                }).catchError((e) {
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "An Error Ocurred",
+                                      color: Colors.red);
+                                });
+                              }
+                            } else {
+                              loadingSnackBar(
+                                  context: context,
+                                  text:
+                                      "Incomplete data, please recheck the order",
+                                  color: Colors.red);
+                            }
+                          },
+                          title: "Save Order Changes?");
                     },
                   ),
                   SizedBox(height: 25),

@@ -15,7 +15,7 @@ class TransactionDetailsScreen extends StatelessWidget {
     Transaction transaction = serviceMap['transaction'];
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Booking Details",
+        title: "Order Details",
         backButton: true,
       ),
       body: Body(

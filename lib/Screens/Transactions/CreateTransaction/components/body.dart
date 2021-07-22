@@ -5,6 +5,7 @@ import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/date_picker.dart';
 import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/Transaction.dart' as tran;
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/screens/Transactions/CreateTransaction/components/create_choose_event.dart';
 import 'package:go_event_customer/screens/Transactions/CreateTransaction/components/order_details.dart';
 import 'package:flutter/material.dart';
@@ -224,45 +225,58 @@ class _BodyState extends State<Body> {
                   RoundedButton(
                     text: "Make Order",
                     press: () {
-                      if (_formKey.currentState.validate() &&
-                          _startTime != null &&
-                          _endTime != null) {
-                        if (!_uploading) {
-                          loadingSnackBar(
-                              context: context, text: "Order Created");
-                          tran.Transaction newTrans = tran.Transaction(
-                            customerId: customer.uid,
-                            serviceId: service.serviceId,
-                            vendorId: service.vendorId,
-                            serviceName: service.serviceName,
-                            eventId: _eventId,
-                            notes: _notesController.text.trim(),
-                            transactionDate: DateTime.now().toString(),
-                            bookingDate: _dateController.text.trim(),
-                            totalPrice: _totalPrice,
-                            quantity: _quantity,
-                            location: service.serviceType == "Venue"
-                                ? service.address
-                                : _locationController.text.trim(),
-                            startTime: _startTime,
-                            endTime: _endTime,
-                            status: "Waiting for Confirmation",
-                            transactionType: "On Going",
-                            reviewed: false,
-                          );
-                          setTransaction(context, newTrans)
-                              .whenComplete(() => Navigator.of(context).pop());
-                          setState(() {
-                            print(_uploading);
-                            _uploading = true;
-                          });
-                        }
-                      } else {
-                        loadingSnackBar(
-                            context: context,
-                            text: "Incomplete data, please recheck the order",
-                            color: Colors.red);
-                      }
+                      PopUpDialog.confirmationDialog(
+                          context: context,
+                          onPressed: () async {
+                            if (_formKey.currentState.validate() &&
+                                _startTime != null &&
+                                _endTime != null) {
+                              if (!_uploading) {
+                                tran.Transaction newTrans = tran.Transaction(
+                                  customerId: customer.uid,
+                                  serviceId: service.serviceId,
+                                  vendorId: service.vendorId,
+                                  serviceName: service.serviceName,
+                                  eventId: _eventId,
+                                  notes: _notesController.text.trim(),
+                                  transactionDate: DateTime.now().toString(),
+                                  bookingDate: _dateController.text.trim(),
+                                  totalPrice: _totalPrice,
+                                  quantity: _quantity,
+                                  location: service.serviceType == "Venue"
+                                      ? service.address
+                                      : _locationController.text.trim(),
+                                  startTime: _startTime,
+                                  endTime: _endTime,
+                                  status: "Waiting for Confirmation",
+                                  transactionType: "On Going",
+                                  reviewed: false,
+                                );
+                                await setTransaction(context, newTrans)
+                                    .then((value) {
+                                  loadingSnackBar(
+                                      context: context, text: "Order Created");
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    _uploading = true;
+                                  });
+                                }).catchError((e) {
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "An Error Ocurred",
+                                      color: Colors.red);
+                                });
+                              }
+                            } else {
+                              loadingSnackBar(
+                                  context: context,
+                                  text:
+                                      "Incomplete data, please recheck the order",
+                                  color: Colors.red);
+                            }
+                          },
+                          title:
+                              "Your order will be forwarded to the vendor. Proceed?");
                     },
                   ),
                   Padding(
@@ -282,45 +296,56 @@ class _BodyState extends State<Body> {
                   RoundedButton(
                     text: "Plan Order",
                     press: () {
-                      if (_formKey.currentState.validate() &&
-                          _startTime != null &&
-                          _endTime != null) {
-                        if (!_uploading) {
-                          loadingSnackBar(
-                              context: context, text: "Order Planned");
-                          tran.Transaction newTrans = tran.Transaction(
-                            customerId: customer.uid,
-                            serviceId: service.serviceId,
-                            vendorId: service.vendorId,
-                            serviceName: service.serviceName,
-                            eventId: _eventId,
-                            notes: _notesController.text.trim(),
-                            transactionDate: DateTime.now().toString(),
-                            bookingDate: _dateController.text.trim(),
-                            totalPrice: _totalPrice,
-                            quantity: _quantity,
-                            location: service.serviceType == "Venue"
-                                ? service.address
-                                : _locationController.text.trim(),
-                            startTime: _startTime,
-                            endTime: _endTime,
-                            status: "Planned",
-                            transactionType: "Planned",
-                            reviewed: false,
-                          );
-                          setTransaction(context, newTrans)
-                              .whenComplete(() => Navigator.of(context).pop());
-                          setState(() {
-                            print(_uploading);
-                            _uploading = true;
-                          });
-                        }
-                      } else {
-                        loadingSnackBar(
-                            context: context,
-                            text: "Incomplete data, please recheck the order",
-                            color: Colors.red);
-                      }
+                      PopUpDialog.confirmationDialog(
+                          context: context,
+                          onPressed: () async {
+                            if (_formKey.currentState.validate() &&
+                                _startTime != null &&
+                                _endTime != null) {
+                              if (!_uploading) {
+                                tran.Transaction newTrans = tran.Transaction(
+                                  customerId: customer.uid,
+                                  serviceId: service.serviceId,
+                                  vendorId: service.vendorId,
+                                  serviceName: service.serviceName,
+                                  eventId: _eventId,
+                                  notes: _notesController.text.trim(),
+                                  transactionDate: DateTime.now().toString(),
+                                  bookingDate: _dateController.text.trim(),
+                                  totalPrice: _totalPrice,
+                                  quantity: _quantity,
+                                  location: service.serviceType == "Venue"
+                                      ? service.address
+                                      : _locationController.text.trim(),
+                                  startTime: _startTime,
+                                  endTime: _endTime,
+                                  status: "Planned",
+                                  transactionType: "Planned",
+                                  reviewed: false,
+                                );
+                                setTransaction(context, newTrans).then((value) {
+                                  loadingSnackBar(
+                                      context: context, text: "Order Planned");
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    _uploading = true;
+                                  });
+                                }).catchError((e) {
+                                  loadingSnackBar(
+                                      context: context,
+                                      text: "An Error Ocurred",
+                                      color: Colors.red);
+                                });
+                              }
+                            } else {
+                              loadingSnackBar(
+                                  context: context,
+                                  text:
+                                      "Incomplete data, please recheck the order",
+                                  color: Colors.red);
+                            }
+                          },
+                          title: "Plan the Order?");
                     },
                   ),
                   Padding(

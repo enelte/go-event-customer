@@ -4,6 +4,7 @@ import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
 import 'package:go_event_customer/controllers/event_controller.dart';
 import 'package:go_event_customer/models/Event.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/validator.dart';
 
 class CreateEventForm extends StatelessWidget {
@@ -53,16 +54,28 @@ class CreateEventForm extends StatelessWidget {
           RoundedButton(
               text: "Create Event",
               press: () {
-                if (_eventFormKey.currentState.validate()) {
-                  final event = Event(
-                    eventName: _nameController.text.trim(),
-                    eventBudget:
-                        num.parse(_budgetController.text.replaceAll(".", "")),
-                  );
-                  setEvent(context, event);
-                  onCreate();
-                  loadingSnackBar(context: context, text: "Event Created");
-                }
+                PopUpDialog.confirmationDialog(
+                    context: context,
+                    onPressed: () async {
+                      if (_eventFormKey.currentState.validate()) {
+                        final event = Event(
+                          eventName: _nameController.text.trim(),
+                          eventBudget: num.parse(
+                              _budgetController.text.replaceAll(".", "")),
+                        );
+                        await setEvent(context, event).then((value) {
+                          loadingSnackBar(
+                              context: context, text: "Event Created");
+                        }).catchError((e) {
+                          loadingSnackBar(
+                              context: context,
+                              text: "an Error Occurred",
+                              color: Colors.red);
+                        });
+                        onCreate();
+                      }
+                    },
+                    title: "Create Event?");
               }),
         ],
       ),

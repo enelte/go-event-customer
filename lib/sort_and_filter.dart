@@ -65,7 +65,7 @@ int sortTransaction(tr.Transaction lhs, tr.Transaction rhs, String sortType) {
     return (lhs.customerId.compareTo(rhs.customerId)).round();
   if (sortType == "Vendor Name")
     return (lhs.vendorId.compareTo(rhs.vendorId)).round();
-  if (sortType == "Latest Bookings")
+  if (sortType == "Latest Order")
     return (DateTime.parse(rhs.transactionDate)
             .compareTo(DateTime.parse(lhs.transactionDate)))
         .round();
