@@ -20,28 +20,36 @@ class SwitchInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(
-          title,
-          style: TextStyle(color: kPrimaryColor, fontSize: 16),
-        ),
-        Row(
-          children: [
-            Switch(
-              value: status,
-              onChanged: onChanged,
-              activeTrackColor: kPrimaryColor,
-              activeColor: kPrimaryLightColor,
-            ),
-            Text(
-              status ? trueValue : falseValue,
-              style: TextStyle(color: status ? Colors.green : Colors.redAccent),
-            ),
-          ],
-        )
-      ],
+    return Container(
+      width: 280,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+                color: kPrimaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
+          ),
+          Row(
+            children: [
+              Switch(
+                value: status,
+                onChanged: onChanged,
+                activeTrackColor: Colors.green,
+                inactiveTrackColor: Colors.redAccent,
+                activeColor: kPrimaryLightColor,
+              ),
+              Text(
+                status ? trueValue : falseValue,
+                style:
+                    TextStyle(color: status ? Colors.green : Colors.redAccent),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

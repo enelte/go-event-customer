@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/home_screen.dart';
-import 'package:go_event_customer/Screens/Welcome/welcome_screen.dart';
+import 'package:go_event_customer/Screens/Auth/Welcome/welcome_screen.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/routes.dart';

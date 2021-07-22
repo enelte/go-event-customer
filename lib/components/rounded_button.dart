@@ -25,7 +25,7 @@ class RoundedButton extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 10),
       width: getProportionateScreenWidth(width),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(18),
         child: TextButton(
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),

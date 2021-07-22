@@ -6,6 +6,7 @@ import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:go_event_customer/size_config.dart';
+import 'package:go_event_customer/text_formatter.dart';
 import 'package:provider/provider.dart';
 import '../constant.dart';
 
@@ -23,7 +24,7 @@ class ServiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final database = Provider.of<FirestoreService>(context, listen: false);
     return StreamBuilder<UserModel>(
-        stream: database.vendorDataStream(service.vendorId),
+        stream: database.specificUserDataStream(service.vendorId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             UserModel vendor = snapshot.data;
@@ -39,24 +40,50 @@ class ServiceCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        child: AspectRatio(
-                          aspectRatio: 1.1,
-                          child: Container(
-                            decoration:
-                                BoxDecoration(color: kPrimaryLightColor),
-                            child: service.images.isEmpty
-                                ? Container()
-                                : Hero(
-                                    tag: service.serviceId,
-                                    child: Image.network(
-                                      service.images[0],
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
+                      Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            child: AspectRatio(
+                              aspectRatio: 1.1,
+                              child: Container(
+                                decoration:
+                                    BoxDecoration(color: kPrimaryLightColor),
+                                child: service.images.isEmpty
+                                    ? Container()
+                                    : Hero(
+                                        tag: service.serviceId,
+                                        child: service.images.isEmpty
+                                            ? Image.network(avatarImage.url,
+                                                fit: BoxFit.fill)
+                                            : Image.network(service.images[0],
+                                                fit: BoxFit.fill),
+                                      ),
+                              ),
+                            ),
                           ),
-                        ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  borderRadius: BorderRadius.circular(29)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  child: Text(
+                                    service.category,
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: EdgeInsets.all(8.0),
@@ -80,14 +107,14 @@ class ServiceCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    "Rp.${service.price}/",
+                                    TextFormatter.moneyFormatter(service.price),
                                     style: TextStyle(
-                                      fontSize: getProportionateScreenWidth(15),
+                                      fontSize: getProportionateScreenWidth(14),
                                       fontWeight: FontWeight.w800,
                                       color: kPrimaryColor,
                                     ),
                                   ),
-                                  Text(service.unit,
+                                  Text("/" + service.unit,
                                       style: TextStyle(
                                         fontSize:
                                             getProportionateScreenWidth(12),
@@ -104,7 +131,7 @@ class ServiceCard extends StatelessWidget {
                                   children: [
                                     Icon(Icons.location_on),
                                     Text(
-                                      vendor.city,
+                                      service.city,
                                       style: TextStyle(
                                         fontSize:
                                             getProportionateScreenWidth(10),
@@ -113,20 +140,20 @@ class ServiceCard extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.star),
-                                    Text(
-                                      //"${service.rating}",
-                                      "4.5",
-                                      style: TextStyle(
-                                        fontSize:
-                                            getProportionateScreenWidth(10),
-                                        color: Colors.black,
+                                if (service.rating != null)
+                                  Row(
+                                    children: [
+                                      Icon(Icons.star),
+                                      Text(
+                                        service.rating.toStringAsFixed(2),
+                                        style: TextStyle(
+                                          fontSize:
+                                              getProportionateScreenWidth(10),
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
                               ],
                             ),
                           ],

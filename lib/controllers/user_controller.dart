@@ -26,37 +26,61 @@ Future<void> editUserData(
   }
 }
 
-Future<void> signUp(
+Future<String> signUp(
     BuildContext context, UserModel userData, File imageFile) async {
   try {
     //register User, get the UID and save the user data
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
     final registeredUser = await auth.registerWithEmailAndPassword(
         userData.email, userData.password);
+    if (registeredUser is String) return registeredUser;
 
     if (imageFile != null) {
       //upload image to storage
-      final storage =
-          Provider.of<FirebaseStorageService>(context, listen: false);
+      final storage = FirebaseStorageService(uid: registeredUser.uid);
       String downloadUrl = await storage.uploadProfilePicture(file: imageFile);
       userData.photoURL = downloadUrl;
+      await imageFile.delete();
     }
 
-    userData.role = "Customer";
     final database = FirestoreService(uid: registeredUser.uid);
     await database.setUserData(userData);
-    await imageFile.delete();
+    return "success";
   } catch (e) {
     print(e);
+    return e;
   }
 }
 
-Future<void> signIn(BuildContext context, String email, String password) async {
+Future<String> signIn(
+    BuildContext context, String email, String password) async {
   try {
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-    await auth.signInWithEmailAndPassword(email, password);
+    final loggedUser = await auth.signInWithEmailAndPassword(email, password);
+    if (loggedUser is String) {
+      return loggedUser;
+    }
+    return "success";
   } catch (e) {
     print(e);
+    return e;
+  }
+}
+
+Future<String> sendPasswordResetEmail(
+    BuildContext context, String email) async {
+  try {
+    final auth = Provider.of<FirebaseAuthService>(context, listen: false);
+    final message = await auth.sendPasswordResetEmail(email);
+    if (message is String) {
+      return message;
+    }
+    return "Success, Please check your email at " +
+        email +
+        " and reset your password";
+  } catch (e) {
+    print(e);
+    return e;
   }
 }
 

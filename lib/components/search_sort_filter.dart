@@ -6,8 +6,16 @@ import '../size_config.dart';
 class SearchSortFilter extends StatelessWidget {
   const SearchSortFilter({
     Key key,
+    this.onChanged,
+    this.searchController,
+    this.sort,
+    this.filter,
   }) : super(key: key);
 
+  final ValueChanged<String> onChanged;
+  final TextEditingController searchController;
+  final Function sort;
+  final Function filter;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -17,6 +25,8 @@ class SearchSortFilter extends StatelessWidget {
         RoundedInputField(
           icon: Icons.search,
           hintText: "Search",
+          onChanged: onChanged,
+          controller: searchController,
         ),
         Padding(
           padding:
@@ -28,7 +38,7 @@ class SearchSortFilter extends StatelessWidget {
                   color: kPrimaryLightColor,
                   padding: EdgeInsets.only(top: 10),
                   constraints: BoxConstraints(),
-                  onPressed: () {}),
+                  onPressed: sort),
               Text(
                 "Sort",
                 style: TextStyle(
@@ -42,11 +52,12 @@ class SearchSortFilter extends StatelessWidget {
         Column(
           children: [
             IconButton(
-                icon: Icon(Icons.filter),
-                color: kPrimaryLightColor,
-                padding: EdgeInsets.only(top: 10, bottom: 1),
-                constraints: BoxConstraints(),
-                onPressed: () {}),
+              icon: Icon(Icons.filter_alt),
+              color: kPrimaryLightColor,
+              padding: EdgeInsets.only(top: 10, bottom: 1),
+              constraints: BoxConstraints(),
+              onPressed: filter,
+            ),
             Text(
               "Filter",
               style: TextStyle(

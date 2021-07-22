@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/constant.dart';
 
-void loadingSnackBar(BuildContext context, String text) {
+void loadingSnackBar(
+    {@required BuildContext context, @required String text, Color color}) {
   final snackBar = SnackBar(
     content: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          text,
-          style: TextStyle(color: kPrimaryLightColor, fontSize: 15),
-        ),
         Container(
-          width: 18,
-          height: 18,
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(kPrimaryLightColor),
+          width: 320,
+          child: Text(
+            text,
+            style: TextStyle(color: kPrimaryLightColor, fontSize: 15),
+            maxLines: 2,
           ),
-        )
+        ),
       ],
     ),
-    backgroundColor: kPrimaryColor,
+    backgroundColor: color == null ? kPrimaryColor : color,
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

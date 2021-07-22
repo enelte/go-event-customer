@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Validator {
   Validator._();
 
@@ -77,8 +79,47 @@ class Validator {
 
   static String budgetValidator(String value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your budget!';
+      return 'Please enter an amount!';
     }
     return null;
+  }
+
+  static num quantityValidator(
+      TextEditingController value, int minOrder, int maxOrder) {
+    int quantity;
+    if (value.text.trim() == "") {
+      quantity = 0;
+    } else {
+      quantity = int.parse(value.text.trim());
+      if (quantity < minOrder) {
+        quantity = minOrder;
+        value.text = quantity.toString();
+      }
+      if (quantity > maxOrder) {
+        quantity = maxOrder;
+        value.text = quantity.toString();
+      }
+    }
+    return quantity;
+  }
+
+  static num hourValidator(TextEditingController value) {
+    int hour;
+    int minOrder = 1;
+    int maxOrder = 24;
+    if (value.text.trim() == "") {
+      hour = 0;
+    } else {
+      hour = int.parse(value.text.trim());
+      if (hour < minOrder) {
+        hour = minOrder;
+        value.text = hour.toString();
+      }
+      if (hour > maxOrder) {
+        hour = maxOrder;
+        value.text = hour.toString();
+      }
+    }
+    return hour;
   }
 }

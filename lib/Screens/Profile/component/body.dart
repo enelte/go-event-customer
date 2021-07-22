@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'package:go_event_customer/components/loading_snackbar.dart';
+import 'package:go_event_customer/date_picker.dart';
+import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/validator.dart';
-import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/components/display_name.dart';
 import 'package:go_event_customer/components/main_background.dart';
@@ -14,8 +15,6 @@ import 'package:go_event_customer/services/auth_service.dart';
 import 'package:go_event_customer/services/image_picker_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
-import '../../../constant.dart';
 
 class Body extends StatefulWidget {
   final UserModel userData;
@@ -86,7 +85,7 @@ class _BodyState extends State<Body> {
                 },
               ),
               displayName(widget.userData.displayName, user.email,
-                  widget.userData.phoneNumber),
+                  "+62" + widget.userData.phoneNumber),
               SizedBox(height: 25),
               RoundedInputField(
                 title: "Display Name",
@@ -98,9 +97,11 @@ class _BodyState extends State<Body> {
               RoundedInputField(
                 title: "Phone Number",
                 hintText: "Phone Number",
+                prefixText: "+62 ",
                 icon: Icons.phone_android,
                 controller: _phoneNumberController,
                 validator: Validator.phoneNumberValidator,
+                digitInput: true,
               ),
               RoundedInputField(
                 title: "Address",
@@ -108,6 +109,7 @@ class _BodyState extends State<Body> {
                 icon: Icons.home,
                 controller: _addressController,
                 validator: Validator.addressValidator,
+                maxLines: 4,
               ),
               RoundedInputField(
                 validator: Validator.cityValidator,
@@ -116,67 +118,63 @@ class _BodyState extends State<Body> {
                 icon: Icons.location_city,
                 controller: _cityController,
               ),
-              RoundedInputField(
-                validator: Validator.dateValidator,
-                hintText: "Date Of Birth",
-                icon: Icons.date_range,
-                controller: _dobController,
-                readOnly: true,
-                suffix: SizedBox(
-                  height: 30,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: kPrimaryColor),
-                    child: Text("Select",
-                        style:
-                            TextStyle(fontSize: 11, color: kPrimaryLightColor)),
-                    onPressed: () async {
-                      DateFormat dateFormat = DateFormat("dd MMMM yyyy");
-                      DateTime selectedDate = _dobController.text.trim() != ""
-                          ? dateFormat.parse(_dobController.text.trim())
-                          : DateTime.now();
-                      final DateTime dob = await showDatePicker(
+              if (widget.userData.role == "Customer")
+                RoundedInputField(
+                  validator: Validator.dateValidator,
+                  hintText: "Date Of Birth",
+                  icon: Icons.date_range,
+                  controller: _dobController,
+                  readOnly: true,
+                  onTap: () async {
+                    pickDate(
                         context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime(1960),
+                        firstDate: DateTime(1950),
                         lastDate: DateTime.now(),
-                        errorFormatText: 'Enter valid date',
-                        errorInvalidText: 'Enter date in valid range',
-                        fieldLabelText: 'Date of Birth',
-                        fieldHintText: 'Month/Date/Year',
-                        initialEntryMode: DatePickerEntryMode.input,
-                      );
-
-                      if (dob != null && dob != selectedDate) {
-                        setState(() {
+                        dateController: _dobController,
+                        onDatePicked: (dob, dateFormat) {
                           _dobController.text = dateFormat.format(dob);
                         });
-                      }
-                    },
-                  ),
+                  },
                 ),
-              ),
               RoundedInputField(
                 title: "Description",
                 hintText: "Description",
                 maxLines: 4,
                 icon: Icons.description,
                 controller: _descriptionController,
+                validator: Validator.noValidator,
               ),
               SizedBox(height: 25),
               RoundedButton(
                   text: "Save Changes",
                   press: () {
-                    if (_formKey.currentState.validate()) {
-                      final userData = UserModel(
-                          displayName: _nameController.text.trim(),
-                          phoneNumber: _phoneNumberController.text.trim(),
-                          address: _addressController.text.trim(),
-                          dateOfBirth: _dobController.text.trim(),
-                          city: _cityController.text.trim(),
-                          description: _descriptionController.text.trim(),
-                          photoURL: _imageURL);
-                      editUserData(context, userData, imageFile);
-                    }
+                    PopUpDialog.confirmationDialog(
+                        context: context,
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            final userData = UserModel(
+                                displayName: _nameController.text.trim(),
+                                phoneNumber: _phoneNumberController.text.trim(),
+                                address: _addressController.text.trim(),
+                                dateOfBirth: _dobController.text.trim(),
+                                city: _cityController.text.trim(),
+                                description: _descriptionController.text.trim(),
+                                photoURL: _imageURL);
+                            await editUserData(context, userData, imageFile)
+                                .then((value) {
+                              setState(() {});
+                              loadingSnackBar(
+                                  context: context, text: "Profile Updated");
+                            }).catchError((e) {
+                              loadingSnackBar(
+                                  context: context,
+                                  text: "An Error Ocurred",
+                                  color: Colors.red);
+                            });
+                            ;
+                          }
+                        },
+                        title: "Save Profile Data?");
                   }),
               SizedBox(height: 25),
             ],

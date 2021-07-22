@@ -12,9 +12,13 @@ class ProfileScreen extends StatelessWidget {
     final userData = Provider.of<UserModel>(context);
     return Scaffold(
       appBar: CustomAppBar(title: "Profile", backButton: true),
-      body: Body(
-        userData: userData,
-      ),
+      body: userData != null
+          ? Body(
+              userData: userData,
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: selectedIndex,
       ),
