@@ -19,54 +19,59 @@ class SearchSortFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        RoundedInputField(
-          icon: Icons.search,
-          hintText: "Search",
-          onChanged: onChanged,
-          controller: searchController,
-        ),
-        Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-          child: Column(
+    return Container(
+      height:77,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          RoundedInputField(
+            icon: Icons.search,
+            hintText: "Search",
+            width: 250,
+            onChanged: onChanged,
+            controller: searchController,
+          ),
+          Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+            child: Column(
+              children: [
+                IconButton(
+                    icon: Icon(Icons.sort),
+                    color: kPrimaryLightColor,
+                    padding: EdgeInsets.only(top: 18),
+                    constraints: BoxConstraints(),
+                    onPressed: sort),
+                Text(
+                  "Sort",
+                  style: TextStyle(
+                    color: kPrimaryLightColor,
+                    fontSize: getProportionateScreenWidth(10),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
             children: [
               IconButton(
-                  icon: Icon(Icons.sort),
-                  color: kPrimaryLightColor,
-                  padding: EdgeInsets.only(top: 10),
-                  constraints: BoxConstraints(),
-                  onPressed: sort),
+                icon: Icon(Icons.filter_alt),
+                color: kPrimaryLightColor,
+                padding: EdgeInsets.only(top: 18, bottom: 1),
+                constraints: BoxConstraints(),
+                onPressed: filter,
+              ),
               Text(
-                "Sort",
+                "Filter",
                 style: TextStyle(
-                  color: kPrimaryLightColor,
-                  fontSize: getProportionateScreenWidth(10),
-                ),
+                    color: kPrimaryLightColor,
+                    fontSize: getProportionateScreenWidth(10)),
               ),
             ],
           ),
-        ),
-        Column(
-          children: [
-            IconButton(
-              icon: Icon(Icons.filter_alt),
-              color: kPrimaryLightColor,
-              padding: EdgeInsets.only(top: 10, bottom: 1),
-              constraints: BoxConstraints(),
-              onPressed: filter,
-            ),
-            Text(
-              "Filter",
-              style: TextStyle(
-                  color: kPrimaryLightColor,
-                  fontSize: getProportionateScreenWidth(10)),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

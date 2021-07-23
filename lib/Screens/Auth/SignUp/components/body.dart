@@ -15,10 +15,7 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "SIGN UP",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    
             Padding(
               padding: EdgeInsets.symmetric(
                 vertical: getProportionateScreenHeight(40),

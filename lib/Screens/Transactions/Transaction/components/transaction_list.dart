@@ -134,7 +134,7 @@ class TransactionList extends StatelessWidget {
                       itemCount: transactionList.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 0.8,
+                        childAspectRatio: 0.75,
                       ),
                       itemBuilder: (context, index) {
                         return Padding(

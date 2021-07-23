@@ -15,10 +15,6 @@ class Body extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "WELCOME TO GO-EVENT",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
             Padding(
               padding: EdgeInsets.symmetric(
                   vertical: getProportionateScreenHeight(80)),

@@ -35,7 +35,7 @@ class EventCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 40,
+                        height: getProportionateScreenHeight(45),
                         child: Text(
                           event.eventName,
                           style: TextStyle(

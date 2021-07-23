@@ -33,10 +33,7 @@ class _BodyState extends State<Body> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "LOGIN",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              
               Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: getProportionateScreenHeight(20),

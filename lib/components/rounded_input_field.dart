@@ -76,7 +76,7 @@ class RoundedInputField extends StatelessWidget {
             onFieldSubmitted: onFieldSubmitted,
             onTap: onTap,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+              contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical:(5*maxLines.toDouble())),
               prefixIcon: icon != null
                   ? Icon(
                       icon,

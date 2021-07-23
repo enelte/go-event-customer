@@ -12,7 +12,7 @@ import '../size_config.dart';
 class OrderCard extends StatelessWidget {
   const OrderCard({
     Key key,
-    this.width = 155,
+    this.width = 160,
     @required this.order,
   }) : super(key: key);
 
@@ -132,7 +132,7 @@ class OrderCardBuilder extends StatelessWidget {
                                               : avatarImage,
                                         ),
                                         Container(
-                                          width: 100,
+                                          width: getProportionateScreenWidth(90),
                                           child: Text(
                                             order.serviceName,
                                             style: TextStyle(
@@ -176,6 +176,7 @@ class OrderCardBuilder extends StatelessWidget {
                             child: Text(
                               order.status,
                               style: TextStyle(
+                                fontSize: getProportionateScreenWidth(13),
                                 color: order.transactionType == "On Going"
                                     ? kPrimaryColor
                                     : order.transactionType == "Cancelled"
@@ -186,7 +187,7 @@ class OrderCardBuilder extends StatelessWidget {
                               ),
                               maxLines: 2,
                             ),
-                            height: getProportionateScreenHeight(20)),
+                            height: getProportionateScreenHeight(35)),
                       ),
                     ],
                   ),
@@ -226,7 +227,7 @@ class OrderCardData extends StatelessWidget {
               size: getProportionateScreenWidth(14), color: Colors.white),
           SizedBox(width: 10),
           Container(
-            width: 120,
+            width: getProportionateScreenWidth(110),
             child: Text(
               text,
               style: TextStyle(

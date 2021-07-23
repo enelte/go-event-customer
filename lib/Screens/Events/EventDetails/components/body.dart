@@ -224,7 +224,7 @@ class EventDetailsBuilder extends StatelessWidget {
                 itemCount: _transactionList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
                   return Padding(
@@ -302,7 +302,7 @@ class BudgetBox extends StatelessWidget {
                         "out of " +
                             TextFormatter.moneyFormatter(event.eventBudget),
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w400),
+                            fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.w400),
                       ),
                       totalSpending > event.eventBudget
                           ? Text(
@@ -310,7 +310,7 @@ class BudgetBox extends StatelessWidget {
                                   TextFormatter.moneyFormatter(
                                       totalSpending - event.eventBudget),
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: getProportionateScreenWidth(13),
                                   fontWeight: FontWeight.w400,
                                   color: Colors.red),
                             )

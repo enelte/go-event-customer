@@ -14,8 +14,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(bottom != null
-      ? getProportionateScreenHeight(140)
-      : getProportionateScreenHeight(70));
+      ? 140
+      : 70);
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -27,15 +27,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Column(
         children: [
           Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.w400),
+            title.toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize:getProportionateScreenWidth(14)),
             maxLines: 2,
           )
         ],
       ),
       leading: backButton
           ? IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back_ios),
               color: kPrimaryLightColor,
               onPressed: () {
                 Navigator.pop(context, false);

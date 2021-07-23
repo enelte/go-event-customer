@@ -47,14 +47,10 @@ class _VendorSignUpState extends State<VendorSignUp> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: getProportionateScreenHeight(60),
+                  vertical: getProportionateScreenHeight(30),
                 ),
                 child: Column(
-                  children: [
-                    Text(
-                      "SIGNUP AS VENDOR",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                  children: [              
                     ProfilePic(
                       imageFile: imageFile,
                       resetImage: () async {

@@ -49,14 +49,10 @@ class _CustomerSignUpState extends State<CustomerSignUp> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: getProportionateScreenHeight(60),
+                  vertical: getProportionateScreenHeight(30),
                 ),
                 child: Column(
                   children: [
-                    Text(
-                      "SIGNUP AS CUSTOMER",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
                     ProfilePic(
                       imageFile: imageFile,
                       resetImage: () async {
