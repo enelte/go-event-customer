@@ -139,17 +139,19 @@ class PopUpDialog {
                       stream: database.serviceTypesStream(),
                       builder: (context, snapshot) {
                         List<ServiceType> serviceTypeList = [
-                          ServiceType(name: "All Venue", typeId: "All Venue")
+                          ServiceType(
+                              name: "All Service", typeId: "All Service")
                         ];
                         if (snapshot.hasData) {
                           serviceTypeList.addAll(snapshot.data);
                           return Column(
                             children: [
                               DropDownInputField(
-                                title: "Select Venue Type",
+                                title: "Select Service Type",
                                 width: 274,
                                 icon: Icons.star,
-                                value: _typeId == null ? "All Venue" : _typeId,
+                                value:
+                                    _typeId == null ? "All Service" : _typeId,
                                 dropDownItems:
                                     serviceTypeList.map((ServiceType type) {
                                   return new DropdownMenuItem(
@@ -179,7 +181,7 @@ class PopUpDialog {
                                   print(_typeId);
                                 },
                               ),
-                              if (_typeId != null && _typeId != "All Venue")
+                              if (_typeId != null && _typeId != "All Service")
                                 StreamBuilder<ServiceType>(
                                   stream: database.serviceTypeStream(
                                       typeId: _typeId),
@@ -233,10 +235,19 @@ class PopUpDialog {
                                   },
                                 ),
                               RoundedInputField(
-                                title: "Location",
+                                title: "City Location",
                                 hintText: "City (e.g Jakarta)",
                                 icon: Icons.location_on,
                                 controller: _locationController,
+                                onChanged: (value) {
+                                  if (value != "")
+                                    _locationController.text =
+                                        value.toUpperCase();
+                                  _locationController.selection =
+                                      TextSelection.fromPosition(TextPosition(
+                                          offset:
+                                              _locationController.text.length));
+                                },
                               )
                             ],
                           );
@@ -263,8 +274,10 @@ class PopUpDialog {
                                 if (filter == null) {
                                   filter = new Service();
                                 }
-                                filter.serviceName = _typeName;
-                                filter.serviceType = _typeId;
+                                filter.serviceName =
+                                    _typeId == "All Service" ? null : _typeName;
+                                filter.serviceType =
+                                    _typeId == "All Service" ? null : _typeId;
                                 filter.category = _category == "All Category"
                                     ? null
                                     : _category;

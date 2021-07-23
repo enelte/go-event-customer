@@ -203,6 +203,13 @@ class FirestoreService {
     await reference.set(transaction.toMap(), SetOptions(merge: true));
   }
 
+  //Method to delete service entry
+  Future<void> deleteTransaction(tran.Transaction transaction) async {
+    final path = FirestorePath.transaction(transaction.transactionId);
+    final reference = FirebaseFirestore.instance.doc(path);
+    await reference.delete();
+  }
+
   //Get Specific Event Data
   Stream<tran.Transaction> transactionStream(tran.Transaction transaction) {
     final path = FirestorePath.transaction(transaction.transactionId);

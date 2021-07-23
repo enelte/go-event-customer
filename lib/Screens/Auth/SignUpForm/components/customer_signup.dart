@@ -115,6 +115,12 @@ class _CustomerSignUpState extends State<CustomerSignUp> {
                       icon: Icons.location_city,
                       controller: _cityController,
                       validator: Validator.cityValidator,
+                      onChanged: (value) {
+                        if (value != "")
+                          _cityController.text = value.toUpperCase();
+                        _cityController.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _cityController.text.length));
+                      },
                     ),
                     RoundedInputField(
                       title: "Date Of Birth",

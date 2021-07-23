@@ -158,13 +158,14 @@ class _ProofOfPaymentListScreenState extends State<ProofOfPaymentListScreen> {
                           },
                         ),
                       SizedBox(height: 25),
-                      Container(
-                        width: 280,
-                        child: Text(
-                          "Disclaimer : \n Please upload the correct payment proof, uploading incorrect or fake proof may cause Order cancellation without refund by the vendor",
-                          style: TextStyle(color: Colors.red),
+                      if (user.role == "Customer")
+                        Container(
+                          width: 280,
+                          child: Text(
+                            "Disclaimer : \n Please upload the correct payment proof, uploading incorrect or fake proof may cause Order cancellation without refund by the vendor",
+                            style: TextStyle(color: Colors.red),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),

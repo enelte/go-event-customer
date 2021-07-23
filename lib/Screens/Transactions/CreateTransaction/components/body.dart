@@ -103,7 +103,7 @@ class _BodyState extends State<Body> {
                                   color: kPrimaryColor,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Text(vendor.phoneNumber)
+                            Text("+62 " + vendor.phoneNumber)
                           ],
                         ),
                       ],

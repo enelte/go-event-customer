@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_event_customer/components/dropdown_input_field.dart';
 import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
@@ -8,6 +9,7 @@ import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/controllers/service_controller.dart';
 import 'package:go_event_customer/models/Service.dart';
+import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/routes.dart';
@@ -19,7 +21,9 @@ import 'package:provider/provider.dart';
 class Body extends StatefulWidget {
   final Service service;
   final UserModel vendor;
-  const Body({Key key, this.service, this.vendor}) : super(key: key);
+  final ServiceType serviceType;
+  const Body({Key key, this.service, this.vendor, this.serviceType})
+      : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -37,6 +41,8 @@ class _BodyState extends State<Body> {
   final _startServiceTimeController = TextEditingController();
   final _endServiceTimeController = TextEditingController();
   final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
+  String _category;
   num _minOrder;
   num _maxOrder;
   String _startTime;
@@ -58,11 +64,13 @@ class _BodyState extends State<Body> {
     _areaController.text = widget.service.area.toString();
     _capacityController.text = widget.service.capacity.toString();
     _addressController.text = widget.service.address;
+    _cityController.text = widget.service.city;
     _minOrder = widget.service.minOrder;
     _maxOrder = widget.service.maxOrder;
     _startTime = widget.service.startServiceTime;
     _endTime = widget.service.endServiceTime;
     _status = widget.service.status;
+    _category = widget.service.category;
   }
 
   @override
@@ -75,11 +83,13 @@ class _BodyState extends State<Body> {
     _areaController.dispose();
     _capacityController.dispose();
     _addressController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ServiceType _type = widget.serviceType;
     Service service = widget.service;
     UserModel vendor = widget.vendor;
     UserModel user = Provider.of<UserModel>(context);
@@ -100,8 +110,16 @@ class _BodyState extends State<Body> {
                   height: getProportionateScreenHeight(
                       0.35 * SizeConfig.screenHeight),
                   child: service.images.isEmpty
-                      ? Image.network(avatarImage.url, fit: BoxFit.fill)
-                      : Image.network(service.images[0], fit: BoxFit.fill),
+                      ? Image.network(
+                          avatarImage.url,
+                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.topCenter,
+                        )
+                      : Image.network(
+                          service.images[0],
+                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.center,
+                        ),
                 ),
               ),
               Padding(
@@ -186,6 +204,42 @@ class _BodyState extends State<Body> {
                 readOnly: readOnly,
                 validator: Validator.noValidator,
               ),
+              if (user.role == "Vendor")
+                DropDownInputField(
+                  icon: Icons.star,
+                  title: service.serviceType + " Type",
+                  value: _category,
+                  dropDownItems: _type.category.map((dynamic category) {
+                    return new DropdownMenuItem(
+                        value: category,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(left: 5),
+                              child: Container(
+                                  width: 160,
+                                  child: Text(
+                                    category,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700),
+                                  )),
+                            ),
+                          ],
+                        ));
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() => _category = newValue);
+                  },
+                ),
+              if (user.role == "Customer")
+                RoundedInputField(
+                    title: "Category",
+                    hintText: "Category",
+                    icon: Icons.star,
+                    controller: new TextEditingController(text: _category),
+                    readOnly: readOnly,
+                    validator: Validator.noValidator),
               RoundedInputField(
                 title: "Price (IDR)",
                 hintText: "Price",
@@ -198,7 +252,7 @@ class _BodyState extends State<Body> {
                 isMoney: true,
               ),
               Container(
-                width: 280,
+                width: getProportionateScreenWidth(270),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -245,7 +299,7 @@ class _BodyState extends State<Body> {
               ),
               if (readOnly)
                 Container(
-                  width: 280,
+                  width: getProportionateScreenWidth(270),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -302,17 +356,31 @@ class _BodyState extends State<Body> {
                     }),
                   ),
                 ),
+              RoundedInputField(
+                title: service.serviceType == "Venue"
+                    ? "Venue Address"
+                    : "Service Address",
+                hintText: "Address",
+                icon: Icons.home,
+                controller: _addressController,
+                readOnly: readOnly,
+                validator: Validator.addressValidator,
+              ),
+              RoundedInputField(
+                  title: "City",
+                  hintText: "City",
+                  icon: Icons.location_city,
+                  controller: _cityController,
+                  readOnly: readOnly,
+                  validator: Validator.cityValidator,
+                  onChanged: (value) {
+                    if (value != "") _cityController.text = value.toUpperCase();
+                    _cityController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: _cityController.text.length));
+                  }),
               if (service.serviceType == "Venue")
                 Column(
                   children: [
-                    RoundedInputField(
-                      title: "Address",
-                      hintText: "Address",
-                      icon: Icons.location_city,
-                      controller: _addressController,
-                      readOnly: readOnly,
-                      validator: Validator.addressValidator,
-                    ),
                     RoundedInputField(
                       title: "Area(M\u00B2)",
                       hintText: "Area",
@@ -397,16 +465,16 @@ class _BodyState extends State<Body> {
                                   maxOrder: num.parse(
                                       _maxOrderController.text.trim()),
                                   status: _status,
+                                  city: _cityController.text.trim(),
+                                  address: _addressController.text.trim(),
+                                  category: _category,
                                 );
-                                if (_addressController.text != "")
-                                  service.address =
-                                      _addressController.text.trim();
-                                if (_capacityController.text != "")
+                                if (widget.service.serviceType == "Venue") {
                                   service.capacity = num.parse(
                                       _capacityController.text.trim());
-                                if (_areaController.text != "")
                                   service.area =
                                       num.parse(_areaController.text.trim());
+                                }
                                 await setService(
                                         context: context, service: service)
                                     .then((value) {

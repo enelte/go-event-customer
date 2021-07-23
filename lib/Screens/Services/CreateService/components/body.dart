@@ -14,6 +14,7 @@ import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/services/auth_service.dart';
+import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:go_event_customer/validator.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _BodyState extends State<Body> {
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
   final _minOrderController = TextEditingController();
   final _maxOrderController = TextEditingController();
   final _areaController = TextEditingController();
@@ -59,6 +61,7 @@ class _BodyState extends State<Body> {
     _nameController.dispose();
     _descriptionController.dispose();
     _priceController.dispose();
+    _cityController.dispose();
     _addressController.dispose();
     _minOrderController.dispose();
     _maxOrderController.dispose();
@@ -134,7 +137,7 @@ class _BodyState extends State<Body> {
                     isMoney: true,
                   ),
                   Container(
-                    width: 280,
+                    width: getProportionateScreenWidth(270),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -221,10 +224,23 @@ class _BodyState extends State<Body> {
                         RoundedInputField(
                           title: "Address",
                           hintText: "Address",
-                          icon: Icons.location_city,
+                          icon: Icons.home,
                           controller: _addressController,
                           validator: Validator.addressValidator,
                         ),
+                        RoundedInputField(
+                            title: "City",
+                            hintText: "City",
+                            icon: Icons.location_city,
+                            controller: _cityController,
+                            validator: Validator.cityValidator,
+                            onChanged: (value) {
+                              if (value != "")
+                                _cityController.text = value.toUpperCase();
+                              _cityController.selection =
+                                  TextSelection.fromPosition(TextPosition(
+                                      offset: _cityController.text.length));
+                            }),
                         RoundedInputField(
                           title: "Area(M\u00B2)",
                           hintText: "Area",
@@ -378,39 +394,39 @@ class _BodyState extends State<Body> {
                                     "Please complete the service form";
                               if (errorMessage == "") {
                                 final service = Service(
-                                    vendorId: Provider.of<FirebaseAuthService>(
-                                            context,
-                                            listen: false)
-                                        .getCurrentUser()
-                                        .uid,
-                                    city: user.city,
-                                    serviceName: _nameController.text.trim(),
-                                    description:
-                                        _descriptionController.text.trim(),
-                                    price: num.parse(_priceController.text
-                                        .trim()
-                                        .replaceAll(".", "")),
-                                    startServiceTime: _startTime,
-                                    endServiceTime: _endTime,
-                                    minOrder: num.parse(
-                                        _minOrderController.text.trim()),
-                                    maxOrder: num.parse(
-                                        _maxOrderController.text.trim()),
-                                    status: _status,
-                                    serviceType: _type.name,
-                                    category: _category,
-                                    unit: _type.unit);
-                                _addressController.text != ""
-                                    ? service.address =
-                                        _addressController.text.trim()
-                                    : service.address = user.address;
-                                if (_capacityController.text != "")
+                                  vendorId: Provider.of<FirebaseAuthService>(
+                                          context,
+                                          listen: false)
+                                      .getCurrentUser()
+                                      .uid,
+                                  city: user.city,
+                                  serviceName: _nameController.text.trim(),
+                                  description:
+                                      _descriptionController.text.trim(),
+                                  price: num.parse(_priceController.text
+                                      .trim()
+                                      .replaceAll(".", "")),
+                                  startServiceTime: _startTime,
+                                  endServiceTime: _endTime,
+                                  minOrder: num.parse(
+                                      _minOrderController.text.trim()),
+                                  maxOrder: num.parse(
+                                      _maxOrderController.text.trim()),
+                                  status: _status,
+                                  serviceType: _type.name,
+                                  category: _category,
+                                  unit: _type.unit,
+                                  address: user.address,
+                                );
+                                if (_type.name == "Venue") {
+                                  service.city = _cityController.text.trim();
+                                  service.address =
+                                      _addressController.text.trim();
                                   service.capacity = num.parse(
                                       _capacityController.text.trim());
-                                if (_areaController.text != "")
                                   service.area =
                                       num.parse(_areaController.text.trim());
-
+                                }
                                 await setService(
                                         context: context,
                                         service: service,

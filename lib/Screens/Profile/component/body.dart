@@ -112,12 +112,16 @@ class _BodyState extends State<Body> {
                 maxLines: 4,
               ),
               RoundedInputField(
-                validator: Validator.cityValidator,
-                title: "City",
-                hintText: "City",
-                icon: Icons.location_city,
-                controller: _cityController,
-              ),
+                  validator: Validator.cityValidator,
+                  title: "City",
+                  hintText: "City",
+                  icon: Icons.location_city,
+                  controller: _cityController,
+                  onChanged: (value) {
+                    if (value != "") _cityController.text = value.toUpperCase();
+                    _cityController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: _cityController.text.length));
+                  }),
               if (widget.userData.role == "Customer")
                 RoundedInputField(
                   validator: Validator.dateValidator,

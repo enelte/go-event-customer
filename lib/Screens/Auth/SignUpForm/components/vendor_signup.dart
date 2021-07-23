@@ -119,11 +119,17 @@ class _VendorSignUpState extends State<VendorSignUp> {
                       validator: Validator.addressValidator,
                     ),
                     RoundedInputField(
-                      title: "City",
-                      icon: Icons.location_city,
-                      controller: _cityController,
-                      validator: Validator.cityValidator,
-                    ),
+                        title: "City",
+                        icon: Icons.location_city,
+                        controller: _cityController,
+                        validator: Validator.cityValidator,
+                        onChanged: (value) {
+                          if (value != "")
+                            _cityController.text = value.toUpperCase();
+                          _cityController.selection =
+                              TextSelection.fromPosition(TextPosition(
+                                  offset: _cityController.text.length));
+                        }),
                     RoundedInputField(
                       title: "Description",
                       maxLines: 4,

@@ -14,6 +14,7 @@ import 'package:go_event_customer/models/User.dart';
 import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/services/firestore_service.dart';
+import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/text_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,9 +71,10 @@ class _BodyState extends State<Body> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(height: 25),
-                        ServiceCard(
-                          service: service,
-                        ),
+                        if (service != null)
+                          ServiceCard(
+                            service: service,
+                          ),
                         SizedBox(
                           height: 10,
                         ),
@@ -83,7 +85,7 @@ class _BodyState extends State<Body> {
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 18),
                           child: Container(
-                            width: 300,
+                            width: getProportionateScreenWidth(300),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               //border: Border.all(color: kPrimaryColor),
@@ -178,39 +180,47 @@ class _BodyState extends State<Body> {
                                           text: transaction.bookingDate),
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      RoundedInputField(
-                                        width: 165,
-                                        icon: Icons.timer,
-                                        fillColor: Colors.white,
-                                        readOnly: true,
-                                        title: "Booking Time",
-                                        controller:
-                                            new TextEditingController.fromValue(
-                                          TextEditingValue(
-                                              text: transaction.startTime +
-                                                  "-" +
-                                                  transaction.endTime),
-                                        ),
-                                      ),
-                                      RoundedInputField(
-                                        width: 80,
-                                        fillColor: Colors.white,
-                                        readOnly: true,
-                                        title: "Quantity",
-                                        controller:
-                                            new TextEditingController.fromValue(
-                                          TextEditingValue(
-                                            text: transaction.quantity
-                                                    .toString() +
-                                                " " +
-                                                service.unit.toUpperCase() +
-                                                "(S)",
+                                  Container(
+                                    width: getProportionateScreenWidth(270),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        RoundedInputField(
+                                          width: 165,
+                                          icon: Icons.timer,
+                                          fillColor: Colors.white,
+                                          readOnly: true,
+                                          title: "Booking Time",
+                                          controller: new TextEditingController
+                                              .fromValue(
+                                            TextEditingValue(
+                                                text: transaction.startTime +
+                                                    "-" +
+                                                    transaction.endTime),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        RoundedInputField(
+                                          width: 80,
+                                          fillColor: Colors.white,
+                                          readOnly: true,
+                                          title: "Quantity",
+                                          controller: new TextEditingController
+                                              .fromValue(
+                                            TextEditingValue(
+                                              text: (transaction.quantity
+                                                          .toString() +
+                                                      " ") +
+                                                  (service != null
+                                                      ? service.unit
+                                                              .toUpperCase() +
+                                                          "(S)"
+                                                      : ""),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   RoundedInputField(
                                     icon: Icons.location_city,
@@ -255,34 +265,64 @@ class _BodyState extends State<Body> {
                         ),
                         SizedBox(height: 25),
                         //CUSTOMER SUBMIT PLANNED ORDER
-                        if (loggedUser.role == "Customer")
-                          if (transaction.transactionType == "Planned")
-                            RoundedButton(
-                              color: Colors.deepOrangeAccent,
-                              text: "Make Order",
-                              press: () {
-                                PopUpDialog.confirmationDialog(
-                                    context: context,
-                                    onPressed: () async {
-                                      await submitPlannedTransaction(
-                                              context, transaction)
-                                          .then((value) {
-                                        loadingSnackBar(
+                        if (loggedUser.role == "Customer" &&
+                            transaction.transactionType == "Planned")
+                          service != null
+                              ? service.status == true
+                                  ? RoundedButton(
+                                      color: Colors.deepOrangeAccent,
+                                      text: "Make Order",
+                                      press: () {
+                                        PopUpDialog.confirmationDialog(
                                             context: context,
-                                            text: "Order Submitted");
-                                      }).catchError((e) {
-                                        loadingSnackBar(
-                                            context: context,
-                                            text: "An error occurred",
-                                            color: Colors.red);
-                                      });
-                                    },
-                                    title:
-                                        "Your order will be forwarded to vendor, proceed?");
-                              },
-                            ),
+                                            onPressed: () async {
+                                              await submitPlannedTransaction(
+                                                      context, transaction)
+                                                  .then((value) {
+                                                loadingSnackBar(
+                                                    context: context,
+                                                    text: "Order Submitted");
+                                              }).catchError((e) {
+                                                loadingSnackBar(
+                                                    context: context,
+                                                    text: "An error occurred",
+                                                    color: Colors.red);
+                                              });
+                                            },
+                                            title:
+                                                "Your order will be forwarded to vendor, proceed?");
+                                      },
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Container(
+                                        width: 290,
+                                        child: Text(
+                                          "This service is Inactive, please contact the Vendor or delete this plan",
+                                          style: TextStyle(
+                                            color: Colors.deepOrangeAccent,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    )
+                              : Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Container(
+                                    width: 290,
+                                    child: Text(
+                                      "This service is unavailable, please contact the Vendor or delete this plan",
+                                      style: TextStyle(
+                                        color: Colors.deepOrangeAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
                         //CUSTOMER EDIT Order
-                        if (loggedUser.role == "Customer")
+                        if (loggedUser.role == "Customer" && service != null)
                           if (transaction.status ==
                                   "Waiting for Confirmation" ||
                               transaction.status == "Waiting for Payment" ||
@@ -352,53 +392,72 @@ class _BodyState extends State<Body> {
                         //REJECT / CANCEL BUTTON
                         if (transaction.status == "Waiting for Confirmation" ||
                             transaction.status == "Waiting for Payment" ||
+                            transaction.status == "Planned" ||
                             (transaction.status ==
                                     "Waiting for Payment Confirmation" &&
                                 loggedUser.role == "Vendor"))
                           RoundedButton(
                             color: Colors.redAccent,
-                            text: loggedUser.role == "Customer"
-                                ? "Cancel Order"
-                                : "Reject Order",
+                            text: transaction.status == "Planned"
+                                ? "Delete Planned Order"
+                                : loggedUser.role == "Customer"
+                                    ? "Cancel Order"
+                                    : "Reject Order",
                             press: () {
                               PopUpDialog.confirmationDialog(
                                 context: context,
                                 onPressed: () async {
-                                  loggedUser.role == "Customer"
-                                      ? await cancelTransaction(
+                                  transaction.status == "Planned"
+                                      ? await deleteTransaction(
                                               context, transaction)
                                           .then((value) {
                                           loadingSnackBar(
                                               context: context,
-                                              text: "Order Cancelled");
+                                              text: "Planned Order Deleted");
+                                          Navigator.of(context).pop();
                                         }).catchError((e) {
                                           loadingSnackBar(
                                               context: context,
                                               text: "An error occurred",
                                               color: Colors.red);
                                         })
-                                      : await rejectTransaction(
-                                              context, transaction)
-                                          .then((value) {
-                                          loadingSnackBar(
-                                              context: context,
-                                              text: "Order Rejected");
-                                        }).catchError((e) {
-                                          loadingSnackBar(
-                                              context: context,
-                                              text: "An error occurred",
-                                              color: Colors.red);
-                                        });
+                                      : loggedUser.role == "Customer"
+                                          ? await cancelTransaction(
+                                                  context, transaction)
+                                              .then((value) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "Order Cancelled");
+                                            }).catchError((e) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "An error occurred",
+                                                  color: Colors.red);
+                                            })
+                                          : await rejectTransaction(
+                                                  context, transaction)
+                                              .then((value) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "Order Rejected");
+                                            }).catchError((e) {
+                                              loadingSnackBar(
+                                                  context: context,
+                                                  text: "An error occurred",
+                                                  color: Colors.red);
+                                            });
                                 },
-                                title: loggedUser.role == "Customer"
-                                    ? "Cancel Order"
-                                    : "Reject Order",
+                                title: transaction.status == "Planned"
+                                    ? "Delete Planned Order?"
+                                    : loggedUser.role == "Customer"
+                                        ? "Cancel Order"
+                                        : "Reject Order",
                               );
                             },
                           ),
 
                         //CUSTOMER FINISH BOOKING
-                        if (loggedUser.role == "Customer")
+                        if (loggedUser.role == "Customer" && service != null)
                           if (transaction.status == "In Progress")
                             RoundedButton(
                                 color: Colors.blueAccent,
@@ -430,7 +489,7 @@ class _BodyState extends State<Body> {
                                 }),
 
                         //CUSTOMER GIVE REVIEW
-                        if (loggedUser.role == "Customer")
+                        if (loggedUser.role == "Customer" && service != null)
                           if (transaction.status == "Finished" &&
                               transaction.reviewed != true)
                             RoundedButton(

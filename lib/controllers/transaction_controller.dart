@@ -19,6 +19,16 @@ Future<void> setTransaction(
   }
 }
 
+Future<void> deleteTransaction(
+    BuildContext context, Transaction transaction) async {
+  try {
+    final database = Provider.of<FirestoreService>(context, listen: false);
+    await database.deleteTransaction(transaction);
+  } catch (e) {
+    print(e);
+  }
+}
+
 Future<void> submitPlannedTransaction(
     BuildContext context, Transaction transaction) async {
   transaction.transactionType = "On Going";
