@@ -182,6 +182,7 @@ class ServiceCardBuilder extends StatelessWidget {
                   children: [
                     SizedBox(
                       height: 40,
+                      width: getProportionateScreenWidth(150),
                       child: Text(
                         service.serviceName,
                         style: TextStyle(
@@ -191,22 +192,23 @@ class ServiceCardBuilder extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 0, bottom: 5),
+                      padding: const EdgeInsets.only(bottom: 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
+                        
                         children: [
                           Text(
                             TextFormatter.moneyFormatter(service.price),
                             style: TextStyle(
-                              fontSize: getProportionateScreenWidth(14),
+                              fontSize: getProportionateScreenWidth(13),
                               fontWeight: FontWeight.w800,
                               color: kPrimaryColor,
                             ),
                           ),
                           Text("/" + service.unit,
                               style: TextStyle(
-                                fontSize: getProportionateScreenWidth(10),
-                                fontWeight: FontWeight.w400,
+                                fontSize: getProportionateScreenWidth(9),
+                                fontWeight: FontWeight.w300,
                                 color: kPrimaryColor,
                               ))
                         ],
@@ -220,7 +222,7 @@ class ServiceCardBuilder extends StatelessWidget {
                           size: 15,
                         ),
                         Container(
-                          width: 125,
+                          width: getProportionateScreenWidth(115),
                           child: Text(
                             service.city,
                             style: TextStyle(

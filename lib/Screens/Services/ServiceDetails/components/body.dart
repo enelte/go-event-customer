@@ -118,7 +118,7 @@ class _BodyState extends State<Body> {
                       : Image.network(
                           service.images[0],
                           fit: BoxFit.fitWidth,
-                          alignment: Alignment.center,
+                          alignment: Alignment.center
                         ),
                 ),
               ),
@@ -485,7 +485,7 @@ class _BodyState extends State<Body> {
                                 }).catchError((e) {
                                   loadingSnackBar(
                                       context: context,
-                                      text: "An Error Ocurred",
+                                      text: "An error occurred, please contact the developer.",
                                       color: Colors.red);
                                 });
                               } else {

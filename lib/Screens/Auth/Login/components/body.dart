@@ -39,11 +39,11 @@ class _BodyState extends State<Body> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: getProportionateScreenHeight(40),
+                  vertical: getProportionateScreenHeight(20),
                 ),
                 child: SvgPicture.asset(
                   "assets/icons/login.svg",
-                  height: getProportionateScreenHeight(300),
+                  height: getProportionateScreenHeight(280),
                 ),
               ),
               RoundedInputField(

@@ -68,7 +68,7 @@ class ServiceDetailsScreen extends StatelessWidget {
                             .catchError((e) {
                           loadingSnackBar(
                               context: context,
-                              text: "An Error Occurred",
+                              text: "An error occurred, please contact the developer.",
                               color: Colors.red);
                         });
                       }

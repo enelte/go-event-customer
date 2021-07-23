@@ -250,7 +250,7 @@ class _BodyState extends State<Body> {
                               }).catchError((e) {
                                 loadingSnackBar(
                                     context: context,
-                                    text: "An Error Ocurred",
+                                    text: "An error occurred, please contact the developer.",
                                     color: Colors.red);
                               });
                             } else {

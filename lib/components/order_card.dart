@@ -132,7 +132,7 @@ class OrderCardBuilder extends StatelessWidget {
                                               : avatarImage,
                                         ),
                                         Container(
-                                          width: 90,
+                                          width: 100,
                                           child: Text(
                                             order.serviceName,
                                             style: TextStyle(
@@ -141,7 +141,7 @@ class OrderCardBuilder extends StatelessWidget {
                                                   getProportionateScreenWidth(
                                                       14),
                                             ),
-                                            maxLines: 3,
+                                            maxLines: 2,
                                           ),
                                         ),
                                       ],
@@ -186,7 +186,7 @@ class OrderCardBuilder extends StatelessWidget {
                               ),
                               maxLines: 2,
                             ),
-                            height: getProportionateScreenHeight(40)),
+                            height: getProportionateScreenHeight(20)),
                       ),
                     ],
                   ),
@@ -226,14 +226,14 @@ class OrderCardData extends StatelessWidget {
               size: getProportionateScreenWidth(14), color: Colors.white),
           SizedBox(width: 10),
           Container(
-            width: 100,
+            width: 120,
             child: Text(
               text,
               style: TextStyle(
                   fontSize: getProportionateScreenWidth(fontSize),
                   color: Colors.white,
                   fontWeight: FontWeight.w400),
-              maxLines: 3,
+              maxLines: 2,
             ),
           ),
         ],

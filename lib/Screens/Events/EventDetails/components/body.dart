@@ -154,7 +154,7 @@ class EventDetailsBuilder extends StatelessWidget {
                   }).catchError((e) {
                     loadingSnackBar(
                         context: context,
-                        text: "An Error Ocurred",
+                        text: "An error occurred, please contact the developer.",
                         color: Colors.red);
                   });
                 },
@@ -178,7 +178,7 @@ class EventDetailsBuilder extends StatelessWidget {
                     }).catchError((e) {
                       loadingSnackBar(
                           context: context,
-                          text: "An Error Ocurred",
+                          text: "An error occurred, please contact the developer.",
                           color: Colors.red);
                     });
                     ;
@@ -224,7 +224,7 @@ class EventDetailsBuilder extends StatelessWidget {
                 itemCount: _transactionList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.7,
+                  childAspectRatio: 0.8,
                 ),
                 itemBuilder: (context, index) {
                   return Padding(
@@ -256,7 +256,7 @@ class BudgetBox extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Container(
-        width: 250,
+        width: getProportionateScreenWidth(250),
         decoration: BoxDecoration(
           border: Border.all(color: kPrimaryColor),
           borderRadius: BorderRadius.circular(29),

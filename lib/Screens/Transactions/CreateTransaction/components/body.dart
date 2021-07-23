@@ -1,12 +1,12 @@
 import 'package:go_event_customer/components/choose_booking_time_range.dart';
 import 'package:go_event_customer/components/service_card.dart';
-import 'package:go_event_customer/components/time_range.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/controllers/transaction_controller.dart';
 import 'package:go_event_customer/date_picker.dart';
 import 'package:go_event_customer/models/ServiceType.dart';
 import 'package:go_event_customer/models/Transaction.dart' as tran;
 import 'package:go_event_customer/popup_dialog.dart';
+import 'package:go_event_customer/routes.dart';
 import 'package:go_event_customer/screens/Transactions/CreateTransaction/components/create_choose_event.dart';
 import 'package:go_event_customer/screens/Transactions/CreateTransaction/components/order_details.dart';
 import 'package:flutter/material.dart';
@@ -257,11 +257,12 @@ class _BodyState extends State<Body> {
                                   .then((value) {
                                 loadingSnackBar(
                                     context: context, text: "Order Created");
+                                    Navigator.pushNamed(context,Routes.transaction);
                                 Navigator.of(context).pop();
                               }).catchError((e) {
                                 loadingSnackBar(
                                     context: context,
-                                    text: "An Error Ocurred",
+                                    text: "An error occurred, please contact the developer.",
                                     color: Colors.red);
                               });
                             } else {
@@ -322,11 +323,11 @@ class _BodyState extends State<Body> {
                               setTransaction(context, newTrans).then((value) {
                                 loadingSnackBar(
                                     context: context, text: "Order Planned");
-                                Navigator.of(context).pop();
+                                Navigator.pushNamed(context,Routes.transaction);
                               }).catchError((e) {
                                 loadingSnackBar(
                                     context: context,
-                                    text: "An Error Ocurred",
+                                    text: "An error occurred, please contact the developer.",
                                     color: Colors.red);
                               });
                             } else {

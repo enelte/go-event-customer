@@ -69,7 +69,7 @@ class CreateEventForm extends StatelessWidget {
                         }).catchError((e) {
                           loadingSnackBar(
                               context: context,
-                              text: "an Error Occurred",
+                              text: "An error occurred, please contact the developer.",
                               color: Colors.red);
                         });
                         onCreate();

@@ -285,7 +285,7 @@ class _BodyState extends State<Body> {
                                               }).catchError((e) {
                                                 loadingSnackBar(
                                                     context: context,
-                                                    text: "An error occurred",
+                                                    text: "An error occurred, please contact the developer.",
                                                     color: Colors.red);
                                               });
                                             },
@@ -366,7 +366,7 @@ class _BodyState extends State<Body> {
                                             }).catchError((e) {
                                               loadingSnackBar(
                                                   context: context,
-                                                  text: "An error occurred",
+                                                  text: "An error occurred, please contact the developer.",
                                                   color: Colors.red);
                                             })
                                           : await confirmPayment(
@@ -378,7 +378,7 @@ class _BodyState extends State<Body> {
                                             }).catchError((e) {
                                               loadingSnackBar(
                                                   context: context,
-                                                  text: "An error occurred",
+                                                  text: "An error occurred, please contact the developer.",
                                                   color: Colors.red);
                                             });
                                     },
@@ -418,7 +418,7 @@ class _BodyState extends State<Body> {
                                         }).catchError((e) {
                                           loadingSnackBar(
                                               context: context,
-                                              text: "An error occurred",
+                                              text: "An error occurred, please contact the developer.",
                                               color: Colors.red);
                                         })
                                       : loggedUser.role == "Customer"
@@ -431,7 +431,7 @@ class _BodyState extends State<Body> {
                                             }).catchError((e) {
                                               loadingSnackBar(
                                                   context: context,
-                                                  text: "An error occurred",
+                                                  text: "An error occurred, please contact the developer.",
                                                   color: Colors.red);
                                             })
                                           : await rejectTransaction(
@@ -443,7 +443,7 @@ class _BodyState extends State<Body> {
                                             }).catchError((e) {
                                               loadingSnackBar(
                                                   context: context,
-                                                  text: "An error occurred",
+                                                  text: "An error occurred, please contact the developer.",
                                                   color: Colors.red);
                                             });
                                 },
@@ -480,7 +480,7 @@ class _BodyState extends State<Body> {
                                       }).catchError((e) {
                                         loadingSnackBar(
                                             context: context,
-                                            text: "An error occurred",
+                                            text: "An error occurred, please contact the developer.",
                                             color: Colors.red);
                                       });
                                     },

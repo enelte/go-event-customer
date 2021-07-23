@@ -42,7 +42,7 @@ class DropDownInputField extends StatelessWidget {
             validator: (value) => value == null ? 'Field Required' : null,
             decoration: InputDecoration(
               contentPadding:
-                  EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               prefixIcon: icon != null
                   ? Icon(
                       icon,
