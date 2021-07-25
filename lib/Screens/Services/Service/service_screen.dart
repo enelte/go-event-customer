@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Services/Service/components/body.dart';
 import 'package:go_event_customer/components/custom_app_bar.dart';
 import 'package:go_event_customer/components/custom_bottom_navbar.dart';
+import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/search_sort_filter.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/User.dart';
@@ -74,7 +75,12 @@ class _ServiceScreenState extends State<ServiceScreen> {
       floatingActionButton: user.role == "Vendor"
           ? FloatingActionButton(
               onPressed: () {
-                Navigator.pushNamed(context, Routes.create_service);
+                user.registrationStatus == false
+                    ? loadingSnackBar(
+                        context: context,
+                        text: "Vendor Account has not been verified yet",
+                        color: Colors.red)
+                    : Navigator.pushNamed(context, Routes.create_service);
               },
               child: const Icon(Icons.add),
               backgroundColor: kPrimaryColor,

@@ -56,20 +56,21 @@ class _ServiceGalleryState extends State<ServiceGallery> {
                             ),
                       displayName(service.serviceName, service.serviceType,
                           vendor.displayName),
-                      RoundedButton(
-                        text: "Upload Image",
-                        press: () async {
-                          File image = await chooseServiceImage(context);
-                          if (image != null) {
-                            await addServiceImage(context, service, image)
-                                .then((value) {
-                              loadingSnackBar(
-                                  context: context, text: "Image Added");
-                            });
-                          }
-                          setState(() {});
-                        },
-                      ),
+                      if (user.role == "Vendor")
+                        RoundedButton(
+                          text: "Upload Image",
+                          press: () async {
+                            File image = await chooseServiceImage(context);
+                            if (image != null) {
+                              await addServiceImage(context, service, image)
+                                  .then((value) {
+                                loadingSnackBar(
+                                    context: context, text: "Image Added");
+                              });
+                            }
+                            setState(() {});
+                          },
+                        ),
                       Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 20),

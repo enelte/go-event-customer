@@ -52,21 +52,33 @@ class SliderList extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Service> serviceList = snapshot.data;
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ...List.generate(
-                            serviceList.length > 5 ? 5 : serviceList.length,
-                            (index) {
-                              return Padding(
-                                  padding: EdgeInsets.all(3),
-                                  child: ServiceCard(
-                                    service: serviceList[index],
-                                  ));
-                            },
-                          ),
-                        ],
-                      );
+
+                      return serviceList.length != 0
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ...List.generate(
+                                  serviceList.length > 5
+                                      ? 5
+                                      : serviceList.length,
+                                  (index) {
+                                    return Padding(
+                                        padding: EdgeInsets.all(3),
+                                        child: ServiceCard(
+                                          service: serviceList[index],
+                                        ));
+                                  },
+                                ),
+                              ],
+                            )
+                          : Container(
+                              height: 100,
+                              child: Center(
+                                child: Text(userData.role == "Customer"
+                                    ? "No Service Available at the moment"
+                                    : "You have not created any service yet"),
+                              ),
+                            );
                     } else if (snapshot.hasError) {
                       print(snapshot.error);
                       return Text("No data available");
@@ -84,23 +96,33 @@ class SliderList extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Transaction> transactionList = snapshot.data;
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ...List.generate(
-                            transactionList.length > 5
-                                ? 5
-                                : transactionList.length,
-                            (index) {
-                              return Padding(
-                                  padding: EdgeInsets.all(3),
-                                  child: OrderCard(
-                                    order: transactionList[index],
-                                  ));
-                            },
-                          ),
-                        ],
-                      );
+                      return transactionList.length != 0
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ...List.generate(
+                                  transactionList.length > 5
+                                      ? 5
+                                      : transactionList.length,
+                                  (index) {
+                                    return Padding(
+                                        padding: EdgeInsets.all(3),
+                                        child: OrderCard(
+                                          order: transactionList[index],
+                                        ));
+                                  },
+                                ),
+                              ],
+                            )
+                          : Container(
+                              height: 100,
+                              child: Center(
+                                child: Text(userData.role == "Customer"
+                                    ? "You have not created any order yet"
+                                    : "You do not have any incoming orders"),
+                              ),
+                            );
+                      ;
                     } else if (snapshot.hasError) {
                       print(snapshot.error);
                       return Text("No data available");

@@ -154,7 +154,8 @@ class EventDetailsBuilder extends StatelessWidget {
                   }).catchError((e) {
                     loadingSnackBar(
                         context: context,
-                        text: "An error occurred, please contact the developer.",
+                        text:
+                            "An error occurred, please contact the developer.",
                         color: Colors.red);
                   });
                 },
@@ -178,7 +179,8 @@ class EventDetailsBuilder extends StatelessWidget {
                     }).catchError((e) {
                       loadingSnackBar(
                           context: context,
-                          text: "An error occurred, please contact the developer.",
+                          text:
+                              "An error occurred, please contact the developer.",
                           color: Colors.red);
                     });
                     ;
@@ -302,7 +304,8 @@ class BudgetBox extends StatelessWidget {
                         "out of " +
                             TextFormatter.moneyFormatter(event.eventBudget),
                         style: TextStyle(
-                            fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.w400),
+                            fontSize: getProportionateScreenWidth(13),
+                            fontWeight: FontWeight.w400),
                       ),
                       totalSpending > event.eventBudget
                           ? Text(

@@ -5,7 +5,7 @@ import 'package:go_event_customer/components/loading_snackbar.dart';
 import 'package:go_event_customer/components/main_background.dart';
 import 'package:go_event_customer/components/rounded_button.dart';
 import 'package:go_event_customer/components/rounded_input_field.dart';
-import 'package:go_event_customer/components/upload_proof_of_payment.dart';
+import 'package:go_event_customer/components/upload_image.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/ProofOfPayment.dart';
 import 'package:go_event_customer/models/User.dart';
@@ -70,7 +70,7 @@ class _BodyState extends State<Body> {
                       style: TextStyle(color: kPrimaryColor, fontSize: 16),
                     ),
                   ),
-                  UploadProofOfPayment(
+                  UploadImage(
                     imageFile: imageFile,
                     imageURL: imageURL,
                     resetImage: user.role == "Customer"
@@ -141,7 +141,8 @@ class _BodyState extends State<Body> {
                               }).catchError((e) {
                                 loadingSnackBar(
                                     context: context,
-                                    text: "An error occurred, please contact the developer.",
+                                    text:
+                                        "An error occurred, please contact the developer.",
                                     color: Colors.red);
                               });
                             }

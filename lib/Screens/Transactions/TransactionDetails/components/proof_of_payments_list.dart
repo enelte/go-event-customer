@@ -98,7 +98,8 @@ class _ProofOfPaymentListScreenState extends State<ProofOfPaymentListScreen> {
                                           },
                                         ),
                                         if (transaction.transactionType ==
-                                            "On Going")
+                                                "On Going" &&
+                                            user.role == "Customer")
                                           Positioned(
                                             right: 0,
                                             bottom: 0,

@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     SizeConfig().init(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: "GO-EVENT",
+        title: "GO EVENT",
       ),
       body: Body(),
       bottomNavigationBar: CustomBottomNavigationBar(

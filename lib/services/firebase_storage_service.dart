@@ -17,6 +17,22 @@ class FirebaseStorageService {
         path: FirestorePath.userData(uid) + '/profile_picture.png',
       );
 
+  Future<String> uploadIdCard({
+    @required File file,
+  }) async =>
+      await upload(
+        file: file,
+        path: FirestorePath.userData(uid) + '/id_card.png',
+      );
+
+  Future<String> uploadSelfieWithIdCard({
+    @required File file,
+  }) async =>
+      await upload(
+        file: file,
+        path: FirestorePath.userData(uid) + '/selfie_with_id_card.png',
+      );
+
   Future<String> uploadServiceImage({
     @required File file,
     @required String serviceId,

@@ -58,6 +58,7 @@ class RoundedInputField extends StatelessWidget {
           child: TextFormField(
             style: TextStyle(fontSize: 14),
             textAlignVertical: TextAlignVertical.center,
+            textInputAction: TextInputAction.done,
             maxLines: maxLines,
             controller: controller,
             cursorColor: kPrimaryColor,
@@ -76,7 +77,7 @@ class RoundedInputField extends StatelessWidget {
             onFieldSubmitted: onFieldSubmitted,
             onTap: onTap,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical:20),
+              contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
               prefixIcon: icon != null
                   ? Icon(
                       icon,

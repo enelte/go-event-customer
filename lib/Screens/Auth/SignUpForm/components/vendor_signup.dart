@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:go_event_customer/components/upload_image.dart';
 import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:go_event_customer/validator.dart';
@@ -25,7 +26,7 @@ class VendorSignUp extends StatefulWidget {
 
 class _VendorSignUpState extends State<VendorSignUp> {
   final _formKey = GlobalKey<FormState>();
-  File imageFile;
+  File profilePictureFile, idCardFile, selfieWithIdCardFile;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -33,6 +34,9 @@ class _VendorSignUpState extends State<VendorSignUp> {
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _bankNameController = TextEditingController();
+  final _bankAccountNameController = TextEditingController();
+  final _bankAccountNumberController = TextEditingController();
   String errorMessage;
 
   @override
@@ -50,11 +54,11 @@ class _VendorSignUpState extends State<VendorSignUp> {
                   vertical: getProportionateScreenHeight(30),
                 ),
                 child: Column(
-                  children: [              
+                  children: [
                     ProfilePic(
-                      imageFile: imageFile,
+                      imageFile: profilePictureFile,
                       resetImage: () async {
-                        imageFile = null;
+                        profilePictureFile = null;
                         setState(() {});
                       },
                       pickImage: () async {
@@ -63,20 +67,21 @@ class _VendorSignUpState extends State<VendorSignUp> {
                             listen: false);
                         File imagePicked = await imagePicker.pickImage(
                             source: ImageSource.gallery);
-                        if (imagePicked != null) imageFile = imagePicked;
+                        if (imagePicked != null)
+                          profilePictureFile = imagePicked;
                         setState(() {});
                       },
                     ),
-                    // Container(
-                    //   width: 300,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(vertical: 5),
-                    //     child: Text(
-                    //       "1. General Information",
-                    //       style: TextStyle(fontWeight: FontWeight.bold),
-                    //     ),
-                    //   ),
-                    // ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          "1. General Information",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
                     RoundedInputField(
                       icon: Icons.group,
                       title: "Vendor Name",
@@ -133,36 +138,143 @@ class _VendorSignUpState extends State<VendorSignUp> {
                       controller: _descriptionController,
                       validator: Validator.noValidator,
                     ),
-                    // Container(
-                    //   width: 300,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(vertical: 5),
-                    //     child: Text(
-                    //       "2. Bank Account Information",
-                    //       style: TextStyle(fontWeight: FontWeight.bold),
-                    //     ),
-                    //   ),
-                    // ),
                     RoundedPasswordField(
                       controller: _passwordController,
-                      validator: Validator.passwordValidator,
+                      validator: Validator.defaultValidator,
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          "2. Bank Account Information",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    RoundedInputField(
+                      title: "Bank Name",
+                      hintText: "BCA, Mandiri, BRI, etc.",
+                      icon: Icons.attach_money,
+                      controller: _bankNameController,
+                      validator: Validator.defaultValidator,
+                    ),
+                    RoundedInputField(
+                      title: "Bank Account Number",
+                      icon: Icons.format_list_numbered,
+                      controller: _bankAccountNumberController,
+                      validator: Validator.defaultValidator,
+                    ),
+                    RoundedInputField(
+                      title: "Account Name",
+                      hintText: "Name registered on the account",
+                      icon: Icons.person,
+                      controller: _bankAccountNameController,
+                      validator: Validator.defaultValidator,
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          "3. Vendor Verification Information",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        child: Text(
+                          "1. ID Card Photo (KTP)",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                      ),
+                    ),
+                    UploadImage(
+                      height: 200,
+                      imageFile: idCardFile,
+                      resetImage: () async {
+                        idCardFile = null;
+                        setState(() {});
+                      },
+                      pickImage: () async {
+                        final imagePicker = Provider.of<ImagePickerService>(
+                            context,
+                            listen: false);
+                        File imagePicked = await imagePicker.pickImage(
+                            source: ImageSource.gallery);
+                        if (imagePicked != null) idCardFile = imagePicked;
+                        setState(() {});
+                      },
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        child: Text(
+                          "2. Selfie with ID Card Photo",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                      ),
+                    ),
+                    UploadImage(
+                      height: 300,
+                      imageFile: selfieWithIdCardFile,
+                      resetImage: () async {
+                        selfieWithIdCardFile = null;
+                        setState(() {});
+                      },
+                      pickImage: () async {
+                        final imagePicker = Provider.of<ImagePickerService>(
+                            context,
+                            listen: false);
+                        File imagePicked = await imagePicker.pickImage(
+                            source: ImageSource.gallery);
+                        if (imagePicked != null)
+                          selfieWithIdCardFile = imagePicked;
+                        setState(() {});
+                      },
                     ),
                     RoundedButton(
                         text: "SIGNUP",
                         press: () async {
                           if (_formKey.currentState.validate()) {
-                            final userData = UserModel(
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text.trim(),
-                              displayName: _nameController.text.trim(),
-                              phoneNumber: _phoneNumberController.text.trim(),
-                              address: _addressController.text.trim(),
-                              city: _cityController.text.trim(),
-                              description: _descriptionController.text.trim(),
-                              role: "Vendor",
-                            );
-                            errorMessage =
-                                await signUp(context, userData, imageFile);
+                            if (idCardFile == null ||
+                                selfieWithIdCardFile == null) {
+                              errorMessage =
+                                  "Please Complete the Vendor Verification Information";
+                            } else {
+                              final userData = UserModel(
+                                email: _emailController.text.trim(),
+                                password: _passwordController.text.trim(),
+                                displayName: _nameController.text.trim(),
+                                phoneNumber: _phoneNumberController.text.trim(),
+                                address: _addressController.text.trim(),
+                                city: _cityController.text.trim(),
+                                description: _descriptionController.text.trim(),
+                                role: "Vendor",
+                                registrationStatus: false,
+                                bankName: _bankNameController.text.trim(),
+                                bankAccountName:
+                                    _bankAccountNameController.text.trim(),
+                                bankAccountNumber:
+                                    _bankAccountNumberController.text.trim(),
+                              );
+                              errorMessage = await signUp(
+                                  context: context,
+                                  userData: userData,
+                                  profilePicture: profilePictureFile,
+                                  idCard: idCardFile,
+                                  selfieWithIdCard: selfieWithIdCardFile);
+                            }
                             if (errorMessage != "success") setState(() {});
                           }
                         }),

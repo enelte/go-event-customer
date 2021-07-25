@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:go_event_customer/components/loading_snackbar.dart';
+import 'package:go_event_customer/components/upload_image.dart';
+import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/date_picker.dart';
 import 'package:go_event_customer/popup_dialog.dart';
 import 'package:go_event_customer/validator.dart';
@@ -32,8 +34,11 @@ class _BodyState extends State<Body> {
   final _cityController = TextEditingController();
   final _dobController = TextEditingController();
   final _descriptionController = TextEditingController();
-  String _imageURL;
-  File imageFile;
+  final _bankNameController = TextEditingController();
+  final _bankAccountNameController = TextEditingController();
+  final _bankAccountNumberController = TextEditingController();
+  String _imageURL, _selfieWithIdCardURL, _idCardURL;
+  File imageFile, selfieWithIdCardFile, idCardFile;
 
   @override
   void initState() {
@@ -45,6 +50,11 @@ class _BodyState extends State<Body> {
     _descriptionController.text = widget.userData.description;
     _dobController.text = widget.userData.dateOfBirth;
     _imageURL = widget.userData.photoURL;
+    _selfieWithIdCardURL = widget.userData.selfieWithIdCardURL;
+    _idCardURL = widget.userData.idCardURL;
+    _bankNameController.text = widget.userData.bankName;
+    _bankAccountNumberController.text = widget.userData.bankAccountNumber;
+    _bankAccountNameController.text = widget.userData.bankAccountName;
   }
 
   @override
@@ -55,6 +65,9 @@ class _BodyState extends State<Body> {
     _cityController.dispose();
     _descriptionController.dispose();
     _dobController.dispose();
+    _bankNameController.dispose();
+    _bankAccountNameController.dispose();
+    _bankAccountNumberController.dispose();
     super.dispose();
   }
 
@@ -87,6 +100,16 @@ class _BodyState extends State<Body> {
               displayName(widget.userData.displayName, user.email,
                   "+62" + widget.userData.phoneNumber),
               SizedBox(height: 25),
+              Container(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    "1. General Information",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
               RoundedInputField(
                 title: "Display Name",
                 hintText: "Display Name",
@@ -148,6 +171,122 @@ class _BodyState extends State<Body> {
                 controller: _descriptionController,
                 validator: Validator.noValidator,
               ),
+              if (widget.userData.role == "Vendor")
+                Column(
+                  children: [
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          "2. Bank Account Information",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    RoundedInputField(
+                      title: "Bank Name",
+                      hintText: "BCA, Mandiri, BRI, etc.",
+                      icon: Icons.attach_money,
+                      controller: _bankNameController,
+                      validator: Validator.defaultValidator,
+                    ),
+                    RoundedInputField(
+                      title: "Bank Account Number",
+                      icon: Icons.format_list_numbered,
+                      controller: _bankAccountNumberController,
+                      validator: Validator.defaultValidator,
+                    ),
+                    RoundedInputField(
+                      title: "Account Name",
+                      hintText: "Name registered on the account",
+                      icon: Icons.person,
+                      controller: _bankAccountNameController,
+                      validator: Validator.defaultValidator,
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          "3. Vendor Verification Information",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        child: Text(
+                          "1. ID Card Photo (KTP)",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                      ),
+                    ),
+                    UploadImage(
+                      height: 200,
+                      imageFile: idCardFile,
+                      imageURL: _idCardURL,
+                      resetImage: !widget.userData.registrationStatus
+                          ? () async {
+                              idCardFile = null;
+                              setState(() {});
+                            }
+                          : null,
+                      pickImage: !widget.userData.registrationStatus
+                          ? () async {
+                              final imagePicker =
+                                  Provider.of<ImagePickerService>(context,
+                                      listen: false);
+                              File imagePicked = await imagePicker.pickImage(
+                                  source: ImageSource.gallery);
+                              if (imagePicked != null) idCardFile = imagePicked;
+                              setState(() {});
+                            }
+                          : null,
+                    ),
+                    Container(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        child: Text(
+                          "2. Selfie with ID Card Photo",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                      ),
+                    ),
+                    UploadImage(
+                      height: 300,
+                      imageFile: selfieWithIdCardFile,
+                      imageURL: _selfieWithIdCardURL,
+                      resetImage: !widget.userData.registrationStatus
+                          ? () async {
+                              selfieWithIdCardFile = null;
+                              setState(() {});
+                            }
+                          : null,
+                      pickImage: !widget.userData.registrationStatus
+                          ? () async {
+                              final imagePicker =
+                                  Provider.of<ImagePickerService>(context,
+                                      listen: false);
+                              File imagePicked = await imagePicker.pickImage(
+                                  source: ImageSource.gallery);
+                              if (imagePicked != null)
+                                selfieWithIdCardFile = imagePicked;
+                              setState(() {});
+                            }
+                          : null,
+                    ),
+                  ],
+                ),
               SizedBox(height: 25),
               RoundedButton(
                   text: "Save Changes",
@@ -157,14 +296,28 @@ class _BodyState extends State<Body> {
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             final userData = UserModel(
-                                displayName: _nameController.text.trim(),
-                                phoneNumber: _phoneNumberController.text.trim(),
-                                address: _addressController.text.trim(),
-                                dateOfBirth: _dobController.text.trim(),
-                                city: _cityController.text.trim(),
-                                description: _descriptionController.text.trim(),
-                                photoURL: _imageURL);
-                            await editUserData(context, userData, imageFile)
+                              displayName: _nameController.text.trim(),
+                              phoneNumber: _phoneNumberController.text.trim(),
+                              address: _addressController.text.trim(),
+                              dateOfBirth: _dobController.text.trim(),
+                              city: _cityController.text.trim(),
+                              description: _descriptionController.text.trim(),
+                              photoURL: _imageURL,
+                            );
+                            if (widget.userData.role == "Vendor") {
+                              userData.bankName =
+                                  _bankNameController.text.trim();
+                              userData.bankAccountName =
+                                  _bankAccountNameController.text.trim();
+                              userData.bankAccountNumber =
+                                  _bankAccountNumberController.text.trim();
+                            }
+                            await editUserData(
+                                    context: context,
+                                    userData: userData,
+                                    profilePicture: imageFile,
+                                    idCard: idCardFile,
+                                    selfieWithIdCard: selfieWithIdCardFile)
                                 .then((value) {
                               setState(() {});
                               loadingSnackBar(
@@ -172,7 +325,8 @@ class _BodyState extends State<Body> {
                             }).catchError((e) {
                               loadingSnackBar(
                                   context: context,
-                                  text: "An error occurred, please contact the developer.",
+                                  text:
+                                      "An error occurred, please contact the developer.",
                                   color: Colors.red);
                             });
                             ;

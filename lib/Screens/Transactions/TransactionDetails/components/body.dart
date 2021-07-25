@@ -233,6 +233,13 @@ class _BodyState extends State<Body> {
                                             TextEditingValue(
                                                 text: transaction.location)),
                                   ),
+                                  if (loggedUser.role == "Customer" &&
+                                      (transaction.status ==
+                                              "Waiting for Payment" ||
+                                          transaction.status ==
+                                              "Waiting for Payment Confirmation"))
+                                    PaymentInformation(
+                                        transaction: transaction, user: user),
                                   if (transaction.status !=
                                           "Waiting for Confirmation" &&
                                       transaction.status != "Planned")
@@ -285,7 +292,8 @@ class _BodyState extends State<Body> {
                                               }).catchError((e) {
                                                 loadingSnackBar(
                                                     context: context,
-                                                    text: "An error occurred, please contact the developer.",
+                                                    text:
+                                                        "An error occurred, please contact the developer.",
                                                     color: Colors.red);
                                               });
                                             },
@@ -366,7 +374,8 @@ class _BodyState extends State<Body> {
                                             }).catchError((e) {
                                               loadingSnackBar(
                                                   context: context,
-                                                  text: "An error occurred, please contact the developer.",
+                                                  text:
+                                                      "An error occurred, please contact the developer.",
                                                   color: Colors.red);
                                             })
                                           : await confirmPayment(
@@ -378,7 +387,8 @@ class _BodyState extends State<Body> {
                                             }).catchError((e) {
                                               loadingSnackBar(
                                                   context: context,
-                                                  text: "An error occurred, please contact the developer.",
+                                                  text:
+                                                      "An error occurred, please contact the developer.",
                                                   color: Colors.red);
                                             });
                                     },
@@ -389,20 +399,16 @@ class _BodyState extends State<Body> {
                               },
                             ),
 
-                        //REJECT / CANCEL BUTTON
-                        if (transaction.status == "Waiting for Confirmation" ||
-                            transaction.status == "Waiting for Payment" ||
-                            transaction.status == "Planned" ||
-                            (transaction.status ==
-                                    "Waiting for Payment Confirmation" &&
-                                loggedUser.role == "Vendor"))
+                        //CANCEL BUTTON
+                        if ((transaction.status == "Waiting for Confirmation" ||
+                                transaction.status == "Waiting for Payment" ||
+                                transaction.status == "Planned") &&
+                            loggedUser.role == "Customer")
                           RoundedButton(
                             color: Colors.redAccent,
                             text: transaction.status == "Planned"
                                 ? "Delete Planned Order"
-                                : loggedUser.role == "Customer"
-                                    ? "Cancel Order"
-                                    : "Reject Order",
+                                : "Cancel Order",
                             press: () {
                               PopUpDialog.confirmationDialog(
                                 context: context,
@@ -418,44 +424,79 @@ class _BodyState extends State<Body> {
                                         }).catchError((e) {
                                           loadingSnackBar(
                                               context: context,
-                                              text: "An error occurred, please contact the developer.",
+                                              text:
+                                                  "An error occurred, please contact the developer.",
                                               color: Colors.red);
                                         })
-                                      : loggedUser.role == "Customer"
-                                          ? await cancelTransaction(
-                                                  context, transaction)
-                                              .then((value) {
-                                              loadingSnackBar(
-                                                  context: context,
-                                                  text: "Order Cancelled");
-                                            }).catchError((e) {
-                                              loadingSnackBar(
-                                                  context: context,
-                                                  text: "An error occurred, please contact the developer.",
-                                                  color: Colors.red);
-                                            })
-                                          : await rejectTransaction(
-                                                  context, transaction)
-                                              .then((value) {
-                                              loadingSnackBar(
-                                                  context: context,
-                                                  text: "Order Rejected");
-                                            }).catchError((e) {
-                                              loadingSnackBar(
-                                                  context: context,
-                                                  text: "An error occurred, please contact the developer.",
-                                                  color: Colors.red);
-                                            });
+                                      : await cancelTransaction(
+                                              context, transaction)
+                                          .then((value) {
+                                          loadingSnackBar(
+                                              context: context,
+                                              text: "Order Cancelled");
+                                        }).catchError((e) {
+                                          loadingSnackBar(
+                                              context: context,
+                                              text:
+                                                  "An error occurred, please contact the developer.",
+                                              color: Colors.red);
+                                        });
                                 },
                                 title: transaction.status == "Planned"
                                     ? "Delete Planned Order?"
-                                    : loggedUser.role == "Customer"
-                                        ? "Cancel Order"
-                                        : "Reject Order",
+                                    : "Cancel Order?",
                               );
                             },
                           ),
-
+                        //REJECT BUTTON
+                        if ((transaction.status == "Waiting for Confirmation" ||
+                                transaction.status == "Waiting for Payment" ||
+                                transaction.status ==
+                                    "Waiting for Payment Confirmation") &&
+                            loggedUser.role == "Vendor")
+                          RoundedButton(
+                            color: Colors.redAccent,
+                            text: "Reject Order",
+                            press: () {
+                              PopUpDialog.confirmationDialog(
+                                  context: context,
+                                  onPressed: () async {
+                                    transaction.status ==
+                                            "Waiting for Payment Confirmation"
+                                        ? await rejectOrderOnPaymentUploaded(
+                                                context, transaction)
+                                            .then((value) {
+                                            loadingSnackBar(
+                                                context: context,
+                                                text:
+                                                    "Order rejection is waiting for admin confirmation");
+                                          }).catchError((e) {
+                                            loadingSnackBar(
+                                                context: context,
+                                                text:
+                                                    "An error occurred, please contact the developer.",
+                                                color: Colors.red);
+                                          })
+                                        : await rejectTransaction(
+                                                context, transaction)
+                                            .then((value) {
+                                            loadingSnackBar(
+                                                context: context,
+                                                text: "Order Rejected");
+                                          }).catchError((e) {
+                                            loadingSnackBar(
+                                                context: context,
+                                                text:
+                                                    "An error occurred, please contact the developer.",
+                                                color: Colors.red);
+                                          });
+                                  },
+                                  title: transaction.status ==
+                                          "Waiting for Payment Confirmation"
+                                      ? "Rejecting order with payment proof submitted needs admin consent proceed?"
+                                      : "Reject the Order?");
+                            },
+                          ),
                         //CUSTOMER FINISH BOOKING
                         if (loggedUser.role == "Customer" && service != null)
                           if (transaction.status == "In Progress")
@@ -480,7 +521,8 @@ class _BodyState extends State<Body> {
                                       }).catchError((e) {
                                         loadingSnackBar(
                                             context: context,
-                                            text: "An error occurred, please contact the developer.",
+                                            text:
+                                                "An error occurred, please contact the developer.",
                                             color: Colors.red);
                                       });
                                     },
@@ -503,7 +545,6 @@ class _BodyState extends State<Body> {
                                     });
                               },
                             ),
-
                         //CHAT CUSTOMER / VENDOR
                         RoundedButton(
                           color: Colors.green,
@@ -513,7 +554,22 @@ class _BodyState extends State<Body> {
                           press: () {
                             launchWhatsapp(
                                 number: "+62" + user.phoneNumber,
-                                message: "Hello");
+                                message: transaction.status != "On Going"
+                                    ? ""
+                                    : "Hi, I want to ask about this booking with booking code: " +
+                                        transaction.transactionId);
+                          },
+                        ),
+                        //CHAT CUSTOMER / VENDOR
+                        RoundedButton(
+                          color: Colors.black54,
+                          text: "Chat Admin",
+                          press: () {
+                            launchWhatsapp(
+                                number: "+628114001507",
+                                message:
+                                    "Hi admin, I need help with my order with booking code: " +
+                                        transaction.transactionId);
                           },
                         ),
                         SizedBox(height: 25),
@@ -531,5 +587,75 @@ class _BodyState extends State<Body> {
             );
           }
         });
+  }
+}
+
+class PaymentInformation extends StatelessWidget {
+  const PaymentInformation({
+    Key key,
+    @required this.transaction,
+    @required this.user,
+  }) : super(key: key);
+
+  final Transaction transaction;
+  final UserModel user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Transfer to the following bank/e-money account",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        Container(
+          width: getProportionateScreenWidth(270),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RoundedInputField(
+                width: 80,
+                fillColor: Colors.white,
+                readOnly: true,
+                title: "Bank Name",
+                controller: new TextEditingController.fromValue(
+                  TextEditingValue(text: user.bankName),
+                ),
+              ),
+              RoundedInputField(
+                width: 165,
+                fillColor: Colors.white,
+                readOnly: true,
+                title: "Bank Number",
+                controller: new TextEditingController.fromValue(
+                  TextEditingValue(text: user.bankAccountNumber),
+                ),
+              ),
+            ],
+          ),
+        ),
+        RoundedInputField(
+          icon: Icons.person,
+          fillColor: Colors.white,
+          readOnly: true,
+          title: "Name on Account",
+          controller: new TextEditingController.fromValue(
+            TextEditingValue(text: user.bankAccountName),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "After you are done, please upload the payment proof below",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
+    );
   }
 }

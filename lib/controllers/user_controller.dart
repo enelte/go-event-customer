@@ -8,26 +8,53 @@ import 'package:go_event_customer/services/firestore_service.dart';
 import 'package:provider/provider.dart';
 
 Future<void> editUserData(
-    BuildContext context, UserModel userData, File imageFile) async {
+    {@required BuildContext context,
+    @required UserModel userData,
+    @required File profilePicture,
+    File idCard,
+    File selfieWithIdCard}) async {
   try {
-    if (imageFile != null) {
+    if (profilePicture != null) {
       //upload image to storage
       final storage =
           Provider.of<FirebaseStorageService>(context, listen: false);
-      String downloadUrl = await storage.uploadProfilePicture(file: imageFile);
+      String downloadUrl =
+          await storage.uploadProfilePicture(file: profilePicture);
       userData.photoURL = downloadUrl;
+    }
+
+    if (idCard != null) {
+      //upload image to storage
+      final storage =
+          Provider.of<FirebaseStorageService>(context, listen: false);
+      String downloadUrl = await storage.uploadIdCard(file: idCard);
+      userData.idCardURL = downloadUrl;
+      await idCard.delete();
+    }
+    if (selfieWithIdCard != null) {
+      //upload image to storage
+      final storage =
+          Provider.of<FirebaseStorageService>(context, listen: false);
+      String downloadUrl =
+          await storage.uploadProfilePicture(file: selfieWithIdCard);
+      userData.selfieWithIdCardURL = downloadUrl;
+      await selfieWithIdCard.delete();
     }
 
     final database = Provider.of<FirestoreService>(context, listen: false);
     await database.setUserData(userData);
-    if (imageFile != null) await imageFile.delete();
+    if (profilePicture != null) await profilePicture.delete();
   } catch (e) {
     print(e);
   }
 }
 
 Future<String> signUp(
-    BuildContext context, UserModel userData, File imageFile) async {
+    {@required BuildContext context,
+    @required UserModel userData,
+    @required File profilePicture,
+    File idCard,
+    File selfieWithIdCard}) async {
   try {
     //register User, get the UID and save the user data
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
@@ -35,12 +62,28 @@ Future<String> signUp(
         userData.email, userData.password);
     if (registeredUser is String) return registeredUser;
 
-    if (imageFile != null) {
+    if (profilePicture != null) {
       //upload image to storage
       final storage = FirebaseStorageService(uid: registeredUser.uid);
-      String downloadUrl = await storage.uploadProfilePicture(file: imageFile);
+      String downloadUrl =
+          await storage.uploadProfilePicture(file: profilePicture);
       userData.photoURL = downloadUrl;
-      await imageFile.delete();
+      await profilePicture.delete();
+    }
+    if (idCard != null) {
+      //upload image to storage
+      final storage = FirebaseStorageService(uid: registeredUser.uid);
+      String downloadUrl = await storage.uploadIdCard(file: idCard);
+      userData.idCardURL = downloadUrl;
+      await idCard.delete();
+    }
+    if (selfieWithIdCard != null) {
+      //upload image to storage
+      final storage = FirebaseStorageService(uid: registeredUser.uid);
+      String downloadUrl =
+          await storage.uploadProfilePicture(file: selfieWithIdCard);
+      userData.selfieWithIdCardURL = downloadUrl;
+      await selfieWithIdCard.delete();
     }
 
     final database = FirestoreService(uid: registeredUser.uid);

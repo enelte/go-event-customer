@@ -53,6 +53,17 @@ Future<void> confirmTransaction(
   }
 }
 
+Future<void> rejectOrderOnPaymentUploaded(
+    BuildContext context, Transaction transaction) async {
+  transaction.status = "Waiting for Admin Confirmation";
+  try {
+    final database = Provider.of<FirestoreService>(context, listen: false);
+    await database.setTransaction(transaction);
+  } catch (e) {
+    print(e);
+  }
+}
+
 Future<void> confirmPayment(
     BuildContext context, Transaction transaction) async {
   transaction.status = "In Progress";

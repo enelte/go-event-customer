@@ -13,9 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       {this.title, this.backButton = false, this.bottom, this.actions = true});
 
   @override
-  Size get preferredSize => Size.fromHeight(bottom != null
-      ? 140
-      : 70);
+  Size get preferredSize => Size.fromHeight(bottom != null ? 130 : 60);
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -28,7 +26,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Text(
             title.toUpperCase(),
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize:getProportionateScreenWidth(14)),
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: getProportionateScreenWidth(14)),
             maxLines: 2,
           )
         ],

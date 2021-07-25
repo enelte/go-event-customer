@@ -161,8 +161,10 @@ class _CustomerSignUpState extends State<CustomerSignUp> {
                               description: _descriptionController.text.trim(),
                               role: "Customer",
                             );
-                            errorMessage =
-                                await signUp(context, userData, imageFile);
+                            errorMessage = await signUp(
+                                context: context,
+                                userData: userData,
+                                profilePicture: imageFile);
                             if (errorMessage != "success") setState(() {});
                           }
                         }),

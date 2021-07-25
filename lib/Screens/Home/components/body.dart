@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_event_customer/Screens/Home/components/slider_list.dart';
 import 'package:go_event_customer/components/main_background.dart';
+import 'package:go_event_customer/constant.dart';
 import 'package:go_event_customer/models/Service.dart';
 import 'package:go_event_customer/models/User.dart';
+import 'package:go_event_customer/services/auth_service.dart';
 import 'package:go_event_customer/size_config.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../routes.dart';
 import '../../../size_config.dart';
@@ -14,9 +17,19 @@ class Body extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
+  void launchWhatsapp(
+      {@required String number, @required String message}) async {
+    String url = "whatsapp://send?phone=$number&text=$message";
+    await canLaunch(url) ? launch(url) : print("Can't open Whatsapp");
+    print(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<UserModel>(context);
+    final user = Provider.of<FirebaseAuthService>(context, listen: false)
+        .getCurrentUser();
+
     return MainBackground(
       child: SingleChildScrollView(
         child: Padding(
@@ -34,11 +47,41 @@ class Body extends StatelessWidget {
                     type: "service"),
               SizedBox(height: 25),
               if (userData != null)
-                SliderList(
-                    title: userData.role == "Customer"
-                        ? "Your Orders"
-                        : "Incoming Orders",
-                    type: "order")
+                SliderList(title: "Your Orders", type: "order"),
+              if (userData != null &&
+                  userData.role == "Vendor" &&
+                  userData.registrationStatus == false)
+                Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text(
+                        "Your account has not been verified yet by Go Event Team. If you are already uploaded the correct ID Card and selfie you can ask admin to check it, You can change the ID card and selfie pictures on your profile settings",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, color: kPrimaryColor),
+                      ),
+                    ),
+                    MaterialButton(
+                        minWidth: 100,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            side: BorderSide(color: Colors.green)),
+                        color: Colors.white,
+                        textColor: Colors.green,
+                        onPressed: () {
+                          launchWhatsapp(
+                              number: "+628114001507",
+                              message:
+                                  "Hi admin, Please verify my vendor account which already registered with email " +
+                                      user.email +
+                                      " and name " +
+                                      userData.displayName);
+                        },
+                        child: Text(
+                          "Ask for Admin Verification",
+                        )),
+                  ],
+                ),
             ],
           ),
         ),

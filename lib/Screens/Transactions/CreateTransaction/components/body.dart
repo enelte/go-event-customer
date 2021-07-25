@@ -257,12 +257,13 @@ class _BodyState extends State<Body> {
                                   .then((value) {
                                 loadingSnackBar(
                                     context: context, text: "Order Created");
-                                    Navigator.pushNamed(context,Routes.transaction);
-                                Navigator.of(context).pop();
+                                Navigator.pushNamed(
+                                    context, Routes.transaction);
                               }).catchError((e) {
                                 loadingSnackBar(
                                     context: context,
-                                    text: "An error occurred, please contact the developer.",
+                                    text:
+                                        "An error occurred, please contact the developer.",
                                     color: Colors.red);
                               });
                             } else {
@@ -323,11 +324,13 @@ class _BodyState extends State<Body> {
                               setTransaction(context, newTrans).then((value) {
                                 loadingSnackBar(
                                     context: context, text: "Order Planned");
-                                Navigator.pushNamed(context,Routes.transaction);
+                                Navigator.pushNamed(
+                                    context, Routes.transaction);
                               }).catchError((e) {
                                 loadingSnackBar(
                                     context: context,
-                                    text: "An error occurred, please contact the developer.",
+                                    text:
+                                        "An error occurred, please contact the developer.",
                                     color: Colors.red);
                               });
                             } else {
